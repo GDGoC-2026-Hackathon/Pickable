@@ -198,7 +198,7 @@ export function CompanyStudio() {
                   hiringLabel: '채용 중',
                   tags: [],
                   positionTitle: 'Front-end Engineer',
-                  deadline: '2025.03.20',
+                  deadline: '2026.02.20',
                   experience: '경력 3년 이상',
                   location: '광화문',
                   salary: '4,000만원 이상',

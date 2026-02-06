@@ -64,7 +64,7 @@ export function JobSeekerSection() {
         <div className={styles.widgetGrid}>
             <DemoCard className={styles.widgetCard} onDemoAction={handleDemoAction}>
               <div className={styles.widgetHeader}>
-                <div className={styles.widgetTitle}>2025.01 채용 캘린더</div>
+                <div className={styles.widgetTitle}>2026.02 채용 캘린더</div>
                 <div className={styles.widgetNav} aria-hidden>
                   <span className={styles.widgetNavBtn}>‹</span>
                   <span className={styles.widgetNavBtn}>›</span>

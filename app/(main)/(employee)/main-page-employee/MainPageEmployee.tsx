@@ -17,7 +17,7 @@ export default function MainPageEmployee() {
     hiringLabel: "채용 중",
     tags: ["핀테크", "유니콘", "시리즈D"],
     positionTitle: "Front-end Engineer",
-    deadline: "2025.03.20",
+    deadline: "2026.02.20",
     experience: "경력 3년 이상",
     location: "광화문",
     salary: "4000만원 이상",

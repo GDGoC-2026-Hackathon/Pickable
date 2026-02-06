@@ -34,7 +34,7 @@ export default function MyPageEmployee() {
       tags: ["핀테크", "B2B"],
       image: "https://blog.kakaocdn.net/dna/BRper/btsPUZ4Ka3l/AAAAAAAAAAAAAAAAAAAAAA3gBEvInLIlxegJlmB-dHJWstD4g4Sb_3VfgDgUV9fd/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ZK9xuJBlNec75aAZCYOReQxBBQA%3D",
       positionTitle: "Product Designer",
-      deadline: "2025.03.20",
+      deadline: "2026.02.20",
       experience: "경력 3년 이상",
       location: "서울 강남구",
       salary: "4000만원 이상",
@@ -49,7 +49,7 @@ export default function MyPageEmployee() {
       tags: ["브랜딩", "UX/UI"],
       image: "https://imgs.jobkorea.co.kr/img3/_thumb/300x0/Company/Visual_Co/images/2020/1/JK_CO_easyspub_1.JPG",
       positionTitle: "Frontend Engineer",
-      deadline: "2025.03.20",
+      deadline: "2026.02.20",
       experience: "경력 2년 이상",
       location: "서울 성동구",
       salary: "면접 후 결정",
@@ -64,7 +64,7 @@ export default function MyPageEmployee() {
       tags: ["이커머스", "데이터"],
       image: "https://vinsign.app/vinsign.jpeg",
       positionTitle: "UX Researcher",
-      deadline: "2025.03.20",
+      deadline: "2026.02.20",
       experience: "경력 3년 이상",
       location: "서울 성동구",
       salary: "면접 후 결정",
@@ -79,7 +79,7 @@ export default function MyPageEmployee() {
       tags: ["기술중심", "팀문화"],
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3FILbREuslMYdr2suLdKfuSdmP4JTyWtfLg&s",
       positionTitle: "Brand Marketer",
-      deadline: "2025.03.20",
+      deadline: "2026.02.20",
       experience: "경력 4년 이상",
       location: "서울 서초구",
       salary: "5000만원 이상",
@@ -96,7 +96,7 @@ export default function MyPageEmployee() {
           {/* Calendar */}
           <section className="mp-card">
             <div className="mp-cal-head">
-              <div className="mp-cal-title">2025.03</div>
+              <div className="mp-cal-title">2026.02</div>
               <div className="mp-cal-nav" aria-hidden="true">
                 <button className="mp-icon-btn" type="button">‹</button>
                 <button className="mp-icon-btn" type="button">›</button>
