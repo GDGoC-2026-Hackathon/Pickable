@@ -60,7 +60,7 @@
   font-size: 14px;
   outline: none;
   background: rgba(11, 18, 32, 0.02);
-  font-weight: 800;
+  font-weight: 500;
   font-family: inherit;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
