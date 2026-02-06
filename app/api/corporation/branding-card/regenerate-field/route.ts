@@ -84,7 +84,7 @@ export async function POST(request: Request) {
       keywords: currentCard.keywords.map((k) => k.keyword),
     });
 
-    const model = getBrandingModel();
+    const model = await getBrandingModel();
     const responseText = await generateWithRetry(model, prompt);
 
     // 3. JSON 파싱
