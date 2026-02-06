@@ -1,8 +1,13 @@
 import Link from 'next/link'
 
+import { auth } from '@/auth'
+
 import styles from './SiteHeader.module.css'
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const session = await auth()
+  const user = session?.user
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -10,12 +15,13 @@ export function SiteHeader() {
           <Link className={styles.brand} href="/">
             Pickable
           </Link>
-          <div className={styles.headerRight}>
-            <span className={styles.headerHint}>이미 계정이 있으신가요?</span>
-            <button className={styles.loginButton} type="button">
-              로그인
-            </button>
-          </div>
+          {user ? (
+            <div className={styles.headerRight}>
+              <span className={styles.userName}>
+                {user.name || user.email || '사용자'}
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
     </header>

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { signIn } from '@/auth'
+
 import styles from './onboarding.module.css'
 
 export default function OnboardingPage() {
@@ -34,12 +36,14 @@ function Hero() {
             description="AI 브랜딩으로 회사의 가치를 높이고, 최적의 인재를 만나보세요."
             buttonLabel="Google 계정으로 기업 로그인"
             icon={<BriefcaseIcon />}
+            role="CORPORATION"
           />
           <RoleCard
             title="취업 준비생이라면"
             description="나에게 맞는 중소기업을 추천받고, 커리어 로드맵을 설계해보세요."
             buttonLabel="Google 계정으로 취준생 로그인"
             icon={<SparkleIcon />}
+            role="JOB_SEEKER"
           />
         </div>
       </div>
@@ -52,21 +56,32 @@ function RoleCard({
   description,
   buttonLabel,
   icon,
+  role,
 }: {
   title: string
   description: string
   buttonLabel: string
   icon: ReactNode
+  role: 'CORPORATION' | 'JOB_SEEKER'
 }) {
+  const callbackUrl = `/onboarding/complete?role=${role}`
+
   return (
     <section className={styles.roleCard} aria-label={title}>
       <div className={styles.roleIcon}>{icon}</div>
       <h2 className={styles.roleTitle}>{title}</h2>
       <p className={styles.roleDesc}>{description}</p>
-      <button className={styles.googleButton} type="button">
-        <GoogleIcon />
-        <span>{buttonLabel}</span>
-      </button>
+      <form
+        action={async () => {
+          'use server'
+          await signIn('google', { redirectTo: callbackUrl })
+        }}
+      >
+        <button className={styles.googleButton} type="submit">
+          <GoogleIcon />
+          <span>{buttonLabel}</span>
+        </button>
+      </form>
     </section>
   )
 }
