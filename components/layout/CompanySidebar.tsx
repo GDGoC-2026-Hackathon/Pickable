@@ -29,7 +29,12 @@ export function CompanySidebar() {
   return (
     <aside className={styles.sidebar} aria-label="Company dashboard sidebar">
       <div className={styles.profileCard}>
-        <div className={styles.avatar} aria-hidden />
+        <img
+          className={styles.avatar}
+          src="/images/techwave-o.avif"
+          alt=""
+          aria-hidden
+        />
         <div className={styles.companyName}>테크웨이브 (TechWave)</div>
         <div className={styles.companyMeta}>IT · 소프트웨어 개발</div>
         <nav className={styles.nav} aria-label="Company dashboard">

@@ -43,6 +43,20 @@
   height: 28px;
   border-radius: 999px;
   background: rgba(11, 18, 32, 0.06);
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+}
+
+.socialDot:hover {
+  background: rgba(11, 18, 32, 0.1);
+}
+
+.socialIcon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: block;
 }
 
 .footerCol {
@@ -52,6 +66,7 @@
 .footerColTitle {
   font-weight: 900;
   letter-spacing: -0.02em;
+  color: #0b1220;
 }
 
 .footerList {
@@ -64,7 +79,7 @@
 
 .footerItem {
   font-size: 12px;
-  color: rgba(11, 18, 32, 0.6);
+  color: rgba(11, 18, 32, 0.8);
   font-weight: 800;
 }
 
@@ -108,4 +123,3 @@
     align-items: flex-start;
   }
 }
-

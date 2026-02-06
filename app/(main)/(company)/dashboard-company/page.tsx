@@ -44,9 +44,9 @@ export default function DashboardCompanyPage() {
             <div className={styles.sectionTitle}>채용 공고 관리</div>
             <div className={styles.subText}>현재 활성화된 공고 3개</div>
           </div>
-          <button className={styles.addButton} type="button">
+          <a className={styles.addButton} href="/add-recruitment-company">
             + 공고 추가하기
-          </button>
+          </a>
         </div>
 
         <div className={styles.jobList}>
