@@ -79,6 +79,20 @@ enum SalaryRange {
   OVER_5000
 }
 
+// 채용 공고 상태
+enum PostingStatus {
+  OPEN   // 채용 중
+  CLOSED // 마감
+}
+
+// 필터 정책 (병역 여부 / 직무 관련 경력에 공통 사용)
+enum FilterPolicy {
+  NOT_RELEVANT  // 무관
+  REQUIRED      // 필수
+  BONUS         // 가산점 부여
+  NOT_REFLECTED // 미반영
+}
+
 // ──────────────────────────────────────
 // 인증 (NextAuth)
 // ──────────────────────────────────────
@@ -222,9 +236,19 @@ model Corporation {
   companySize  CompanySize
   phone        String?
 
+  tags        CompanyTag[]
   jobPostings JobPosting[]
 
   createdAt DateTime @default(now())
+}
+
+// 기업 태그 (핀테크, 유니콘 등)
+model CompanyTag {
+  id            String      @id @default(cuid())
+  corporationId String
+  corporation   Corporation @relation(fields: [corporationId], references: [id], onDelete: Cascade)
+
+  tagName String
 }
 
 // ──────────────────────────────────────
@@ -237,20 +261,35 @@ model JobPosting {
   corporationId String
   corporation   Corporation @relation(fields: [corporationId], references: [id], onDelete: Cascade)
 
-  // Hard Filter
-  minEducationLevel EducationLevel
-  jobRole           String
-  militaryRequired  Boolean @default(false)
+  // 공고 기본 정보
+  title    String        // 뽑는 직무 (e.g. "Front-end Engineer")
+  jobTrack String        // 직무 트랙 (e.g. "기술/개발 트랙")
+  status   PostingStatus @default(OPEN) // 채용 상태
+
+  // Hard Filter (필수 요건)
+  minEducationLevel  EducationLevel   // 필수 학력 요건
+  militaryPolicy     FilterPolicy @default(NOT_RELEVANT) // 병역 여부
+  careerPolicy       FilterPolicy @default(NOT_RELEVANT) // 직무 관련 경력
 
   // 조건
-  salaryRange SalaryRange?
-  workStart   String? // "HH:mm"
-  workEnd     String? // "HH:mm"
-  location    String?
+  deadline           DateTime?    // 마감일
+  preferredCondition String?      // 우대조건 (e.g. "경력 3년 이상")
+  salaryRange        SalaryRange? // 급여 조건 (범위 선택)
+  salaryDescription  String?      // 급여 조건 텍스트 (e.g. "면접 후 결정 (회사 내규에 따름)")
+  location           String?      // 근무지
+  workStart          String?      // 출근 시간 "HH:mm"
+  workEnd            String?      // 퇴근 시간 "HH:mm"
+  applicationUrl     String?      // 지원 링크 바로가기 URL
+
+  // AI 정량 평가 항목 (활성화 여부)
+  aiEvalCredential Boolean @default(false) // 자격증/어학 → 정량 점수화
+  aiEvalExperience Boolean @default(false) // 대외/해외경험 → 경험 가점
+  aiEvalAward      Boolean @default(false) // 수상 내역 → 직무 연관성
 
   skills JobSkill[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // 공고별 요구 기술
