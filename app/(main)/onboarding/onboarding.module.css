@@ -306,6 +306,8 @@
 }
 
 .previewCard {
+  --preview-scale: 1.18;
+  --preview-base-h: 420px;
   border-radius: 20px;
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.06);

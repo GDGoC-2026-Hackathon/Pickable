@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 
 import { JobPostingsList } from '@/components/company/JobPostingsList'
-import RecruitmentCard from '@/components/layout/RecruitmentCard'
+import FlippableRecruitmentCard from '@/components/layout/FlippableRecruitmentCard'
 
 import styles from './dashboard-company-page.module.css'
 
@@ -27,6 +27,7 @@ interface BrandingCardItem {
 }
 
 export default function DashboardCompanyPage() {
+<<<<<<< HEAD
   const { data: session } = useSession()
   const [card, setCard] = useState<BrandingCardItem | null>(null)
   const [loading, setLoading] = useState(true)
@@ -58,6 +59,30 @@ export default function DashboardCompanyPage() {
       : card
         ? gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
         : ''
+=======
+  const brandingCards = [
+    {
+      id: 'card-1',
+      companyName: '테크웨이브',
+      companyDesc: 'AI 브랜딩 스튜디오',
+      jobTitle: '브랜드 디자이너',
+      jobSubtitle: '브랜딩/채용',
+      matchRate: 98,
+      tags: ['기술중심', '팀문화', '성장환경'],
+      image: gradient('0b63ff', '0b1220'),
+    },
+    {
+      id: 'card-2',
+      companyName: '테크웨이브',
+      companyDesc: 'AI 브랜딩 스튜디오',
+      jobTitle: 'UX 리서처',
+      jobSubtitle: '리서치/채용',
+      matchRate: 92,
+      tags: ['유연근무', '리모트', '스톡옵션'],
+      image: gradient('7c3aed', '111827'),
+    },
+  ]
+>>>>>>> demo
 
   return (
     <>
@@ -70,6 +95,7 @@ export default function DashboardCompanyPage() {
         </div>
 
         <div className={styles.brandingGrid}>
+<<<<<<< HEAD
           {loading ? (
             <div className={styles.brandingCard}>
               <div className={styles.brandingCreate}>
@@ -123,6 +149,39 @@ export default function DashboardCompanyPage() {
             className={styles.brandingCard}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
+=======
+          {brandingCards.map((card) => (
+            <FlippableRecruitmentCard
+              key={card.id}
+              flipOnHover
+              className={styles.brandingFlip}
+              front={{
+                variant: 'preview',
+                companyName: card.companyName,
+                companyDesc: card.companyDesc,
+                matchRate: card.matchRate,
+                tags: card.tags,
+                image: card.image,
+              }}
+              back={{
+                variant: 'back',
+                companyName: card.jobTitle,
+                companyDesc: card.jobSubtitle,
+                matchRate: card.matchRate,
+                hiringLabel: '채용 중',
+                tags: card.tags,
+                positionTitle: card.jobTitle,
+                deadline: '2025.12.31',
+                experience: card.jobSubtitle,
+                location: '서울 강남구',
+                salary: '—',
+                workTime: '—',
+                liked: false,
+              }}
+            />
+          ))}
+          <div className={styles.brandingCard}>
+>>>>>>> demo
             <div className={styles.brandingCreate}>
               <div className={styles.createInner}>
                 <div className={styles.createPlus} aria-hidden>
@@ -162,3 +221,7 @@ function gradient(colorA: string, colorB: string) {
   </svg>`
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> demo

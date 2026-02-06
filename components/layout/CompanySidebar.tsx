@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   },
 ] as const
 
-const DEFAULT_AVATAR = '/icons/techwave-o.avif'
+const DEFAULT_AVATAR = '/icons/company-logo.png'
 
 export function CompanySidebar() {
   const pathname = usePathname()
