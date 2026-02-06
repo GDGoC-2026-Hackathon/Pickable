@@ -43,20 +43,23 @@ export const authConfig = {
       if (session.user) session.user.id = token.id as string;
       return session;
     },
-    // 미들웨어 인증 판단
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnLogin = nextUrl.pathname.startsWith("/login");
-      const isApiRoute = nextUrl.pathname.startsWith("/api");
-      const isPublicRoute = nextUrl.pathname === "/" || nextUrl.pathname === "";
+	    // 미들웨어 인증 판단
+	    authorized({ auth, request: { nextUrl } }) {
+	      const isLoggedIn = !!auth?.user;
+	      const isOnLogin = nextUrl.pathname.startsWith("/login");
+	      const isApiRoute = nextUrl.pathname.startsWith("/api");
+	      const isPublicRoute =
+	        nextUrl.pathname === "/" ||
+	        nextUrl.pathname === "" ||
+	        nextUrl.pathname.startsWith("/onboarding");
 
-      if (isApiRoute || isPublicRoute) return true;
-      if (isOnLogin) {
-        if (isLoggedIn) return Response.redirect(new URL("/", nextUrl));
-        return true;
-      }
-      return isLoggedIn;
-    },
+	      if (isApiRoute || isPublicRoute) return true;
+	      if (isOnLogin) {
+	        if (isLoggedIn) return Response.redirect(new URL("/", nextUrl));
+	        return true;
+	      }
+	      return isLoggedIn;
+	    },
   },
   debug: process.env.NODE_ENV === "development",
 } satisfies NextAuthConfig;

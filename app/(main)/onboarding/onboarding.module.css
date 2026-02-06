@@ -99,6 +99,8 @@
   font-weight: 800;
   font-size: 13px;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .googleButton:hover {
