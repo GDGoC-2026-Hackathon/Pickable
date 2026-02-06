@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 
@@ -27,18 +27,15 @@ interface BrandingCardItem {
 }
 
 export default function DashboardCompanyPage() {
-<<<<<<< HEAD
   const { data: session } = useSession()
   const [card, setCard] = useState<BrandingCardItem | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/corporation/branding-card')
-      .then((res) => {
-        if (!res.ok) return null
-        return res.json()
-      })
+
+    fetch('/api/corporation/branding-card', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
         if (cancelled || !json?.data) return
         setCard(json.data as BrandingCardItem)
@@ -46,6 +43,7 @@ export default function DashboardCompanyPage() {
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
+
     return () => {
       cancelled = true
     }
@@ -53,40 +51,24 @@ export default function DashboardCompanyPage() {
 
   const companyName = session?.corporation?.name ?? '기업'
 
-  const cardImage =
-    card?.backgroundUrl?.startsWith('http://') || card?.backgroundUrl?.startsWith('https://')
-      ? card.backgroundUrl
-      : card
-        ? gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
-        : ''
-=======
-  const brandingCards = [
-    {
-      id: 'card-1',
-      companyName: '테크웨이브',
-      companyDesc: 'AI 브랜딩 스튜디오',
-      jobTitle: '브랜드 디자이너',
-      jobSubtitle: '브랜딩/채용',
-      matchRate: 98,
-      tags: ['기술중심', '팀문화', '성장환경'],
-      image: gradient('0b63ff', '0b1220'),
-    },
-    {
-      id: 'card-2',
-      companyName: '테크웨이브',
-      companyDesc: 'AI 브랜딩 스튜디오',
-      jobTitle: 'UX 리서처',
-      jobSubtitle: '리서치/채용',
-      matchRate: 92,
-      tags: ['유연근무', '리모트', '스톡옵션'],
-      image: gradient('7c3aed', '111827'),
-    },
-  ]
->>>>>>> demo
+  const tagList = useMemo(() => {
+    if (!card?.keywords?.length) return ['#기술중심', '#팀문화', '#성장환경']
+    return card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))
+  }, [card?.keywords])
+
+  const cardImage = useMemo(() => {
+    if (!card) return gradient(...BG_COLORS.navy)
+    const url = card.backgroundUrl ?? null
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) return url
+    return gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
+  }, [card])
 
   return (
     <>
-      <section className={styles.sectionCard} aria-label="Generated branding cards">
+      <section
+        className={styles.sectionCard}
+        aria-label="Generated branding cards"
+      >
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>생성된 브랜딩 카드</div>
           <Link className={styles.linkAction} href="/branding-card-result-company">
@@ -95,7 +77,6 @@ export default function DashboardCompanyPage() {
         </div>
 
         <div className={styles.brandingGrid}>
-<<<<<<< HEAD
           {loading ? (
             <div className={styles.brandingCard}>
               <div className={styles.brandingCreate}>
@@ -108,39 +89,34 @@ export default function DashboardCompanyPage() {
           ) : card ? (
             <Link
               href="/branding-card-result-company"
-              className={styles.brandingCard}
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
-              <div className={styles.flip}>
-                <div className={styles.flipInner}>
-                  <div className={styles.flipFace}>
-                    <RecruitmentCard
-                      variant="preview"
-                      companyName={companyName}
-                      companyDesc={card.catchphrase}
-                      matchRate={98}
-                      tags={card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))}
-                      image={cardImage}
-                    />
-                  </div>
-                  <div className={`${styles.flipFace} ${styles.flipBack}`}>
-                    <RecruitmentCard
-                      companyName={companyName}
-                      companyDesc={card.catchphrase}
-                      matchRate={98}
-                      hiringLabel={card.status === 'PUBLISHED' ? '공개 중' : '초안'}
-                      tags={card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))}
-                      positionTitle="브랜딩 카드"
-                      deadline="—"
-                      experience="편집하기"
-                      location="—"
-                      salary="—"
-                      workTime="—"
-                      liked={false}
-                    />
-                  </div>
-                </div>
-              </div>
+              <FlippableRecruitmentCard
+                flipOnHover
+                className={styles.brandingFlip}
+                front={{
+                  variant: 'preview',
+                  companyName,
+                  companyDesc: card.catchphrase,
+                  matchRate: 98,
+                  tags: tagList,
+                  image: cardImage,
+                }}
+                back={{
+                  companyName,
+                  companyDesc: card.catchphrase,
+                  matchRate: 98,
+                  hiringLabel: card.status === 'PUBLISHED' ? '공개 중' : '초안',
+                  tags: tagList.map((t) => t.replace(/^#/, '')),
+                  positionTitle: '브랜딩 카드',
+                  deadline: '—',
+                  experience: '편집하기',
+                  location: '—',
+                  salary: '—',
+                  workTime: '—',
+                  liked: false,
+                }}
+              />
             </Link>
           ) : null}
 
@@ -149,39 +125,6 @@ export default function DashboardCompanyPage() {
             className={styles.brandingCard}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
-=======
-          {brandingCards.map((card) => (
-            <FlippableRecruitmentCard
-              key={card.id}
-              flipOnHover
-              className={styles.brandingFlip}
-              front={{
-                variant: 'preview',
-                companyName: card.companyName,
-                companyDesc: card.companyDesc,
-                matchRate: card.matchRate,
-                tags: card.tags,
-                image: card.image,
-              }}
-              back={{
-                variant: 'back',
-                companyName: card.jobTitle,
-                companyDesc: card.jobSubtitle,
-                matchRate: card.matchRate,
-                hiringLabel: '채용 중',
-                tags: card.tags,
-                positionTitle: card.jobTitle,
-                deadline: '2025.12.31',
-                experience: card.jobSubtitle,
-                location: '서울 강남구',
-                salary: '—',
-                workTime: '—',
-                liked: false,
-              }}
-            />
-          ))}
-          <div className={styles.brandingCard}>
->>>>>>> demo
             <div className={styles.brandingCreate}>
               <div className={styles.createInner}>
                 <div className={styles.createPlus} aria-hidden>
@@ -221,7 +164,4 @@ function gradient(colorA: string, colorB: string) {
   </svg>`
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> demo
