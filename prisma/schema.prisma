@@ -43,12 +43,3 @@ model Account {
 
   @@unique([provider, providerAccountId])
 }
-
-// 이메일 인증 토큰
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
