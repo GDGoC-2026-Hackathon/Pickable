@@ -29,7 +29,12 @@ type DefaultProps = BaseProps & {
   workTime: string;
 };
 
-export type RecruitmentCardProps = PreviewProps | DefaultProps;
+/** back 전용: 상세 요약형 (브랜딩 카드용) */
+type BackProps = Omit<DefaultProps, "variant"> & {
+  variant: "back";
+};
+
+export type RecruitmentCardProps = PreviewProps | DefaultProps | BackProps;
 
 function Badge({
   children,
@@ -82,7 +87,7 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
     );
   }
 
-  /** ✅ 여기부터는 props가 DefaultProps로 좁혀져서 상세 필드가 "필수"로 보장됨 */
+  /** ✅ 여기부터는 props가 DefaultProps | BackProps로 좁혀짐 */
   const {
     companyName,
     companyDesc = "SaaS 전문 강소기업",
@@ -97,6 +102,48 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
     workTime,
     liked = false,
   } = props;
+
+  if (props.variant === "back") {
+    return (
+      <article className={`${styles.card} ${styles.cardBack}`}>
+        <div className={styles.backCompany}>
+          <div className={styles.companyName}>{companyName}</div>
+          <div className={styles.companyDesc}>{companyDesc}</div>
+        </div>
+
+        <div className={styles.backBadges}>
+          <Badge tone="green">{hiringLabel}</Badge>
+        </div>
+
+        <div className={`${styles.meta} ${styles.backMeta}`}>
+          <div className={styles.row}>
+            <span className={styles.key}>마감일</span>
+            <span className={styles.val}>{deadline}</span>
+          </div>
+          <div className={styles.row}>
+            <span className={styles.key}>우대조건</span>
+            <span className={styles.val}>{experience}</span>
+          </div>
+          <div className={styles.row}>
+            <span className={styles.key}>근무지</span>
+            <span className={styles.val}>{location}</span>
+          </div>
+          <div className={styles.row}>
+            <span className={styles.key}>급여 조건</span>
+            <span className={`${styles.val} ${styles.strong}`}>{salary}</span>
+          </div>
+          <div className={styles.row}>
+            <span className={styles.key}>출퇴근 시간</span>
+            <span className={`${styles.val} ${styles.strong}`}>{workTime}</span>
+          </div>
+        </div>
+
+        <button className={styles.apply} type="button">
+          지원하기
+        </button>
+      </article>
+    );
+  }
 
   return (
     <article className={styles.card}>

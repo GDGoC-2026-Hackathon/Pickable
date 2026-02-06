@@ -16,7 +16,7 @@
   padding: 18px 18px 16px;
   display: flex;
   flex-direction: column;
-  min-height: 420px;
+  height: var(--rc-card-h, 420px);
 }
 
 .top {
@@ -172,7 +172,8 @@
 
 .apply {
   margin-top: auto;
-  height: 48px;
+  height: 52px;
+  min-height: 52px;
   border-radius: 16px;
   border: none;
   cursor: pointer;
@@ -186,12 +187,35 @@
   transform: translateY(1px);
 }
 
+.cardBack {
+  padding: 18px 18px 16px;
+  gap: 10px;
+}
+
+.backCompany {
+  display: grid;
+  gap: 4px;
+}
+
+.backBadges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.backMeta {
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
 /* ===== preview (my-page-employee) ===== */
 
 .preview {
   position: relative;
-  height: 280px;
-  border-radius: 24px;
+  height: var(--rc-card-h, 280px);
+  border-radius: var(--rc-radius);
+  border: 1px solid var(--rc-border);
+  box-shadow: var(--rc-shadow);
   background-size: cover;
   background-position: center;
   overflow: hidden;
