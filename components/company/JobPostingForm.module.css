@@ -1,0 +1,182 @@
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(11, 18, 32, 0.72);
+}
+
+.required {
+  color: #e11d48;
+}
+
+.hintChip {
+  font-size: 11px;
+  font-weight: 900;
+  color: #f97316;
+  background: rgba(249, 115, 22, 0.1);
+  border-radius: 999px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.input,
+.textarea,
+.select {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 18, 32, 0.02);
+  padding: 14px;
+  font-size: 14px;
+  outline: none;
+  font-weight: 800;
+  color: #0b1220;
+}
+
+.select {
+  cursor: pointer;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  font-weight: 500;
+  color: rgba(11, 18, 32, 0.45);
+}
+
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: rgba(11, 99, 255, 0.36);
+  box-shadow: 0 0 0 4px rgba(11, 99, 255, 0.14);
+  background: #ffffff;
+}
+
+.inputWithIcon {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 18, 32, 0.02);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.leftIcon {
+  color: rgba(11, 18, 32, 0.45);
+  display: inline-flex;
+}
+
+.inputInner {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  font-weight: 800;
+  color: #0b1220;
+}
+
+.inputInner::placeholder {
+  font-weight: 500;
+  color: rgba(11, 18, 32, 0.45);
+}
+
+.inputWithButton {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 18, 32, 0.02);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.inputWithButton .inputInner {
+  flex: 1;
+  padding: 14px;
+  cursor: pointer;
+}
+
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 100%;
+  min-height: 48px;
+  border: 0;
+  border-left: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 99, 255, 0.06);
+  color: #0b63ff;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.searchButton:hover {
+  background: rgba(11, 99, 255, 0.12);
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, 0.8);
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  width: 18px;
+  height: 18px;
+  accent-color: #0b63ff;
+}
+
+.error {
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(225, 29, 72, 0.08);
+  color: #be123c;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+}

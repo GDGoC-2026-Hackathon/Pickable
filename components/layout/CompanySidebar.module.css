@@ -14,14 +14,22 @@
   padding: 18px;
 }
 
-.avatar {
+.avatar,
+.avatarSkeleton {
   width: 88px;
   height: 88px;
   border-radius: 22px;
-  background: rgba(11, 18, 32, 0.06);
-  object-fit: cover;
   display: block;
   margin: 0 auto;
+}
+
+.avatar {
+  background: rgba(11, 18, 32, 0.06);
+  object-fit: cover;
+}
+
+.avatarSkeleton {
+  background: rgba(11, 18, 32, 0.08);
 }
 
 .companyName {

@@ -93,6 +93,10 @@
   gap: 8px;
 }
 
+.fieldSpacing {
+  margin-top: 10px;
+}
+
 .labelRow {
   display: flex;
   align-items: center;
@@ -383,6 +387,10 @@
   gap: 6px;
 }
 
+.required {
+  color: #e11d48;
+}
+
 @media (max-width: 980px) {
   .grid {
     grid-template-columns: 1fr;
@@ -392,4 +400,3 @@
     grid-template-columns: 1fr;
   }
 }
-

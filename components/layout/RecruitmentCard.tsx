@@ -1,5 +1,4 @@
-import React from "react";
-import "./RecruitmentCard.css";
+import styles from './RecruitmentCard.module.css'
 
 type BadgeTone = "blue" | "green" | "gray";
 
@@ -39,7 +38,13 @@ function Badge({
   children: React.ReactNode;
   tone?: BadgeTone;
 }) {
-  return <span className={`rc-badge rc-badge-${tone}`}>{children}</span>;
+  const toneClass =
+    tone === 'blue'
+      ? styles.badgeBlue
+      : tone === 'green'
+        ? styles.badgeGreen
+        : undefined
+  return <span className={`${styles.badge} ${toneClass ?? ''}`}>{children}</span>
 }
 
 export default function RecruitmentCard(props: RecruitmentCardProps) {
@@ -54,20 +59,22 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
     } = props;
 
     return (
-      <div className="rc-preview" style={{ backgroundImage: `url(${image})` }}>
-        <div className="rc-preview-overlay" />
+      <div className={styles.preview} style={{ backgroundImage: `url(${image})` }}>
+        <div className={styles.previewOverlay} />
 
-        <div className="rc-preview-top">
-          <span className="rc-preview-match">MATCH {matchRate}%</span>
+        <div className={styles.previewTop}>
+          <span className={styles.previewMatch}>MATCH {matchRate}%</span>
         </div>
 
-        <div className="rc-preview-bottom">
-          <strong>{companyName}</strong>
-          <p>{companyDesc}</p>
+        <div className={styles.previewBottom}>
+          <div className={styles.previewCompanyName}>{companyName}</div>
+          <div className={styles.previewCompanyDesc}>{companyDesc}</div>
 
-          <div className="rc-preview-tags">
+          <div className={styles.previewTags}>
             {tags.map((t) => (
-              <span key={t}>{t}</span>
+              <span key={t} className={styles.previewTag}>
+                {t}
+              </span>
             ))}
           </div>
         </div>
@@ -92,14 +99,14 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
   } = props;
 
   return (
-    <article className="rc-card">
-      <div className="rc-top">
-        <div className="rc-logo" aria-hidden="true">
-          <div className="rc-logo-inner">✳</div>
+    <article className={styles.card}>
+      <div className={styles.top}>
+        <div className={styles.logo} aria-hidden="true">
+          <div className={styles.logoInner}>✳</div>
         </div>
 
         <button
-          className={`rc-like ${liked ? "is-liked" : ""}`}
+          className={`${styles.like} ${liked ? styles.liked : ''}`}
           type="button"
           aria-label="관심 공고"
           title="관심"
@@ -108,52 +115,52 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
         </button>
       </div>
 
-      <div className="rc-company">
-        <div className="rc-company-name">{companyName}</div>
-        <div className="rc-company-desc">{companyDesc}</div>
+      <div className={styles.company}>
+        <div className={styles.companyName}>{companyName}</div>
+        <div className={styles.companyDesc}>{companyDesc}</div>
       </div>
 
-      <div className="rc-badges">
+      <div className={styles.badges}>
         <Badge tone="blue">매칭률 {matchRate}%</Badge>
         <Badge tone="green">{hiringLabel}</Badge>
       </div>
 
-      <div className="rc-tags">
+      <div className={styles.tags}>
         {tags.map((t) => (
-          <span key={t} className="rc-tag">
+          <span key={t} className={styles.tag}>
             {t}
           </span>
         ))}
       </div>
 
-      <div className="rc-divider" />
+      <div className={styles.divider} />
 
-      <div className="rc-position">{positionTitle}</div>
+      <div className={styles.position}>{positionTitle}</div>
 
-      <div className="rc-meta">
-        <div className="rc-row">
-          <span className="rc-key">마감일</span>
-          <span className="rc-val">{deadline}</span>
+      <div className={styles.meta}>
+        <div className={styles.row}>
+          <span className={styles.key}>마감일</span>
+          <span className={styles.val}>{deadline}</span>
         </div>
-        <div className="rc-row">
-          <span className="rc-key">우대조건</span>
-          <span className="rc-val">{experience}</span>
+        <div className={styles.row}>
+          <span className={styles.key}>우대조건</span>
+          <span className={styles.val}>{experience}</span>
         </div>
-        <div className="rc-row">
-          <span className="rc-key">근무지</span>
-          <span className="rc-val">{location}</span>
+        <div className={styles.row}>
+          <span className={styles.key}>근무지</span>
+          <span className={styles.val}>{location}</span>
         </div>
-        <div className="rc-row">
-          <span className="rc-key">급여 조건</span>
-          <span className="rc-val strong">{salary}</span>
+        <div className={styles.row}>
+          <span className={styles.key}>급여 조건</span>
+          <span className={`${styles.val} ${styles.strong}`}>{salary}</span>
         </div>
-        <div className="rc-row">
-          <span className="rc-key">출퇴근 시간</span>
-          <span className="rc-val strong">{workTime}</span>
+        <div className={styles.row}>
+          <span className={styles.key}>출퇴근 시간</span>
+          <span className={`${styles.val} ${styles.strong}`}>{workTime}</span>
         </div>
       </div>
 
-      <button className="rc-apply" type="button">
+      <button className={styles.apply} type="button">
         지원하기
       </button>
     </article>

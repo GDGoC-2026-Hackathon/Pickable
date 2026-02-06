@@ -1,7 +1,14 @@
+'use client';
+
+import Link from 'next/link'
+import { useRouter } from "next/navigation";
+
 import React from "react";
 import "./ProfileEmployee.css";
 
 export default function ProfileEmployee() {
+  const router = useRouter();
+
   return (
     <div className="pe-page">
       {/* Content */}
@@ -160,7 +167,11 @@ export default function ProfileEmployee() {
 
           {/* CTA */}
           <div className="pe-cta">
-            <button className="pe-cta-btn" type="button">
+            <button
+              className="pe-cta-btn"
+              type="button"
+              onClick={() => router.push("/main-page-employee")}
+            >
               프로필 저장하고 매칭 시작 <span aria-hidden="true">›</span>
             </button>
           </div>
