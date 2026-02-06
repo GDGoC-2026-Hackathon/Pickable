@@ -3,26 +3,34 @@ import "./RecruitmentCard.css";
 
 type BadgeTone = "blue" | "green" | "gray";
 
-export type RecruitmentCardProps = {
-  variant?: "default" | "preview";
-
+/** 공통 */
+type BaseProps = {
   companyName: string;
-  companyDesc?: string; // ex) "SaaS 전문 강소기업"
-  matchRate?: number;   // ex) 98
-  hiringLabel?: string; // ex) "채용 중"
-  tags?: string[];      // ex) ["핀테크", "유니콘", "시리즈D"]
-
-  positionTitle: string; // ex) "Front-end Engineer"
-  deadline: string;      // ex) "2025.03.20"
-  experience: string;    // ex) "경력 3년 이상"
-  location: string;      // ex) "광화문"
-  salary: string;        // ex) "4000만원 이상"
-  workTime: string;      // ex) "09:00 ~ 18:00"
-
+  companyDesc?: string;
+  matchRate?: number;
+  hiringLabel?: string;
+  tags?: string[];
   liked?: boolean;
-  /** preview 전용 */
-  image?: string;
 };
+
+/** preview 전용: 상세 필드 필요 없음 + image 필수 */
+type PreviewProps = BaseProps & {
+  variant: "preview";
+  image: string;
+};
+
+/** default 전용: 상세 필드 필수 + variant 생략 가능(기본값 default) */
+type DefaultProps = BaseProps & {
+  variant?: "default";
+  positionTitle: string;
+  deadline: string;
+  experience: string;
+  location: string;
+  salary: string;
+  workTime: string;
+};
+
+export type RecruitmentCardProps = PreviewProps | DefaultProps;
 
 function Badge({
   children,
@@ -35,42 +43,22 @@ function Badge({
 }
 
 export default function RecruitmentCard(props: RecruitmentCardProps) {
-  const {
-    variant = "default",
-    companyName,
-    companyDesc = "SaaS 전문 강소기업",
-    matchRate = 98,
-    hiringLabel = "채용 중",
-    tags = ["핀테크", "유니콘", "시리즈D"],
-    positionTitle,
-    deadline,
-    experience,
-    location,
-    salary,
-    workTime,
-    liked = false,
-  } = props;
-
-  if (variant === "preview") {
+  /** ✅ preview 분기: 여기서 props는 PreviewProps로 좁혀짐 */
+  if (props.variant === "preview") {
     const {
       companyName,
-      companyDesc,
+      companyDesc = "SaaS 전문 강소기업",
       matchRate = 0,
       tags = [],
       image,
     } = props;
 
     return (
-      <div
-        className="rc-preview"
-        style={{ backgroundImage: `url(${image})` }}
-      >
+      <div className="rc-preview" style={{ backgroundImage: `url(${image})` }}>
         <div className="rc-preview-overlay" />
 
         <div className="rc-preview-top">
-          <span className="rc-preview-match">
-            MATCH {matchRate}%
-          </span>
+          <span className="rc-preview-match">MATCH {matchRate}%</span>
         </div>
 
         <div className="rc-preview-bottom">
@@ -86,7 +74,23 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
       </div>
     );
   }
-  
+
+  /** ✅ 여기부터는 props가 DefaultProps로 좁혀져서 상세 필드가 "필수"로 보장됨 */
+  const {
+    companyName,
+    companyDesc = "SaaS 전문 강소기업",
+    matchRate = 98,
+    hiringLabel = "채용 중",
+    tags = ["핀테크", "유니콘", "시리즈D"],
+    positionTitle,
+    deadline,
+    experience,
+    location,
+    salary,
+    workTime,
+    liked = false,
+  } = props;
+
   return (
     <article className="rc-card">
       <div className="rc-top">
