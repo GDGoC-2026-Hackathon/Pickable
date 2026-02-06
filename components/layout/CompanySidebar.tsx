@@ -1,14 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 import type { CorporationProfile } from '@/types/next-auth'
-
-import { useCompanyDraft } from '@/components/company/CompanyDraftContext'
 
 import styles from './CompanySidebar.module.css'
 
