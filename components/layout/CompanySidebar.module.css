@@ -81,46 +81,6 @@
   flex: 0 0 auto;
 }
 
-.premiumCard {
-  border-radius: 18px;
-  border: 1px solid rgba(79, 70, 229, 0.18);
-  background: radial-gradient(900px 340px at 20% 20%, rgba(255, 255, 255, 0.18), transparent 60%),
-    linear-gradient(135deg, #4f46e5 0%, #0b63ff 100%);
-  color: #ffffff;
-  padding: 18px;
-  box-shadow: 0 24px 60px rgba(79, 70, 229, 0.2);
-}
-
-.premiumKicker {
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  opacity: 0.9;
-}
-
-.premiumTitle {
-  margin-top: 10px;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-}
-
-.premiumButton {
-  margin-top: 14px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.premiumButton:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
 @media (max-width: 980px) {
   .sidebar {
     position: static;
