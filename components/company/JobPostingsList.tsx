@@ -185,11 +185,14 @@ function JobRow({
 
   return (
     <div className={styles.jobRow}>
-      <div className={styles.jobLeft}>
-        <div className={styles.jobLogoWrap} aria-hidden>
-          <span style={{ fontSize: 18, fontWeight: 900, color: 'rgba(11, 18, 32, 0.35)' }}>
-            📋
-          </span>
+        <div className={styles.jobLeft}>
+        <div className={styles.jobLogoWrap}>
+          <img
+            className={styles.jobLogo}
+            src="/images/techwave-o.avif"
+            alt=""
+            aria-hidden
+          />
         </div>
         <div className={styles.jobText}>
           <div className={styles.jobTitle}>{title}</div>

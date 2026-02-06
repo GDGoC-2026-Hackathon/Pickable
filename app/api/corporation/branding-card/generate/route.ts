@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     // 2. Gemini 프롬프트 조립 & 호출 (재시도 로직 포함)
     const prompt = buildBrandingPrompt(corporation, body?.prompt);
-    const model = getBrandingModel();
+    const model = await getBrandingModel();
     const responseText = await generateWithRetry(model, prompt);
 
     // 3. JSON 파싱 & 검증
