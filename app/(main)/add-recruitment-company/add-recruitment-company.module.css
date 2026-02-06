@@ -93,6 +93,10 @@
   gap: 8px;
 }
 
+.fieldSpacing {
+  margin-top: 10px;
+}
+
 .labelRow {
   display: flex;
   align-items: center;
@@ -392,4 +396,3 @@
     grid-template-columns: 1fr;
   }
 }
-

@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { CompanyInfoCard } from '@/components/company/CompanyInfoCard'
 import { JobPostingsList } from '@/components/company/JobPostingsList'
+import RecruitmentCard from '@/components/layout/RecruitmentCard'
 
 import styles from './dashboard-company-page.module.css'
 
@@ -17,13 +18,53 @@ export default function DashboardCompanyPage() {
         </div>
 
         <div className={styles.brandingGrid}>
-          <BrandingCard
-            variant="blue"
-            title="기술로 세상을 더 심플하게 만드는 사람들"
+          <FlippableRecruitmentCard
+            front={{
+              variant: 'preview',
+              companyName: '테크웨이브',
+              companyDesc: 'AI 브랜딩 스튜디오',
+              matchRate: 98,
+              tags: ['기술중심', '팀문화', '성장환경'],
+              image: gradient('0b63ff', '0b1220'),
+            }}
+            back={{
+              companyName: '테크웨이브',
+              companyDesc: 'AI 브랜딩 스튜디오',
+              matchRate: 98,
+              hiringLabel: '사용 중',
+              tags: ['기술중심', '팀문화', '성장환경'],
+              positionTitle: '브랜딩 카드 상세',
+              deadline: '2025.12.31',
+              experience: '브랜딩/채용',
+              location: '서울 강남구',
+              salary: '—',
+              workTime: '—',
+              liked: false,
+            }}
           />
-          <BrandingCard
-            variant="pink"
-            title="우리는 불가능을 가능케 하는 파도를 탑니다"
+          <FlippableRecruitmentCard
+            front={{
+              variant: 'preview',
+              companyName: '테크웨이브',
+              companyDesc: 'AI 브랜딩 스튜디오',
+              matchRate: 92,
+              tags: ['유연근무', '리모트', '스톡옵션'],
+              image: gradient('7c3aed', '111827'),
+            }}
+            back={{
+              companyName: '테크웨이브',
+              companyDesc: 'AI 브랜딩 스튜디오',
+              matchRate: 92,
+              hiringLabel: '사용 중',
+              tags: ['유연근무', '리모트', '스톡옵션'],
+              positionTitle: '브랜딩 카드 상세',
+              deadline: '2025.12.31',
+              experience: '브랜딩/채용',
+              location: '서울 강남구',
+              salary: '—',
+              workTime: '—',
+              liked: false,
+            }}
           />
           <div className={styles.brandingCard}>
             <div className={styles.brandingCreate}>
@@ -46,32 +87,43 @@ export default function DashboardCompanyPage() {
   )
 }
 
-function BrandingCard({
-  variant,
-  title,
+function gradient(colorA: string, colorB: string) {
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+    <defs>
+      <radialGradient id="g1" cx="20%" cy="20%" r="90%">
+        <stop offset="0%" stop-color="#${colorA}" stop-opacity="0.55"/>
+        <stop offset="60%" stop-color="#${colorA}" stop-opacity="0.1"/>
+        <stop offset="100%" stop-color="#${colorB}" stop-opacity="1"/>
+      </radialGradient>
+      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#${colorB}"/>
+        <stop offset="100%" stop-color="#${colorB}"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#g2)"/>
+    <rect width="1200" height="800" fill="url(#g1)"/>
+  </svg>`
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+}
+
+function FlippableRecruitmentCard({
+  front,
+  back,
 }: {
-  variant: 'blue' | 'pink'
-  title: string
+  front: Parameters<typeof RecruitmentCard>[0]
+  back: Parameters<typeof RecruitmentCard>[0]
 }) {
-  const imageClass =
-    variant === 'blue' ? styles.brandingImageBlue : styles.brandingImagePink
   return (
-    <div className={styles.brandingCard}>
-      <div className={imageClass} aria-hidden>
-        <div className={styles.brandingOverlay}>
-          <span className={styles.brandPill}>사용중</span>
-          <div className={styles.brandingTitle}>{title}</div>
-          <div className={styles.brandingActions}>
-            <button className={styles.applyButton} type="button">
-              적용하기
-            </button>
-            <button className={styles.moreButton} type="button" aria-label="More">
-              …
-            </button>
-          </div>
+    <div className={styles.flip}>
+      <div className={styles.flipInner}>
+        <div className={styles.flipFace}>
+          <RecruitmentCard {...front} />
+        </div>
+        <div className={`${styles.flipFace} ${styles.flipBack}`}>
+          <RecruitmentCard {...back} />
         </div>
       </div>
     </div>
   )
 }
-

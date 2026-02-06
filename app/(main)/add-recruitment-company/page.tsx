@@ -62,7 +62,12 @@ export default function AddRecruitmentCompanyPage() {
                     <span className={styles.leftIcon} aria-hidden>
                       <CalendarIcon />
                     </span>
-                    <input id="deadline" className={styles.inputInner} type="date" />
+                    <input
+                      id="deadline"
+                      className={styles.inputInner}
+                      placeholder="연도.월.일"
+                      inputMode="numeric"
+                    />
                   </div>
                 </div>
               </div>
@@ -110,7 +115,7 @@ export default function AddRecruitmentCompanyPage() {
                 </div>
               </div>
 
-              <div className={styles.field}>
+              <div className={`${styles.field} ${styles.fieldSpacing}`}>
                 <label className={styles.label} htmlFor="applyUrl">
                   지원 링크 바로가기 URL
                 </label>
@@ -342,4 +347,3 @@ function PlaneIcon() {
     </svg>
   )
 }
-
