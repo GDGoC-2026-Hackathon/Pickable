@@ -491,6 +491,24 @@ components:
           type: array
           items: { type: string }
           description: 요구 기술 스택
+      example:
+        title: "시니어 백엔드 개발자 (Python/Django)"
+        jobTrack: "기술/개발 트랙"
+        minEducationLevel: "HIGH_SCHOOL"
+        militaryPolicy: "NOT_RELEVANT"
+        careerPolicy: "NOT_RELEVANT"
+        deadline: "2026-02-06"
+        preferredCondition: "경력 3년 이상, AWS 클라우드 숙련자"
+        salaryRange: "UNDER_2400"
+        salaryDescription: "면접 후 결정 (회사 내규에 따름)"
+        location: "서울특별시 강남구 테헤란로"
+        workStart: "09:00"
+        workEnd: "18:00"
+        applicationUrl: "https://careers.company.com/jobs/123"
+        aiEvalCredential: false
+        aiEvalExperience: false
+        aiEvalAward: false
+        skills: ["Python", "Django", "AWS", "PostgreSQL"]
 
     JobPostingListItem:
       type: object
