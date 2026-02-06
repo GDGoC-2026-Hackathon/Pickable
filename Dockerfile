@@ -5,7 +5,6 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# package.json과 package-lock.json 복사
 COPY package.json package-lock.json* ./
 RUN npm ci
 
@@ -15,20 +14,24 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Prisma 클라이언트 생성 (generated/는 .gitignore에 있어 빌드 시 생성 필요)
+# prisma.config.ts가 DATABASE_URL을 참조하므로 이 단계에서만 더미 값 사용
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
+
 # Next.js 빌드 (standalone 모드로 최적화)
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # Stage 3: 프로덕션 런타임
 FROM node:20-alpine AS runner
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 
 # 시스템 사용자 생성 (보안)
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 # standalone 빌드 결과물 복사
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
