@@ -1,8 +1,4 @@
-# Cloud Build 설정 파일
-# Cloud Run에 자동 배포하기 위한 설정
-
 steps:
-  # Docker 이미지 빌드
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
@@ -12,18 +8,12 @@ steps:
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest'
       - '.'
 
-  # 이미지를 Container Registry에 푸시
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA'
+    args: ['push', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest'
+    args: ['push', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest']
 
-  # Cloud Run에 배포
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -37,10 +27,12 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      - '--set-env-vars'
-      - 'NODE_ENV=production'
-      # 추가 환경 변수는 여기에 추가하세요
-      # 예: DATABASE_URL=$_DATABASE_URL,API_KEY=$_API_KEY
+      - '--add-cloudsql-instances'
+      - 'gdgoc-2026-hackathon:asia-northeast3:pickable'
+      - '--update-env-vars'
+      - 'NODE_ENV=production,AUTH_TRUST_HOST=true'
+      # 필수 환경 변수: Cloud Run 콘솔에서 설정
+      # DATABASE_URL, AUTH_SECRET, AUTH_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
 images:
   - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA'
@@ -50,5 +42,5 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _SERVICE_NAME: pickable  # 서비스 이름 (트리거에서 설정됨)
-  _DEPLOY_REGION: asia-northeast3  # 배포 리전 (트리거에서 설정됨)
+  _SERVICE_NAME: pickable
+  _DEPLOY_REGION: asia-northeast3
