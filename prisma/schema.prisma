@@ -7,15 +7,94 @@ datasource db {
   provider = "postgresql"
 }
 
-// 사용자
+// ──────────────────────────────────────
+// Enums
+// ──────────────────────────────────────
+
+enum UserRole {
+  JOB_SEEKER
+  CORPORATION
+}
+
+enum EducationLevel {
+  HIGH_SCHOOL
+  ASSOCIATE
+  BACHELOR
+  MASTER
+  DOCTORATE
+}
+
+enum MilitaryStatus {
+  NOT_APPLICABLE
+  COMPLETED
+  EXEMPT
+  SERVING
+  NOT_COMPLETED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  CONTRACT
+  INTERN
+  FREELANCE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ExperienceType {
+  ACTIVITY
+  AWARD
+  OVERSEAS
+  VOLUNTEER
+}
+
+enum CredentialType {
+  CERTIFICATE
+  LANGUAGE
+}
+
+enum DocumentType {
+  CAREER
+  PROJECT
+}
+
+enum CompanySize {
+  STARTUP
+  SMALL
+  MEDIUM
+  LARGE
+  ENTERPRISE
+}
+
+enum SalaryRange {
+  UNDER_2400
+  RANGE_2400_3000
+  RANGE_3000_3600
+  RANGE_3600_4200
+  RANGE_4200_5000
+  OVER_5000
+}
+
+// ──────────────────────────────────────
+// 인증 (NextAuth)
+// ──────────────────────────────────────
+
+// 사용자 (인증/계정 단위)
 model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          UserRole?
 
-  accounts Account[]
+  accounts    Account[]
+  userProfile UserProfile?
+  corporation Corporation?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -42,4 +121,157 @@ model Account {
   updatedAt DateTime @updatedAt
 
   @@unique([provider, providerAccountId])
+}
+
+// ──────────────────────────────────────
+// 취준생 도메인
+// ──────────────────────────────────────
+
+// 취준생 프로필 (매칭 핵심 테이블)
+model UserProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Hard Filter
+  educationLevel EducationLevel
+  major          String
+  desiredJobRole String
+  militaryStatus MilitaryStatus
+
+  // 선호 조건
+  desiredLocation    String?
+  desiredSalaryRange SalaryRange?
+  commuteStart       String? // "HH:mm"
+  commuteEnd         String? // "HH:mm"
+  employmentType     EmploymentType?
+
+  // 기본 정보
+  birthDate DateTime
+  gender    Gender
+
+  // 서브 테이블
+  skills      UserSkill[]
+  experiences UserExperience[]
+  credentials UserCredential[]
+  documents   UserDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 기술 스택
+model UserSkill {
+  id            String      @id @default(cuid())
+  userProfileId String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  skillName String
+}
+
+// 경험/수상/활동
+model UserExperience {
+  id            String      @id @default(cuid())
+  userProfileId String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  type         ExperienceType
+  title        String
+  description  String?
+  isJobRelated Boolean        @default(false)
+}
+
+// 자격증 / 어학
+model UserCredential {
+  id            String      @id @default(cuid())
+  userProfileId String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  type  CredentialType
+  name  String
+  score String?
+}
+
+// 첨부 문서 (매칭 제외, 프로필 신뢰도용)
+model UserDocument {
+  id            String      @id @default(cuid())
+  userProfileId String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  type    DocumentType
+  fileUrl String
+}
+
+// ──────────────────────────────────────
+// 기업 도메인
+// ──────────────────────────────────────
+
+// 기업 기본 정보
+model Corporation {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name         String
+  thumbnailUrl String?
+  industry     String
+  address      String
+  description  String?
+  welfare      String?
+  homepageUrl  String?
+  companySize  CompanySize
+  phone        String?
+
+  jobPostings JobPosting[]
+
+  createdAt DateTime @default(now())
+}
+
+// ──────────────────────────────────────
+// 공고 (매칭 중심 테이블)
+// ──────────────────────────────────────
+
+// 채용 공고
+model JobPosting {
+  id            String      @id @default(cuid())
+  corporationId String
+  corporation   Corporation @relation(fields: [corporationId], references: [id], onDelete: Cascade)
+
+  // Hard Filter
+  minEducationLevel EducationLevel
+  jobRole           String
+  militaryRequired  Boolean @default(false)
+
+  // 조건
+  salaryRange SalaryRange?
+  workStart   String? // "HH:mm"
+  workEnd     String? // "HH:mm"
+  location    String?
+
+  skills JobSkill[]
+
+  createdAt DateTime @default(now())
+}
+
+// 공고별 요구 기술
+model JobSkill {
+  id           String     @id @default(cuid())
+  jobPostingId String
+  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  skillName String
+}
+
+// 매칭 결과 (캐시/저장용)
+model MatchingResult {
+  id            String @id @default(cuid())
+  userProfileId String
+  jobPostingId  String
+
+  score  Int
+  reason String? // AI 생성 추천 이유
+
+  createdAt DateTime @default(now())
+
+  @@unique([userProfileId, jobPostingId])
 }
