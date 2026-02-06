@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+import { useCompanyDraft } from '@/components/company/CompanyDraftContext'
+
 import styles from './CompanySidebar.module.css'
 
 const NAV_ITEMS = [
@@ -25,6 +27,15 @@ const NAV_ITEMS = [
 
 export function CompanySidebar() {
   const pathname = usePathname()
+  const { draft } = useCompanyDraft()
+
+  const isEditProfilePage = pathname?.startsWith('/edit-profile-company')
+  const companyName = isEditProfilePage
+    ? draft.name.trim() || 'sample'
+    : '테크웨이브 (TechWave)'
+  const companyMeta = isEditProfilePage
+    ? draft.industry.trim() || 'sample'
+    : 'IT · 소프트웨어 개발'
 
   return (
     <aside className={styles.sidebar} aria-label="Company dashboard sidebar">
@@ -35,8 +46,8 @@ export function CompanySidebar() {
           alt=""
           aria-hidden
         />
-        <div className={styles.companyName}>테크웨이브 (TechWave)</div>
-        <div className={styles.companyMeta}>IT · 소프트웨어 개발</div>
+        <div className={styles.companyName}>{companyName}</div>
+        <div className={styles.companyMeta}>{companyMeta}</div>
         <nav className={styles.nav} aria-label="Company dashboard">
           {NAV_ITEMS.map((item) => {
             const isActive =
