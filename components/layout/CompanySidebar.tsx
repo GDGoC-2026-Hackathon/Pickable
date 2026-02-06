@@ -42,7 +42,7 @@ export function CompanySidebar() {
       <div className={styles.profileCard}>
         <img
           className={styles.avatar}
-          src="/icons/techwave-o.avif"
+          src="/icons/company-logo.png"
           alt=""
           aria-hidden
         />
