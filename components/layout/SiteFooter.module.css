@@ -83,6 +83,12 @@
   font-weight: 800;
 }
 
+.footerItemMuted {
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.45);
+  font-weight: 500;
+}
+
 .footerBottom {
   margin-top: 26px;
   padding-top: 18px;
