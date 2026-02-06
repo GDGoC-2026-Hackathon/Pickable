@@ -17,6 +17,8 @@ export type CorporationProfileResponse = {
   address: string
   homepageUrl: string | null
   description: string | null
+  welfare: string | null
+  phone: string | null
 }
 
 async function requireCorporation(userId: string) {
@@ -34,6 +36,8 @@ async function requireCorporation(userId: string) {
           address: true,
           homepageUrl: true,
           description: true,
+          welfare: true,
+          phone: true,
         },
       },
     },
@@ -68,6 +72,8 @@ export async function GET() {
       address: corporation!.address,
       homepageUrl: corporation!.homepageUrl,
       description: corporation!.description,
+      welfare: corporation!.welfare,
+      phone: corporation!.phone,
     }
 
     return success(data)
@@ -84,6 +90,8 @@ interface UpdateProfileBody {
   companySize?: string
   homepageUrl?: string | null
   description?: string | null
+  welfare?: string | null
+  phone?: string | null
 }
 
 export async function PATCH(request: Request) {
@@ -116,6 +124,8 @@ export async function PATCH(request: Request) {
       companySize?: CompanySize
       homepageUrl?: string | null
       description?: string | null
+      welfare?: string | null
+      phone?: string | null
     } = {}
     if (body.name !== undefined) updateData.name = body.name.trim()
     if (body.industry !== undefined) updateData.industry = body.industry.trim()
@@ -123,6 +133,8 @@ export async function PATCH(request: Request) {
     if (body.companySize !== undefined) updateData.companySize = body.companySize as CompanySize
     if (body.homepageUrl !== undefined) updateData.homepageUrl = body.homepageUrl?.trim() || null
     if (body.description !== undefined) updateData.description = body.description?.trim() || null
+    if (body.welfare !== undefined) updateData.welfare = body.welfare?.trim() || null
+    if (body.phone !== undefined) updateData.phone = body.phone?.trim() || null
 
     await prisma.corporation.update({
       where: { id: corporation!.id },

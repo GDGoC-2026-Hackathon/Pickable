@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
 
 import { JobPostingsList } from '@/components/company/JobPostingsList'
 import FlippableRecruitmentCard from '@/components/layout/FlippableRecruitmentCard'
@@ -27,30 +26,35 @@ interface BrandingCardItem {
 }
 
 export default function DashboardCompanyPage() {
-  const { data: session } = useSession()
   const [card, setCard] = useState<BrandingCardItem | null>(null)
+  const [companyName, setCompanyName] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/corporation/branding-card')
-      .then((res) => {
-        if (!res.ok) return null
-        return res.json()
-      })
-      .then((json) => {
-        if (cancelled || !json?.data) return
-        setCard(json.data as BrandingCardItem)
+
+    // 브랜딩 카드 + 기업 프로필 동시 로드
+    Promise.all([
+      fetch('/api/corporation/branding-card').then((res) =>
+        res.ok ? res.json() : null,
+      ),
+      fetch('/api/corporation/profile').then((res) =>
+        res.ok ? res.json() : null,
+      ),
+    ])
+      .then(([cardJson, profileJson]) => {
+        if (cancelled) return
+        if (cardJson?.data) setCard(cardJson.data as BrandingCardItem)
+        if (profileJson?.data?.name) setCompanyName(profileJson.data.name)
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
+
     return () => {
       cancelled = true
     }
   }, [])
-
-  const companyName = session?.corporation?.name ?? '기업'
 
   const tagsWithHash = useMemo(() => {
     if (!card?.keywords?.length) return ['#기술중심', '#팀문화', '#성장환경']
@@ -100,15 +104,16 @@ export default function DashboardCompanyPage() {
                 className={styles.brandingFlip}
                 front={{
                   variant: 'preview',
-                  companyName,
+                  companyName: companyName || '기업명',
                   companyDesc: card.catchphrase,
                   matchRate: 98,
                   tags: tagsWithHash,
                   image: cardImage,
                 }}
                 back={{
-                  companyName,
-                  companyDesc: card.catchphrase,
+                  variant: 'back',
+                  companyName: companyName || '기업명',
+                  companyDesc: card.description || card.catchphrase,
                   matchRate: 98,
                   hiringLabel: card.status === 'PUBLISHED' ? '공개 중' : '초안',
                   tags: tagsPlain,

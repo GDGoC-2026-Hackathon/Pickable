@@ -1,17 +1,39 @@
 // app/profile-company/ProfileCompany.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { openDaumPostcode } from "@/lib/daum-postcode";
 import "./ProfileCompany.css";
 
 type CardMode = "upload" | "ai";
 
+type Step = "idle" | "saving" | "generating" | "done";
+
+const COMPANY_SIZE_OPTIONS = [
+  { value: "", label: "기업 규모를 선택해주세요" },
+  { value: "STARTUP", label: "스타트업 (10인 미만)" },
+  { value: "SMALL", label: "소규모 (10~50인)" },
+  { value: "MEDIUM", label: "중규모 (50~100인)" },
+  { value: "LARGE", label: "대규모 (100~300인)" },
+  { value: "ENTERPRISE", label: "대기업 (300인 이상)" },
+] as const;
+
+const STEP_MESSAGES: Record<Step, string> = {
+  idle: "",
+  saving: "기업 프로필 저장 중...",
+  generating: "AI 브랜딩 카드 생성 중...",
+  done: "완료! 결과 페이지로 이동합니다.",
+};
+
 export default function ProfileCompany() {
   const router = useRouter();
+
+  // ── 폼 state ──
   const [form, setForm] = useState({
     companyName: "",
     industry: "IT / 소프트웨어",
+    companySize: "",
     phone: "",
     address: "",
     coreValue: "",
@@ -23,15 +45,74 @@ export default function ProfileCompany() {
   const [prompt, setPrompt] = useState("");
   const [sampleFileName, setSampleFileName] = useState<string>("");
 
+  // ── 로딩 / 에러 ──
+  const [pageLoading, setPageLoading] = useState(true);
+  const [hasProfile, setHasProfile] = useState(false);
+  const [step, setStep] = useState<Step>("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // ── 기존 프로필 로드 ──
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProfile() {
+      try {
+        // 1. 가입 상태 확인
+        const statusRes = await fetch("/api/signup/status");
+        if (!statusRes.ok) {
+          setPageLoading(false);
+          return;
+        }
+        const statusJson = await statusRes.json();
+        const profileExists = statusJson?.data?.hasProfile === true;
+
+        if (cancelled) return;
+        setHasProfile(profileExists);
+
+        // 2. 프로필이 있으면 기존 데이터 로드
+        if (profileExists) {
+          const profileRes = await fetch("/api/corporation/profile");
+          if (profileRes.ok) {
+            const profileJson = await profileRes.json();
+            const d = profileJson?.data;
+            if (d && !cancelled) {
+              setForm({
+                companyName: d.name ?? "",
+                industry: d.industry ?? "IT / 소프트웨어",
+                companySize: d.companySize ?? "",
+                phone: d.phone ?? "",
+                address: d.address ?? "",
+                coreValue: d.description ?? "",
+                welfare: d.welfare ?? "",
+                homepage: d.homepageUrl ?? "",
+              });
+            }
+          }
+        }
+      } catch {
+        // 네트워크 오류 등 — 빈 폼으로 진행
+      } finally {
+        if (!cancelled) setPageLoading(false);
+      }
+    }
+
+    loadProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // ── 완료 버튼 활성화 조건 ──
   const completionEnabled = useMemo(() => {
-    // “등록 완료” 버튼 활성화 기준은 프로젝트에 맞게 바꾸면 됨
     return (
       form.companyName.trim().length > 0 &&
       form.address.trim().length > 0 &&
-      (sampleFileName.length > 0 || prompt.trim().length > 0)
+      form.companySize.length > 0 &&
+      step === "idle"
     );
-  }, [form.companyName, form.address, sampleFileName, prompt]);
+  }, [form.companyName, form.address, form.companySize, step]);
 
+  // ── 핸들러 ──
   const onChange =
     (key: keyof typeof form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -43,12 +124,122 @@ export default function ProfileCompany() {
     setSampleFileName(f ? f.name : "");
   };
 
-  const onSubmit = () => {
-    // TODO: API 연동
-    console.log("submit", { ...form, mode, prompt, sampleFileName });
-    alert("기업 프로필 등록(데모) 완료!");
-    router.push("/branding-card-result-company");
+  const onAddressSearch = useCallback(() => {
+    openDaumPostcode((address) => {
+      setForm((prev) => ({ ...prev, address }));
+    }).catch(() => {
+      setErrorMsg("주소 검색 서비스를 불러올 수 없습니다.");
+    });
+  }, []);
+
+  // ── 제출: 프로필 저장 → AI 브랜딩 카드 생성 → 결과 페이지 ──
+  const onSubmit = async () => {
+    setErrorMsg(null);
+
+    // 유효성 검사
+    if (!form.companyName.trim()) {
+      setErrorMsg("업체명을 입력해주세요.");
+      return;
+    }
+    if (!form.companySize) {
+      setErrorMsg("기업 규모를 선택해주세요.");
+      return;
+    }
+    if (!form.address.trim()) {
+      setErrorMsg("주소를 입력해주세요.");
+      return;
+    }
+
+    try {
+      // ─── Step 1: 프로필 저장 / 수정 ───
+      setStep("saving");
+
+      const profilePayload = {
+        name: form.companyName.trim(),
+        industry: form.industry.trim(),
+        companySize: form.companySize,
+        address: form.address.trim(),
+        description: form.coreValue.trim() || undefined,
+        welfare: form.welfare.trim() || undefined,
+        homepageUrl: form.homepage.trim() || undefined,
+        phone: form.phone.trim() || undefined,
+      };
+
+      let profileOk = false;
+
+      if (hasProfile) {
+        // 이미 등록된 기업 → PATCH 수정
+        const res = await fetch("/api/corporation/profile", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profilePayload),
+        });
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => null);
+          throw new Error(errJson?.error?.message || "프로필 수정에 실패했습니다.");
+        }
+        profileOk = true;
+      } else {
+        // 신규 등록 → POST
+        const res = await fetch("/api/signup/corporation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profilePayload),
+        });
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => null);
+          throw new Error(errJson?.error?.message || "프로필 등록에 실패했습니다.");
+        }
+        profileOk = true;
+        setHasProfile(true);
+      }
+
+      if (!profileOk) throw new Error("프로필 저장에 실패했습니다.");
+
+      // ─── Step 2: AI 브랜딩 카드 생성 ───
+      setStep("generating");
+
+      const generatePayload: Record<string, string> = {};
+      if (prompt.trim()) generatePayload.prompt = prompt.trim();
+      if (form.companyName.trim()) generatePayload.companyName = form.companyName.trim();
+      if (form.homepage.trim()) generatePayload.companyUrl = form.homepage.trim();
+      if (form.coreValue.trim()) generatePayload.companyDesc = form.coreValue.trim();
+
+      const genRes = await fetch("/api/corporation/branding-card/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(generatePayload),
+      });
+
+      if (!genRes.ok) {
+        const errJson = await genRes.json().catch(() => null);
+        throw new Error(errJson?.error?.message || "AI 브랜딩 카드 생성에 실패했습니다.");
+      }
+
+      // ─── Step 3: 결과 페이지로 이동 ───
+      setStep("done");
+      sessionStorage.setItem("pickable:snackbar", "AI 브랜딩 카드가 생성되었습니다!");
+      router.push("/branding-card-result-company");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
+      setErrorMsg(message);
+      setStep("idle");
+    }
   };
+
+  // ── 페이지 로딩 중 ──
+  if (pageLoading) {
+    return (
+      <div className="pc-root">
+        <div className="pc-wrap">
+          <div className="pc-loadingPage">
+            <div className="pc-spinner" />
+            <p>기업 정보를 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pc-root">
@@ -75,19 +266,20 @@ export default function ProfileCompany() {
 
           <div className="pc-form">
             <div className="pc-field">
-              <label className="pc-label">업체명</label>
+              <label className="pc-label">업체명 <span className="pc-required">*</span></label>
               <input
                 className="pc-input"
                 placeholder="공식 기업명을 입력해주세요"
                 value={form.companyName}
                 onChange={onChange("companyName")}
+                disabled={step !== "idle"}
               />
             </div>
 
             <div className="pc-grid2">
               <div className="pc-field">
                 <label className="pc-label">업종</label>
-                <select className="pc-select" value={form.industry} onChange={onChange("industry")}>
+                <select className="pc-select" value={form.industry} onChange={onChange("industry")} disabled={step !== "idle"}>
                   <option>IT / 소프트웨어</option>
                   <option>제조 / 생산</option>
                   <option>금융 / 핀테크</option>
@@ -99,24 +291,61 @@ export default function ProfileCompany() {
               </div>
 
               <div className="pc-field">
+                <label className="pc-label">기업 규모 <span className="pc-required">*</span></label>
+                <select className="pc-select" value={form.companySize} onChange={onChange("companySize")} disabled={step !== "idle"}>
+                  {COMPANY_SIZE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value} disabled={opt.value === ""}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="pc-grid2">
+              <div className="pc-field">
                 <label className="pc-label">전화번호</label>
                 <input
                   className="pc-input"
                   placeholder="02-000-0000"
                   value={form.phone}
                   onChange={onChange("phone")}
+                  disabled={step !== "idle"}
+                />
+              </div>
+
+              <div className="pc-field">
+                <label className="pc-label">홈페이지 URL</label>
+                <input
+                  className="pc-input"
+                  placeholder="https://company.com"
+                  value={form.homepage}
+                  onChange={onChange("homepage")}
+                  disabled={step !== "idle"}
                 />
               </div>
             </div>
 
             <div className="pc-field">
-              <label className="pc-label">주소</label>
-              <input
-                className="pc-input"
-                placeholder="기업 소재지를 입력해주세요"
-                value={form.address}
-                onChange={onChange("address")}
-              />
+              <label className="pc-label">주소 <span className="pc-required">*</span></label>
+              <div className="pc-addressRow">
+                <input
+                  className="pc-input pc-addressInput"
+                  placeholder="기업 소재지 (주소 검색 클릭)"
+                  value={form.address}
+                  onChange={onChange("address")}
+                  onClick={onAddressSearch}
+                  disabled={step !== "idle"}
+                />
+                <button
+                  type="button"
+                  className="pc-addressBtn"
+                  onClick={onAddressSearch}
+                  disabled={step !== "idle"}
+                >
+                  주소 검색
+                </button>
+              </div>
             </div>
 
             <div className="pc-field">
@@ -126,6 +355,7 @@ export default function ProfileCompany() {
                 placeholder="기업의 핵심 비전을 입력해주세요"
                 value={form.coreValue}
                 onChange={onChange("coreValue")}
+                disabled={step !== "idle"}
               />
             </div>
 
@@ -136,16 +366,7 @@ export default function ProfileCompany() {
                 placeholder="취업 준비생들에게 제공되었으면 하는 기업의 여러 복지 사항들을 입력해주세요"
                 value={form.welfare}
                 onChange={onChange("welfare")}
-              />
-            </div>
-
-            <div className="pc-field">
-              <label className="pc-label">홈페이지 URL</label>
-              <input
-                className="pc-input"
-                placeholder="https://company.com"
-                value={form.homepage}
-                onChange={onChange("homepage")}
+                disabled={step !== "idle"}
               />
             </div>
           </div>
@@ -173,6 +394,7 @@ export default function ProfileCompany() {
                     type="button"
                     className={`pc-modeBtn ${mode === "upload" ? "isActive" : ""}`}
                     onClick={() => setMode("upload")}
+                    disabled={step !== "idle"}
                   >
                     파일에서 찾기
                     {mode === "upload" && <span className="pc-check" aria-hidden>✓</span>}
@@ -182,6 +404,7 @@ export default function ProfileCompany() {
                     type="button"
                     className={`pc-modeBtn ${mode === "ai" ? "isActive" : ""}`}
                     onClick={() => setMode("ai")}
+                    disabled={step !== "idle"}
                   >
                     AI로 생성하기
                     {mode === "ai" && <span className="pc-check" aria-hidden>✓</span>}
@@ -197,6 +420,7 @@ export default function ProfileCompany() {
                         accept="image/*"
                         className="pc-fileInput"
                         onChange={onPickFile}
+                        disabled={step !== "idle"}
                       />
                       <label className="pc-uploadLabel" htmlFor="pc-file">
                         <span className="pc-uploadTitle">이미지 파일 업로드</span>
@@ -208,7 +432,7 @@ export default function ProfileCompany() {
                   ) : (
                     <div className="pc-aiHint">
                       <div className="pc-aiHintTitle">AI로 샘플 이미지를 만들 수 있어요</div>
-                      <div className="pc-aiHintSub">프롬프트를 작성하고 아래 “가이드”를 참고해보세요.</div>
+                      <div className="pc-aiHintSub">프롬프트를 작성하고 아래 &quot;가이드&quot;를 참고해보세요.</div>
                     </div>
                   )}
                 </div>
@@ -223,6 +447,7 @@ export default function ProfileCompany() {
                   placeholder="원하는 브랜딩 카드의 느낌을 자세하게 작성해주세요."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
+                  disabled={step !== "idle"}
                 />
               </div>
             </div>
@@ -312,6 +537,22 @@ export default function ProfileCompany() {
           </div>
         </section>
 
+        {/* Error message */}
+        {errorMsg && (
+          <div className="pc-errorBar">
+            <span className="pc-errorIcon">!</span>
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
+        {/* Progress overlay */}
+        {step !== "idle" && (
+          <div className="pc-progressBar">
+            <div className="pc-spinner" />
+            <span className="pc-progressText">{STEP_MESSAGES[step]}</span>
+          </div>
+        )}
+
         {/* Bottom CTA */}
         <div className="pc-bottomBar">
           <button
@@ -320,7 +561,8 @@ export default function ProfileCompany() {
             onClick={onSubmit}
             disabled={!completionEnabled}
           >
-            기업 프로필 등록 완료 <span className="pc-submitCheck" aria-hidden>✓</span>
+            {hasProfile ? "프로필 수정 및 브랜딩 카드 생성" : "기업 프로필 등록 완료"}
+            <span className="pc-submitCheck" aria-hidden>✓</span>
           </button>
         </div>
       </div>

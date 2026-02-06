@@ -115,6 +115,35 @@
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
   }
   
+  .pc-addressRow {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .pc-addressInput {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pc-addressBtn {
+    flex-shrink: 0;
+    border: 1px solid rgba(79, 70, 229, 0.35);
+    background: rgba(79, 70, 229, 0.08);
+    color: #4f46e5;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .pc-addressBtn:hover {
+    background: rgba(79, 70, 229, 0.12);
+    border-color: rgba(79, 70, 229, 0.5);
+  }
+
   .pc-grid2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -439,4 +468,100 @@
   
   .pc-submitCheck {
     margin-left: 10px;
-  }  
+  }
+
+  /* Required marker */
+  .pc-required {
+    color: #ef4444;
+    font-weight: 700;
+  }
+
+  /* Page loading */
+  .pc-loadingPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+    gap: 16px;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+  /* Spinner */
+  .pc-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(79, 70, 229, 0.15);
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: pc-spin 0.7s linear infinite;
+  }
+
+  @keyframes pc-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Error bar */
+  .pc-errorBar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .pc-errorIcon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 13px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  /* Progress bar */
+  .pc-progressBar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(79, 70, 229, 0.06);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+  }
+
+  .pc-progressText {
+    font-size: 13px;
+    font-weight: 700;
+    color: #4f46e5;
+  }
+
+  /* Disabled state */
+  .pc-input:disabled,
+  .pc-select:disabled,
+  .pc-textarea:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .pc-addressBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .pc-modeBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
