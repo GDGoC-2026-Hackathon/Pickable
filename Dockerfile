@@ -14,11 +14,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Prisma 클라이언트 생성 (generated/는 .gitignore에 있어 빌드 시 생성 필요)
-# prisma.config.ts가 DATABASE_URL을 참조하므로 이 단계에서만 더미 값 사용
-RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
+# 빌드 시 prisma generate + next build 모두 DATABASE_URL 필요
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+RUN npx prisma generate
 
-# Next.js 빌드 (standalone 모드로 최적화)
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
