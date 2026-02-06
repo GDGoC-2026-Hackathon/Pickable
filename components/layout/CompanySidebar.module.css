@@ -29,6 +29,7 @@
   text-align: center;
   font-weight: 900;
   letter-spacing: -0.02em;
+  color:#0b1220;
 }
 
 .companyMeta {
@@ -61,27 +62,23 @@
 
 .navItem {
   color: rgba(11, 18, 32, 0.74);
-  background: rgba(11, 18, 32, 0.03);
+  background: transparent;
 }
 
 .navItem:hover {
-  background: rgba(11, 18, 32, 0.05);
+  background: rgba(11, 18, 32, 0.04);
 }
 
 .navItemActive {
   color: #0b63ff;
-  background: rgba(11, 99, 255, 0.1);
+  background: rgba(11, 99, 255, 0.08);
 }
 
 .navIcon {
-  width: 22px;
-  height: 22px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  background: rgba(11, 18, 32, 0.06);
-  color: rgba(11, 18, 32, 0.42);
-  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 .premiumCard {
@@ -129,4 +126,3 @@
     position: static;
   }
 }
-
