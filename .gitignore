@@ -27,6 +27,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
 
 # prisma (자동 생성 클라이언트)
 prisma/generated/

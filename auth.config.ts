@@ -5,6 +5,9 @@ import Google from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  // Cloud Run 등 리버스 프록시 뒤에서 동작 시 필수
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
