@@ -14,6 +14,12 @@
 
 ### 로컬 개발
 
+먼저 `.env.local`을 만들어 환경변수를 설정해주세요.
+
+```bash
+cp .env.example .env.local
+```
+
 ```bash
 # 의존성 설치
 npm install
