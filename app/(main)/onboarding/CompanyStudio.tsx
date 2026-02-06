@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-import RecruitmentCard from '@/components/layout/RecruitmentCard'
+import FlippableRecruitmentCard from '@/components/layout/FlippableRecruitmentCard'
 import { Snackbar } from '@/components/ui/Snackbar'
 
 import styles from './onboarding.module.css'
@@ -180,37 +180,32 @@ export function CompanyStudio() {
           </div>
 
           <div className={styles.previewCard} aria-label="브랜딩 카드 미리보기">
-            <div className={styles.flip}>
-              <div className={styles.flipInner}>
-                <div className={styles.flipFace}>
-                  <div className={styles.previewScaled}>
-                    <RecruitmentCard
-                      variant="preview"
-                      companyName={displayCompanyName}
-                      companyDesc="AI 브랜딩 스튜디오"
-                      matchRate={98}
-                      tags={['#기술중심', '#팀문화', '#성장환경']}
-                      image={gradient('0b63ff', '0b1220')}
-                    />
-                  </div>
-                </div>
-                <div className={`${styles.flipFace} ${styles.flipBack}`}>
-                  <RecruitmentCard
-                    companyName={displayCompanyName}
-                    companyDesc="SaaS 전문 강소기업"
-                    matchRate={98}
-                    hiringLabel="채용 중"
-                    tags={['핀테크', '유니콘', '시리즈D']}
-                    positionTitle="Front-end Engineer"
-                    deadline="2025.03.20"
-                    experience="경력 3년 이상"
-                    location="광화문"
-                    salary="4,000만원 이상"
-                    workTime="09:00 ~ 18:00"
-                    liked={false}
-                  />
-                </div>
-              </div>
+            <div className={styles.previewScaled}>
+              <FlippableRecruitmentCard
+                flipOnHover
+                front={{
+                  variant: 'preview',
+                  companyName: displayCompanyName,
+                  companyDesc: 'AI 브랜딩 스튜디오',
+                  matchRate: 98,
+                  tags: ['#기술중심', '#팀문화', '#성장환경'],
+                  image: gradient('0b63ff', '0b1220'),
+                }}
+                back={{
+                  companyName: displayCompanyName,
+                  companyDesc: 'Front-end Engineer',
+                  matchRate: 98,
+                  hiringLabel: '채용 중',
+                  tags: [],
+                  positionTitle: 'Front-end Engineer',
+                  deadline: '2026.02.20',
+                  experience: '경력 3년 이상',
+                  location: '광화문',
+                  salary: '4,000만원 이상',
+                  workTime: '09:00 ~ 18:00',
+                  liked: false,
+                }}
+              />
             </div>
           </div>
         </div>

@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
 
 import { JobPostingsList } from '@/components/company/JobPostingsList'
-import RecruitmentCard from '@/components/layout/RecruitmentCard'
+import FlippableRecruitmentCard from '@/components/layout/FlippableRecruitmentCard'
 
 import styles from './dashboard-company-page.module.css'
 
@@ -27,37 +26,53 @@ interface BrandingCardItem {
 }
 
 export default function DashboardCompanyPage() {
-  const { data: session } = useSession()
   const [card, setCard] = useState<BrandingCardItem | null>(null)
+  const [companyName, setCompanyName] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/corporation/branding-card')
-      .then((res) => {
-        if (!res.ok) return null
-        return res.json()
-      })
-      .then((json) => {
-        if (cancelled || !json?.data) return
-        setCard(json.data as BrandingCardItem)
+
+    // 브랜딩 카드 + 기업 프로필 동시 로드
+    Promise.all([
+      fetch('/api/corporation/branding-card').then((res) =>
+        res.ok ? res.json() : null,
+      ),
+      fetch('/api/corporation/profile').then((res) =>
+        res.ok ? res.json() : null,
+      ),
+    ])
+      .then(([cardJson, profileJson]) => {
+        if (cancelled) return
+        if (cardJson?.data) setCard(cardJson.data as BrandingCardItem)
+        if (profileJson?.data?.name) setCompanyName(profileJson.data.name)
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
+
     return () => {
       cancelled = true
     }
   }, [])
 
-  const companyName = session?.corporation?.name ?? '기업'
+  const tagsWithHash = useMemo(() => {
+    if (!card?.keywords?.length) return ['#기술중심', '#팀문화', '#성장환경']
+    return card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))
+  }, [card?.keywords])
 
-  const cardImage =
-    card?.backgroundUrl?.startsWith('http://') || card?.backgroundUrl?.startsWith('https://')
-      ? card.backgroundUrl
-      : card
-        ? gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
-        : ''
+  const tagsPlain = useMemo(() => {
+    return tagsWithHash.map((t) => t.replace(/^#/, ''))
+  }, [tagsWithHash])
+
+  const cardImage = useMemo(() => {
+    if (!card) return gradient(...BG_COLORS.navy)
+
+    const url = card.backgroundUrl ?? null
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) return url
+
+    return gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
+  }, [card])
 
   return (
     <>
@@ -82,44 +97,40 @@ export default function DashboardCompanyPage() {
           ) : card ? (
             <Link
               href="/branding-card-result-company"
-              className={styles.brandingCard}
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
-              <div className={styles.flip}>
-                <div className={styles.flipInner}>
-                  <div className={styles.flipFace}>
-                    <RecruitmentCard
-                      variant="preview"
-                      companyName={companyName}
-                      companyDesc={card.catchphrase}
-                      matchRate={98}
-                      tags={card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))}
-                      image={cardImage}
-                    />
-                  </div>
-                  <div className={`${styles.flipFace} ${styles.flipBack}`}>
-                    <RecruitmentCard
-                      companyName={companyName}
-                      companyDesc={card.catchphrase}
-                      matchRate={98}
-                      hiringLabel={card.status === 'PUBLISHED' ? '공개 중' : '초안'}
-                      tags={card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))}
-                      positionTitle="브랜딩 카드"
-                      deadline="—"
-                      experience="편집하기"
-                      location="—"
-                      salary="—"
-                      workTime="—"
-                      liked={false}
-                    />
-                  </div>
-                </div>
-              </div>
+              <FlippableRecruitmentCard
+                flipOnHover
+                className={styles.brandingFlip}
+                front={{
+                  variant: 'preview',
+                  companyName: companyName || '기업명',
+                  companyDesc: card.catchphrase,
+                  matchRate: 98,
+                  tags: tagsWithHash,
+                  image: cardImage,
+                }}
+                back={{
+                  variant: 'back',
+                  companyName: companyName || '기업명',
+                  companyDesc: card.description || card.catchphrase,
+                  matchRate: 98,
+                  hiringLabel: card.status === 'PUBLISHED' ? '공개 중' : '초안',
+                  tags: tagsPlain,
+                  positionTitle: '브랜딩 카드',
+                  deadline: '—',
+                  experience: '편집하기',
+                  location: '—',
+                  salary: '—',
+                  workTime: '—',
+                  liked: false,
+                }}
+              />
             </Link>
           ) : null}
 
           <Link
-            href={card ? '/branding-card-result-company' : '/onboarding#companies'}
+            href={card ? '/branding-card-result-company' : '/profile-company'}
             className={styles.brandingCard}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >

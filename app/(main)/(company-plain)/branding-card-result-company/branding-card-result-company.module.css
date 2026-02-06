@@ -154,10 +154,11 @@
   padding: 0;
 }
 
-.previewScaled {
-  transform: scale(1.22);
-  transform-origin: top left;
-  width: 100%;
+.previewFlip {
+  --rc-card-h: 480px;
+  min-height: 480px;
+  height: 480px;
+  border-radius: 26px;
 }
 
 .rightCol {
@@ -522,8 +523,10 @@
     grid-template-columns: 1fr;
   }
 
-  .previewScaled {
-    transform: none;
+  .previewFlip {
+    --rc-card-h: 420px;
+    min-height: 420px;
+    height: 420px;
   }
 
   .previewCardWrap {

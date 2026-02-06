@@ -2,10 +2,9 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-import RecruitmentCard from '@/components/layout/RecruitmentCard'
+import FlippableRecruitmentCard from '@/components/layout/FlippableRecruitmentCard'
 
 import styles from './branding-card-result-company.module.css'
 
@@ -33,7 +32,6 @@ interface BrandingCardData {
 }
 
 export default function BrandingCardResultCompanyPage() {
-  const { data: session } = useSession()
   const router = useRouter()
 
   // ── 카드 데이터 state ──
@@ -43,6 +41,9 @@ export default function BrandingCardResultCompanyPage() {
   const [regenerating, setRegenerating] = useState(false)
   const [regeneratingField, setRegeneratingField] = useState<string | null>(null)
   const [snackbar, setSnackbar] = useState<string | null>(null)
+
+  // ── 기업명 state ──
+  const [companyName, setCompanyName] = useState('')
 
   // ── 편집 state ──
   const [catchphrase, setCatchphrase] = useState('')
@@ -67,18 +68,31 @@ export default function BrandingCardResultCompanyPage() {
     setPrompt(data.prompt ?? '')
   }, [])
 
-  // ── 초기 로드: GET /api/corporation/branding-card ──
+  // ── 초기 로드: GET /api/corporation/branding-card + 기업 프로필 ──
   useEffect(() => {
     let cancelled = false
     async function load() {
       try {
-        const res = await fetch('/api/corporation/branding-card')
-        if (!res.ok) {
+        // 카드 + 프로필 동시 요청
+        const [cardRes, profileRes] = await Promise.all([
+          fetch('/api/corporation/branding-card'),
+          fetch('/api/corporation/profile'),
+        ])
+
+        // 기업명 설정
+        if (profileRes.ok) {
+          const profileJson = await profileRes.json()
+          if (!cancelled && profileJson?.data?.name) {
+            setCompanyName(profileJson.data.name)
+          }
+        }
+
+        if (!cardRes.ok) {
           // 카드가 없으면 온보딩으로 돌려보냄
           router.replace('/dashboard-company')
           return
         }
-        const json = await res.json()
+        const json = await cardRes.json()
         const data = json.data as BrandingCardData
         if (!cancelled) {
           setCard(data)
@@ -205,8 +219,6 @@ export default function BrandingCardResultCompanyPage() {
   }, [newKeyword, keywords.length, showSnackbar])
 
   // ── 미리보기용 계산 ──
-  const companyName =
-    session?.corporation?.name ?? '기업명'
   const bgColors = BG_COLORS[card?.backgroundStyle ?? 'navy'] ?? BG_COLORS.navy
   const previewTags = keywords.map((k) => `#${k}`)
   const isCustomImageUrl =
@@ -291,23 +303,39 @@ export default function BrandingCardResultCompanyPage() {
       <div className={styles.grid}>
         <section className={styles.leftCol} aria-label="Preview">
           <div className={styles.previewCardWrap}>
-            <div className={styles.previewScaled}>
-              <RecruitmentCard
-                variant="preview"
-                companyName={companyName}
-                companyDesc={catchphrase || '슬로건을 입력해보세요'}
-                matchRate={98}
-                tags={previewTags.length > 0 ? previewTags : ['#키워드']}
-                image={previewImage}
-              />
-            </div>
+            <FlippableRecruitmentCard
+              flipOnHover
+              className={styles.previewFlip}
+              front={{
+                variant: 'preview',
+                companyName: companyName || '기업명',
+                companyDesc: catchphrase || '슬로건을 입력해보세요',
+                matchRate: 98,
+                tags: previewTags.length > 0 ? previewTags : ['#키워드'],
+                image: previewImage,
+              }}
+              back={{
+                variant: 'back',
+                companyName: companyName || '기업명',
+                companyDesc: description || '기업 한 줄 소개를 입력해보세요',
+                matchRate: 98,
+                hiringLabel: '채용 중',
+                tags: previewTags.length > 0 ? previewTags : ['#키워드'],
+                positionTitle: '브랜딩 카드 미리보기',
+                deadline: '상시 채용',
+                experience: '-',
+                location: '-',
+                salary: '-',
+                workTime: '-',
+              }}
+            />
           </div>
 
           <div className={styles.previewHeader}>
             <div className={styles.previewTitleRow}>
               <span className={styles.previewDot} aria-hidden />
               <div className={styles.previewTitle}>실시간 미리보기</div>
-              <div className={styles.previewHint}>구직자에게 보여지는 화면입니다</div>
+              <div className={styles.previewHint}>호버하면 뒷면을 확인할 수 있어요</div>
             </div>
           </div>
         </section>

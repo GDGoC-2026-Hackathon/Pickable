@@ -32,7 +32,7 @@ export function CompanyAuthGuard({ children }: { children: React.ReactNode }) {
           if (!sessionStorage.getItem('pickable:snackbar')) {
             sessionStorage.setItem(
               'pickable:snackbar',
-              '먼저 기업 정보를 입력해주세요.',
+              '먼저 기업 정보를 등록해주세요.',
             )
           }
           router.replace('/edit-profile-company')

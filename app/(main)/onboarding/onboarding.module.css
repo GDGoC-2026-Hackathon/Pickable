@@ -313,50 +313,11 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-}
-
-.flip {
-  position: relative;
-  width: 100%;
-  min-height: 340px;
-  height: 420px;
-  perspective: 1200px;
-}
-
-.flipInner {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  transition-delay: 0s;
-}
-
-.flip:hover .flipInner {
-  transform: rotateY(180deg);
-  transition-delay: 0.5s;
-}
-
-.flipFace {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.flipBack {
-  transform: rotateY(180deg);
+  padding: 18px;
 }
 
 .previewScaled {
-  flex-shrink: 0;
-  width: 100%;
-  max-width: 360px;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 16px 40px rgba(2, 8, 23, 0.12);
+  --rc-card-h: 320px;
 }
 
 .previewImage {

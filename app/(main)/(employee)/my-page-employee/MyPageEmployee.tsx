@@ -1,5 +1,7 @@
-import "./MyPageEmployee.css";
-import RecruitmentCard from "@/components/layout/RecruitmentCard";
+'use client'
+
+import { useSession } from 'next-auth/react'
+import FlippableRecruitmentCard from "@/components/layout/FlippableRecruitmentCard";
 import Link from 'next/link'
 
 type PreviewItem = {
@@ -8,43 +10,81 @@ type PreviewItem = {
   companyDesc: string;
   matchRate: number;
   tags: string[];
-  image: string; // preview 배경 이미지
+  image: string; 
+  positionTitle: string;
+  deadline: string;
+  experience: string;
+  location: string;
+  salary: string;
+  workTime: string;
+  hiringLabel: string;
 };
 
 export default function MyPageEmployee() {
-  // UI 목업 데이터 (이미지는 public/ 아래 경로로 두면 편함)
+  const { data: session } = useSession()
+  const userName = session?.user?.name || session?.user?.email || '회원'
+
+  // UI 목업 데이터 (카드 배경 이미지 URL)
   const previewItems: PreviewItem[] = [
     {
       id: "toss",
-      companyName: "토스 (Toss)",
-      companyDesc: "금융의 모든 것",
+      companyName: "클라우드 펄스",
+      companyDesc: "SaaS 전문 강소기업",
       matchRate: 98,
-      tags: ["핀테크", "유니콘"],
-      image: "/mock/toss.jpg",
+      tags: ["핀테크", "B2B"],
+      image: "https://blog.kakaocdn.net/dna/BRper/btsPUZ4Ka3l/AAAAAAAAAAAAAAAAAAAAAA3gBEvInLIlxegJlmB-dHJWstD4g4Sb_3VfgDgUV9fd/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ZK9xuJBlNec75aAZCYOReQxBBQA%3D",
+      positionTitle: "Product Designer",
+      deadline: "2026.02.20",
+      experience: "경력 3년 이상",
+      location: "서울 강남구",
+      salary: "4000만원 이상",
+      workTime: "09:00 ~ 18:00",
+      hiringLabel: "채용 중",
     },
     {
       id: "karrot",
-      companyName: "당근 (Karrot)",
-      companyDesc: "이웃과 함께하는 생활",
+      companyName: "이지스퍼블리싱",
+      companyDesc: "브랜드 경험을 설계합니다",
       matchRate: 95,
-      tags: ["플랫폼", "커뮤니티"],
-      image: "/mock/karrot.jpg",
+      tags: ["브랜딩", "UX/UI"],
+      image: "https://imgs.jobkorea.co.kr/img3/_thumb/300x0/Company/Visual_Co/images/2020/1/JK_CO_easyspub_1.JPG",
+      positionTitle: "Frontend Engineer",
+      deadline: "2026.02.20",
+      experience: "경력 2년 이상",
+      location: "서울 성동구",
+      salary: "면접 후 결정",
+      workTime: "10:00 ~ 19:00",
+      hiringLabel: "채용 중",
     },
     {
       id: "karrot-2",
-      companyName: "당근 (Karrot)",
-      companyDesc: "이웃과 함께하는 생활",
+      companyName: "VinSign",
+      companyDesc: "데이터 기반 이커머스",
       matchRate: 95,
-      tags: ["플랫폼", "커뮤니티"],
-      image: "/mock/karrot.jpg",
+      tags: ["이커머스", "데이터"],
+      image: "https://vinsign.app/vinsign.jpeg",
+      positionTitle: "UX Researcher",
+      deadline: "2026.02.20",
+      experience: "경력 3년 이상",
+      location: "서울 성동구",
+      salary: "면접 후 결정",
+      workTime: "10:00 ~ 19:00",
+      hiringLabel: "채용 중",
     },
     {
       id: "musinsa",
-      companyName: "무신사 (Musinsa)",
-      companyDesc: "패션의 모든 것",
+      companyName: "넥스트 웨이브",
+      companyDesc: "디지털 랩",
       matchRate: 92,
-      tags: ["패션", "이커머스"],
-      image: "/mock/musinsa.jpg",
+      tags: ["기술중심", "팀문화"],
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3FILbREuslMYdr2suLdKfuSdmP4JTyWtfLg&s",
+      positionTitle: "Brand Marketer",
+      deadline: "2026.02.20",
+      experience: "경력 4년 이상",
+      location: "서울 서초구",
+      salary: "5000만원 이상",
+      workTime: "09:30 ~ 18:30",
+      hiringLabel: "채용 중",
     },
   ];
 
@@ -56,7 +96,7 @@ export default function MyPageEmployee() {
           {/* Calendar */}
           <section className="mp-card">
             <div className="mp-cal-head">
-              <div className="mp-cal-title">2025.03</div>
+              <div className="mp-cal-title">2026.02</div>
               <div className="mp-cal-nav" aria-hidden="true">
                 <button className="mp-icon-btn" type="button">‹</button>
                 <button className="mp-icon-btn" type="button">›</button>
@@ -98,7 +138,7 @@ export default function MyPageEmployee() {
                 <div className="mp-schedule-icon" aria-hidden="true">🎥</div>
                 <div className="mp-schedule-body">
                   <div className="mp-schedule-time">14:00 - 15:00</div>
-                  <div className="mp-schedule-text">카카오뱅크 1차 면접</div>
+                  <div className="mp-schedule-text">클라우드 펄스 1차 면접</div>
                 </div>
               </div>
 
@@ -106,7 +146,7 @@ export default function MyPageEmployee() {
                 <div className="mp-schedule-icon is-orange" aria-hidden="true">📄</div>
                 <div className="mp-schedule-body">
                   <div className="mp-schedule-time">23:59 마감</div>
-                  <div className="mp-schedule-text">토스 프로덕트 디자이너 서류</div>
+                  <div className="mp-schedule-text">모멘트 디자인 프로덕트 디자이너 서류</div>
                 </div>
               </div>
             </div>
@@ -123,7 +163,7 @@ export default function MyPageEmployee() {
               <div className="mp-recent-item">
                 <div className="mp-recent-dot is-green" aria-hidden="true" />
                 <div className="mp-recent-body">
-                  <div className="mp-recent-company">라인 (LINE)</div>
+                  <div className="mp-recent-company">클라우드 펄스</div>
                   <div className="mp-recent-meta">프로덕트 디자이너 · 서류 검토 중</div>
                 </div>
                 <button className="mp-ghost" type="button">상세 보기</button>
@@ -132,7 +172,7 @@ export default function MyPageEmployee() {
               <div className="mp-recent-item">
                 <div className="mp-recent-dot is-yellow" aria-hidden="true" />
                 <div className="mp-recent-body">
-                  <div className="mp-recent-company">우아한형제들</div>
+                  <div className="mp-recent-company">모멘트 디자인</div>
                   <div className="mp-recent-meta">UX 리서처 · 과제 진행 중</div>
                 </div>
                 <button className="mp-ghost" type="button">과제 제출</button>
@@ -145,7 +185,7 @@ export default function MyPageEmployee() {
         <main className="mypage-right">
           <div className="mp-head">
             <div>
-              <h1 className="mp-head-title">김지우 님을 위한 맞춤 기업</h1>
+              <h1 className="mp-head-title">{userName} 님을 위한 맞춤 기업</h1>
               <p className="mp-head-desc">
                 AI가 분석한 커리어 패스에 맞는 큐레이션입니다.
               </p>
@@ -156,16 +196,32 @@ export default function MyPageEmployee() {
 
           <section className="mp-grid">
             {previewItems.map((it) => (
-              <RecruitmentCard
+              <FlippableRecruitmentCard
                 key={it.id}
-                variant="preview"
-                companyName={it.companyName}
-                companyDesc={it.companyDesc}
-                matchRate={it.matchRate}
-                tags={it.tags}
-                image={it.image}
-              // 아래 default 전용 필드들은 preview에서는 필요 없음
-              // (props 타입을 선택적(optional)로 바꿔둔 상태여야 함)
+                flipOnHover
+                front={{
+                  variant: "preview",
+                  companyName: it.companyName,
+                  companyDesc: it.companyDesc,
+                  matchRate: it.matchRate,
+                  tags: it.tags,
+                  image: it.image,
+                }}
+                back={{
+                  variant: "back",
+                  companyName: it.companyName,
+                  companyDesc: it.companyDesc,
+                  matchRate: it.matchRate,
+                  hiringLabel: it.hiringLabel,
+                  tags: it.tags,
+                  positionTitle: it.positionTitle,
+                  deadline: it.deadline,
+                  experience: it.experience,
+                  location: it.location,
+                  salary: it.salary,
+                  workTime: it.workTime,
+                  liked: false,
+                }}
               />
             ))}
           </section>
