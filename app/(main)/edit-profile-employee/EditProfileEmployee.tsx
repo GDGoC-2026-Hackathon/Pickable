@@ -174,8 +174,8 @@ export default function EditProfileEmployee() {
         return
       }
 
-      // 등록 성공 → 홈으로 이동
-      router.replace('/')
+      // 등록 성공 → 맞춤 공고 리스트로 이동
+      router.replace('/main-page-employee')
     } catch {
       setError('네트워크 오류가 발생했습니다.')
     } finally {

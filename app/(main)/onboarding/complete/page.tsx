@@ -10,8 +10,8 @@ function getRedirectUrl(role: Role, hasProfile: boolean): string {
   if (role === 'CORPORATION') {
     return hasProfile ? '/dashboard-company' : '/edit-profile-company'
   }
-  // JOB_SEEKER: 프로필 미등록 시 등록 페이지, 등록 완료 시 홈
-  return hasProfile ? '/' : '/edit-profile-employee'
+  // JOB_SEEKER: 첫 로그인(프로필 없음) → 정보 등록, 프로필 있음 → 마이페이지
+  return hasProfile ? '/my-page-employee' : '/edit-profile-employee'
 }
 
 function OnboardingCompleteContent() {

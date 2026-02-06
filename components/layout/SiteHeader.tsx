@@ -6,7 +6,8 @@ import styles from './SiteHeader.module.css'
 
 function getDashboardUrl(role?: string | null): string {
   if (role === 'CORPORATION') return '/dashboard-company'
-  // JOB_SEEKER 또는 역할 미설정 → 홈
+  // JOB_SEEKER → 취준생 마이페이지
+  if (role === 'JOB_SEEKER') return '/my-page-employee'
   return '/'
 }
 
