@@ -1,8 +1,8 @@
 // Prisma 클라이언트 싱글턴
-// pg의 sslmode=require가 verify-full로 해석되는 문제 방지를 위해
-// connection string에서 sslmode를 제거하고 Pool 옵션으로 SSL 제어
+// - TCP 연결(개발): sslmode 제거 후 ssl 옵션으로 제어
+// - Unix 소켓(Cloud Run → Cloud SQL): SSL 불필요
 
-import { Pool } from "pg";
+import { Pool, PoolConfig } from "pg";
 import { PrismaClient } from "@/prisma/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
@@ -18,15 +18,22 @@ function stripSslMode(url: string): string {
     .replace(/\?&/, "?");
 }
 
-function createPrismaClient() {
-  const connectionString = stripSslMode(process.env.DATABASE_URL!);
+function isUnixSocket(url: string): boolean {
+  return url.includes("/cloudsql/");
+}
 
-  const pool =
-    globalForPrisma.pgPool ??
-    new Pool({
-      connectionString,
-      ssl: { rejectUnauthorized: false },
-    });
+function createPrismaClient() {
+  const raw = process.env.DATABASE_URL!;
+  const connectionString = stripSslMode(raw);
+
+  const poolConfig: PoolConfig = { connectionString };
+
+  // Unix 소켓(Cloud SQL)이 아닌 TCP 연결에서만 SSL 사용
+  if (!isUnixSocket(raw)) {
+    poolConfig.ssl = { rejectUnauthorized: false };
+  }
+
+  const pool = globalForPrisma.pgPool ?? new Pool(poolConfig);
 
   if (process.env.NODE_ENV !== "production") {
     globalForPrisma.pgPool = pool;
