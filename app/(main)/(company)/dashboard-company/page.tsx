@@ -22,6 +22,7 @@ interface BrandingCardItem {
   description: string
   keywords: string[]
   backgroundStyle: string
+  backgroundUrl?: string | null
   status: string
 }
 
@@ -50,6 +51,13 @@ export default function DashboardCompanyPage() {
   }, [])
 
   const companyName = session?.corporation?.name ?? '기업'
+
+  const cardImage =
+    card?.backgroundUrl?.startsWith('http://') || card?.backgroundUrl?.startsWith('https://')
+      ? card.backgroundUrl
+      : card
+        ? gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
+        : ''
 
   return (
     <>
@@ -86,9 +94,7 @@ export default function DashboardCompanyPage() {
                       companyDesc={card.catchphrase}
                       matchRate={98}
                       tags={card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))}
-                      image={gradient(
-                        ...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy),
-                      )}
+                      image={cardImage}
                     />
                   </div>
                   <div className={`${styles.flipFace} ${styles.flipBack}`}>

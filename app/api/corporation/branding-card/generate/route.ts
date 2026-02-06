@@ -129,6 +129,7 @@ export async function POST(request: Request) {
         description: card.description,
         keywords,
         backgroundStyle: card.backgroundStyle,
+        backgroundUrl: card.backgroundUrl,
         brandingTip: parsed.brandingTip || null,
         status: card.status,
       },

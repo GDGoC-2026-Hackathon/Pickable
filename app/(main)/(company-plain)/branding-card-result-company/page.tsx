@@ -26,6 +26,7 @@ interface BrandingCardData {
   description: string
   keywords: string[]
   backgroundStyle: string
+  backgroundUrl?: string | null
   brandingTip?: string | null
   status: string
   prompt?: string | null
@@ -47,6 +48,7 @@ export default function BrandingCardResultCompanyPage() {
   const [catchphrase, setCatchphrase] = useState('')
   const [description, setDescription] = useState('')
   const [keywords, setKeywords] = useState<string[]>([])
+  const [backgroundUrl, setBackgroundUrl] = useState('')
   const [prompt, setPrompt] = useState('')
   const [newKeyword, setNewKeyword] = useState('')
 
@@ -61,6 +63,7 @@ export default function BrandingCardResultCompanyPage() {
     setCatchphrase(data.catchphrase)
     setDescription(data.description)
     setKeywords(data.keywords.map((k) => k.replace(/^#/, '')))
+    setBackgroundUrl(data.backgroundUrl ?? '')
     setPrompt(data.prompt ?? '')
   }, [])
 
@@ -129,6 +132,7 @@ export default function BrandingCardResultCompanyPage() {
           catchphrase,
           description,
           keywords: keywords.map((k) => k.replace(/^#/, '')),
+          backgroundUrl: backgroundUrl.trim() || null,
           status: 'PUBLISHED',
         }),
       })
@@ -146,7 +150,7 @@ export default function BrandingCardResultCompanyPage() {
     } finally {
       setSaving(false)
     }
-  }, [catchphrase, description, keywords, showSnackbar, router])
+  }, [catchphrase, description, keywords, backgroundUrl, showSnackbar, router])
 
   // ── 개별 필드 AI 재생성 ──
   const handleRegenerateField = useCallback(
@@ -205,6 +209,12 @@ export default function BrandingCardResultCompanyPage() {
     session?.corporation?.name ?? '기업명'
   const bgColors = BG_COLORS[card?.backgroundStyle ?? 'navy'] ?? BG_COLORS.navy
   const previewTags = keywords.map((k) => `#${k}`)
+  const isCustomImageUrl =
+    backgroundUrl.trim().startsWith('http://') ||
+    backgroundUrl.trim().startsWith('https://')
+  const previewImage = isCustomImageUrl
+    ? backgroundUrl.trim()
+    : gradient(bgColors[0], bgColors[1])
 
   // ── 팁 ──
   const tips = useMemo(
@@ -288,7 +298,7 @@ export default function BrandingCardResultCompanyPage() {
                 companyDesc={catchphrase || '슬로건을 입력해보세요'}
                 matchRate={98}
                 tags={previewTags.length > 0 ? previewTags : ['#키워드']}
-                image={gradient(bgColors[0], bgColors[1])}
+                image={previewImage}
               />
             </div>
           </div>
@@ -441,6 +451,23 @@ export default function BrandingCardResultCompanyPage() {
                       </button>
                     </span>
                   )}
+                </div>
+              </div>
+
+              {/* ── 배경 이미지 ── */}
+              <div className={styles.field}>
+                <div className={styles.labelRow}>
+                  <div className={styles.label}>배경 이미지 URL</div>
+                </div>
+                <input
+                  className={styles.input}
+                  type="url"
+                  placeholder="https://... (이미지 주소를 붙여넣으면 카드 배경으로 사용됩니다)"
+                  value={backgroundUrl}
+                  onChange={(e) => setBackgroundUrl(e.currentTarget.value)}
+                />
+                <div className={styles.fieldHint}>
+                  외부 이미지 링크를 입력하면 카드 배경에 적용됩니다. 비우면 기본 그라데이션이 적용됩니다.
                 </div>
               </div>
 
