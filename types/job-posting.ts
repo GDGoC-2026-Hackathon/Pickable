@@ -65,6 +65,30 @@ export type CreateJobPostingRequest = {
   skills?: string[];
 };
 
+// ── 기업 대시보드: 자사 공고 목록 조회 API 응답 ──
+
+export type CorporationJobPostingListItem = {
+  id: string;
+  title: string;
+  jobTrack: string;
+  status: PostingStatus;
+  deadline: string | null;
+  daysLeft: number | null;
+  location: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CorporationJobPostingsResponse = {
+  data: CorporationJobPostingListItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+};
+
 // ── 공고 목록 응답 아이템 ──
 
 export type JobPostingListItem = {

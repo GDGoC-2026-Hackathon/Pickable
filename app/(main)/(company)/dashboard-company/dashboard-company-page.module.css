@@ -182,6 +182,9 @@
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(11, 99, 255, 0.22);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
 
 .addButton:hover {

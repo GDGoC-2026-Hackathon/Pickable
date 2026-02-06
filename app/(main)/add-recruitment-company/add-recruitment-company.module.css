@@ -1,0 +1,395 @@
+.page {
+  background: #f6f8fb;
+  padding: 36px 0 72px;
+}
+
+.container {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.hero {
+  padding: 18px 0 28px;
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  color: rgba(11, 99, 255, 0.9);
+}
+
+.title {
+  margin-top: 10px;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #0b1220;
+}
+
+.subTitle {
+  margin-top: 10px;
+  color: rgba(11, 18, 32, 0.62);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 18px;
+  align-items: start;
+}
+
+.card {
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 24px 60px rgba(2, 8, 23, 0.06);
+  padding: 22px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardIconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(11, 99, 255, 0.1);
+}
+
+.cardIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.cardHeaderText {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0b1220;
+}
+
+.form {
+  margin-top: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(11, 18, 32, 0.72);
+}
+
+.hintChip {
+  font-size: 11px;
+  font-weight: 900;
+  color: #f97316;
+  background: rgba(249, 115, 22, 0.1);
+  border-radius: 999px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.input,
+.textarea {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 18, 32, 0.02);
+  padding: 14px 14px;
+  font-size: 14px;
+  outline: none;
+  font-weight: 800;
+  color: #0b1220;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  font-weight: 500;
+  color: rgba(11, 18, 32, 0.45);
+}
+
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: rgba(11, 99, 255, 0.36);
+  box-shadow: 0 0 0 4px rgba(11, 99, 255, 0.14);
+  background: #ffffff;
+}
+
+.inputWithIcon {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 18, 32, 0.02);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.leftIcon {
+  color: rgba(11, 18, 32, 0.45);
+  display: inline-flex;
+}
+
+.inputInner {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  font-weight: 800;
+  color: #0b1220;
+}
+
+.inputInner::placeholder {
+  font-weight: 500;
+  color: rgba(11, 18, 32, 0.45);
+}
+
+.rightCol {
+  display: grid;
+  gap: 14px;
+}
+
+.previewCard {
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 24px 60px rgba(2, 8, 23, 0.06);
+  overflow: hidden;
+}
+
+.previewTop {
+  padding: 18px;
+}
+
+.previewLogoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.previewLogoWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: #0b1220;
+  display: grid;
+  place-items: center;
+}
+
+.previewLogo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.heart {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(11, 18, 32, 0.04);
+  color: rgba(11, 18, 32, 0.2);
+  font-weight: 900;
+}
+
+.previewName {
+  margin-top: 12px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0b1220;
+}
+
+.previewMeta {
+  margin-top: 4px;
+  font-weight: 800;
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.58);
+}
+
+.badges {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.badgeBlue,
+.badgeGreen {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.badgeBlue {
+  background: rgba(11, 99, 255, 0.12);
+  color: #0b63ff;
+}
+
+.badgeGreen {
+  background: rgba(31, 191, 122, 0.16);
+  color: #0b7a4b;
+}
+
+.tagRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(11, 99, 255, 0.1);
+  color: #0b63ff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.previewBody {
+  padding: 0 18px 18px;
+}
+
+.jobPreviewTitle {
+  margin-top: 6px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0b1220;
+}
+
+.kv {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.kvRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.kvKey {
+  color: rgba(11, 18, 32, 0.58);
+  font-weight: 900;
+}
+
+.kvVal {
+  color: rgba(11, 18, 32, 0.74);
+  font-weight: 900;
+}
+
+.kvValStrong {
+  color: #0b1220;
+  font-weight: 900;
+}
+
+.applyButton {
+  margin-top: 14px;
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(11, 18, 32, 0.02);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.publishButton {
+  width: 100%;
+  height: 54px;
+  border-radius: 18px;
+  border: 0;
+  background: #0b63ff;
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  box-shadow: 0 18px 40px rgba(11, 99, 255, 0.24);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.publishButton:hover {
+  background: #0a57e0;
+}
+
+.publishIcon {
+  display: inline-flex;
+}
+
+.guideCard {
+  border-radius: 18px;
+  background: rgba(11, 99, 255, 0.08);
+  border: 1px solid rgba(11, 99, 255, 0.12);
+  padding: 16px;
+}
+
+.guideTitle {
+  font-weight: 900;
+  color: #0b63ff;
+  letter-spacing: -0.02em;
+}
+
+.guideList {
+  margin-top: 10px;
+  padding-left: 18px;
+  color: rgba(11, 18, 32, 0.72);
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1.6;
+  display: grid;
+  gap: 6px;
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+}
+

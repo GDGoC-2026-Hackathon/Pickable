@@ -1,0 +1,199 @@
+.sectionCard {
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 40px rgba(2, 8, 23, 0.06);
+  padding: 22px;
+}
+
+.listHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0b1220;
+}
+
+.subText {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.6);
+  font-weight: 800;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 0;
+  background: #0b63ff;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(11, 99, 255, 0.22);
+}
+
+.addButton:hover {
+  background: #0a57e0;
+  color: #ffffff;
+}
+
+.jobList {
+  display: grid;
+  gap: 12px;
+}
+
+.jobRow {
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  padding: 18px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.jobLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.jobLogoWrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 24px rgba(2, 8, 23, 0.06);
+  padding: 10px;
+  flex: 0 0 auto;
+}
+
+.jobText {
+  min-width: 0;
+}
+
+.jobTitle {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #0b1220;
+}
+
+.jobMeta {
+  margin-top: 4px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.6);
+  font-weight: 800;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pin {
+  color: rgba(11, 18, 32, 0.42);
+  display: inline-flex;
+}
+
+.metaDivider {
+  color: rgba(11, 18, 32, 0.32);
+}
+
+.dDay {
+  color: #0b63ff;
+}
+
+.closed {
+  color: #ef4444;
+}
+
+.jobRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: #0b1220;
+  font-weight: 900;
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ghostButton:hover {
+  color: #0b1220;
+  background: #f1f5f9;
+}
+
+.trashButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(11, 18, 32, 0.28);
+  display: grid;
+  place-items: center;
+}
+
+.trashButton:hover {
+  color: rgba(11, 18, 32, 0.44);
+  background: rgba(11, 18, 32, 0.03);
+}
+
+.loading {
+  text-align: center;
+  padding: 24px;
+  color: rgba(11, 18, 32, 0.6);
+  font-weight: 800;
+}
+
+.error {
+  text-align: center;
+  padding: 24px;
+  color: #ef4444;
+  font-weight: 800;
+}
+
+.empty {
+  text-align: center;
+  padding: 24px;
+  color: rgba(11, 18, 32, 0.6);
+  font-weight: 800;
+}
