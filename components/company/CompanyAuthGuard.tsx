@@ -27,12 +27,6 @@ export function CompanyAuthGuard({ children }: { children: React.ReactNode }) {
         }
 
         const isEditProfilePage = pathname?.startsWith('/edit-profile-company')
-        const isDashboardPage = pathname?.startsWith('/dashboard-company')
-
-        if (hasProfile && isEditProfilePage) {
-          router.replace('/dashboard-company')
-          return
-        }
 
         if (!hasProfile && !isEditProfilePage) {
           if (!sessionStorage.getItem('pickable:snackbar')) {

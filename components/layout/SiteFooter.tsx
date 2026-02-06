@@ -34,18 +34,26 @@ export function SiteFooter() {
           <FooterCol
             title="기업 서비스"
             items={[
-              'AI 브랜딩 카드 제작',
-              '프리미엄 브랜딩 컨설팅',
-              '기업용 채용 서비스',
+              { label: 'AI 브랜딩 카드 제작', tone: 'muted' },
+              { label: '프리미엄 브랜딩 컨설팅', tone: 'muted' },
+              { label: '기업용 채용 서비스', tone: 'muted' },
             ]}
           />
           <FooterCol
             title="취준생 서비스"
-            items={['기업 추천 받기', '채용 캘린더', '커리어 로드맵']}
+            items={[
+              { label: '기업 추천 받기', tone: 'muted' },
+              { label: '채용 캘린더', tone: 'muted' },
+              { label: '커리어 로드맵', tone: 'muted' },
+            ]}
           />
           <FooterCol
             title="고객 지원"
-            items={['공지사항', 'FAQ', '1:1 문의하기']}
+            items={[
+              { label: '공지사항', tone: 'muted' },
+              { label: 'FAQ', tone: 'muted' },
+              { label: '1:1 문의하기', tone: 'muted' },
+            ]}
           />
         </div>
 
@@ -61,16 +69,25 @@ export function SiteFooter() {
   )
 }
 
-function FooterCol({ title, items }: { title: string; items: string[] }) {
+type FooterItem = string | { label: string; tone?: 'muted' | 'normal' }
+
+function FooterCol({ title, items }: { title: string; items: FooterItem[] }) {
   return (
     <div className={styles.footerCol} aria-label={title}>
       <div className={styles.footerColTitle}>{title}</div>
       <ul className={styles.footerList}>
-        {items.map((item) => (
-          <li key={item} className={styles.footerItem}>
-            {item}
-          </li>
-        ))}
+        {items.map((item) => {
+          const label = typeof item === 'string' ? item : item.label
+          const tone = typeof item === 'string' ? 'normal' : item.tone ?? 'normal'
+          const itemClass =
+            tone === 'muted' ? styles.footerItemMuted : styles.footerItem
+
+          return (
+            <li key={label} className={itemClass}>
+              {label}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

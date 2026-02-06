@@ -1,15 +1,22 @@
 // GET /api/corporation/profile
-// 로그인한 기업의 프로필(이미지, 이름, 산업) 조회 — 대시보드 사이드바 등에서 사용
+// 로그인한 기업의 프로필 조회 — 대시보드 사이드바, 기업 정보 수정 폼 등에서 사용
 
 import { requireAuth } from '@/lib/auth-helpers'
-import { success, error } from '@/lib/api'
+import { success, error, parseBody } from '@/lib/api'
 import { prisma } from '@/lib/db'
+import type { CompanySize } from '@/prisma/generated/prisma/client'
+
+const COMPANY_SIZES: CompanySize[] = ['STARTUP', 'SMALL', 'MEDIUM', 'LARGE', 'ENTERPRISE']
 
 export type CorporationProfileResponse = {
   id: string
   name: string
   thumbnailUrl: string | null
   industry: string
+  companySize: string
+  address: string
+  homepageUrl: string | null
+  description: string | null
 }
 
 async function requireCorporation(userId: string) {
@@ -23,6 +30,10 @@ async function requireCorporation(userId: string) {
           name: true,
           thumbnailUrl: true,
           industry: true,
+          companySize: true,
+          address: true,
+          homepageUrl: true,
+          description: true,
         },
       },
     },
@@ -53,9 +64,72 @@ export async function GET() {
       name: corporation!.name,
       thumbnailUrl: corporation!.thumbnailUrl,
       industry: corporation!.industry,
+      companySize: corporation!.companySize,
+      address: corporation!.address,
+      homepageUrl: corporation!.homepageUrl,
+      description: corporation!.description,
     }
 
     return success(data)
+  } catch {
+    return error('DB_ERROR')
+  }
+}
+
+// PATCH /api/corporation/profile — 기업 정보 수정
+interface UpdateProfileBody {
+  name?: string
+  industry?: string
+  address?: string
+  companySize?: string
+  homepageUrl?: string | null
+  description?: string | null
+}
+
+export async function PATCH(request: Request) {
+  const { session, errorResponse } = await requireAuth()
+  if (errorResponse) return errorResponse
+
+  const userId = session!.user.id
+  const body = await parseBody<UpdateProfileBody>(request)
+  if (!body) return error('INVALID_JSON')
+
+  try {
+    const { corporation, err } = await requireCorporation(userId)
+    if (err) return err
+
+    const name = body.name?.trim()
+    const industry = body.industry?.trim()
+    const address = body.address?.trim()
+    const companySize = body.companySize?.trim()
+    if (name !== undefined && !name) return error('VALIDATION_ERROR', '기업명을 입력해주세요.')
+    if (industry !== undefined && !industry) return error('VALIDATION_ERROR', '산업군을 입력해주세요.')
+    if (address !== undefined && !address) return error('VALIDATION_ERROR', '주소를 입력해주세요.')
+    if (companySize !== undefined && !COMPANY_SIZES.includes(companySize as CompanySize)) {
+      return error('VALIDATION_ERROR', '유효한 기업 규모를 선택해주세요.')
+    }
+
+    const updateData: {
+      name?: string
+      industry?: string
+      address?: string
+      companySize?: CompanySize
+      homepageUrl?: string | null
+      description?: string | null
+    } = {}
+    if (body.name !== undefined) updateData.name = body.name.trim()
+    if (body.industry !== undefined) updateData.industry = body.industry.trim()
+    if (body.address !== undefined) updateData.address = body.address.trim()
+    if (body.companySize !== undefined) updateData.companySize = body.companySize as CompanySize
+    if (body.homepageUrl !== undefined) updateData.homepageUrl = body.homepageUrl?.trim() || null
+    if (body.description !== undefined) updateData.description = body.description?.trim() || null
+
+    await prisma.corporation.update({
+      where: { id: corporation!.id },
+      data: updateData,
+    })
+
+    return success({ updated: true })
   } catch {
     return error('DB_ERROR')
   }
