@@ -54,6 +54,11 @@ export const API_ERRORS = {
     status: 404,
     message: "채용 공고를 찾을 수 없습니다.",
   },
+  PROFILE_NOT_FOUND: {
+    code: "PROFILE_NOT_FOUND",
+    status: 404,
+    message: "프로필을 찾을 수 없습니다. 먼저 프로필을 등록해주세요.",
+  },
 
   // 409 - 충돌
   CONFLICT: {

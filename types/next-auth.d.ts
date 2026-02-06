@@ -12,6 +12,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      role?: "JOB_SEEKER" | "CORPORATION" | null;
     } & DefaultSession["user"];
     /** 기업 회원일 때만 존재 */
     corporation?: CorporationProfile;
@@ -21,6 +22,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
+    role?: "JOB_SEEKER" | "CORPORATION" | null;
     corporation?: CorporationProfile;
   }
 }
