@@ -16,7 +16,10 @@
   padding: 18px 18px 16px;
   display: flex;
   flex-direction: column;
-  height: var(--rc-card-h, 420px);
+  min-height: var(--rc-card-h, 420px);
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .top {
@@ -68,6 +71,7 @@
 
 .company {
   margin-top: 4px;
+  min-width: 0;
 }
 
 .companyName {
@@ -75,12 +79,18 @@
   font-weight: 900;
   letter-spacing: -0.3px;
   color: var(--rc-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .companyDesc {
   margin-top: 2px;
   font-size: 12px;
   color: var(--rc-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .badges {
@@ -139,12 +149,16 @@
   font-weight: 900;
   color: #0b1220;
   margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .meta {
   display: grid;
   gap: 8px;
   margin-bottom: 16px;
+  min-width: 0;
 }
 
 .row {
@@ -152,18 +166,24 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
+  min-width: 0;
 }
 
 .key {
   font-size: 12px;
   color: #94a3b8;
   font-weight: 800;
+  flex-shrink: 0;
 }
 
 .val {
   font-size: 12px;
   color: #0f172a;
   font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .strong {
@@ -206,6 +226,8 @@
 .cardBack {
   padding: 18px 18px 16px;
   gap: 10px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .backCompany {

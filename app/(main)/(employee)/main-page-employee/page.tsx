@@ -1,4 +1,4 @@
-import MainPageEmployee from "./MainPageEmployee";
+import MainPageEmployee from "@/app/(main)/main-page-employee/MainPageEmployee";
 
 export default function Page() {
   return (

@@ -8,6 +8,7 @@
   min-height: var(--frc-card-h);
   height: var(--frc-card-h);
   perspective: 1200px;
+  cursor: pointer;
 }
 
 .flipInner {

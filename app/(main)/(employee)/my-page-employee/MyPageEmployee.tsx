@@ -1,3 +1,6 @@
+'use client'
+
+import { useSession } from 'next-auth/react'
 import FlippableRecruitmentCard from "@/components/layout/FlippableRecruitmentCard";
 import Link from 'next/link'
 
@@ -18,7 +21,10 @@ type PreviewItem = {
 };
 
 export default function MyPageEmployee() {
-  // UI 목업 데이터 (이미지는 public/ 아래 경로로 두면 편함)
+  const { data: session } = useSession()
+  const userName = session?.user?.name || session?.user?.email || '회원'
+
+  // UI 목업 데이터 (카드 배경 이미지 URL)
   const previewItems: PreviewItem[] = [
     {
       id: "toss",
@@ -26,7 +32,7 @@ export default function MyPageEmployee() {
       companyDesc: "SaaS 전문 강소기업",
       matchRate: 98,
       tags: ["핀테크", "B2B"],
-      image: gradient("0b63ff", "0b1220"),
+      image: "https://blog.kakaocdn.net/dna/BRper/btsPUZ4Ka3l/AAAAAAAAAAAAAAAAAAAAAA3gBEvInLIlxegJlmB-dHJWstD4g4Sb_3VfgDgUV9fd/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ZK9xuJBlNec75aAZCYOReQxBBQA%3D",
       positionTitle: "Product Designer",
       deadline: "2025.03.20",
       experience: "경력 3년 이상",
@@ -41,7 +47,7 @@ export default function MyPageEmployee() {
       companyDesc: "브랜드 경험을 설계합니다",
       matchRate: 95,
       tags: ["브랜딩", "UX/UI"],
-      image: gradient("7c3aed", "111827"),
+      image: "https://imgs.jobkorea.co.kr/img3/_thumb/300x0/Company/Visual_Co/images/2020/1/JK_CO_easyspub_1.JPG",
       positionTitle: "Frontend Engineer",
       deadline: "2025.03.20",
       experience: "경력 2년 이상",
@@ -56,7 +62,7 @@ export default function MyPageEmployee() {
       companyDesc: "데이터 기반 이커머스",
       matchRate: 95,
       tags: ["이커머스", "데이터"],
-      image: gradient("1fbf7a", "0b1220"),
+      image: "https://vinsign.app/vinsign.jpeg",
       positionTitle: "UX Researcher",
       deadline: "2025.03.20",
       experience: "경력 3년 이상",
@@ -71,7 +77,7 @@ export default function MyPageEmployee() {
       companyDesc: "디지털 랩",
       matchRate: 92,
       tags: ["기술중심", "팀문화"],
-      image: gradient("0b1220", "111827"),
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3FILbREuslMYdr2suLdKfuSdmP4JTyWtfLg&s",
       positionTitle: "Brand Marketer",
       deadline: "2025.03.20",
       experience: "경력 4년 이상",
@@ -179,7 +185,7 @@ export default function MyPageEmployee() {
         <main className="mypage-right">
           <div className="mp-head">
             <div>
-              <h1 className="mp-head-title">김지우 님을 위한 맞춤 기업</h1>
+              <h1 className="mp-head-title">{userName} 님을 위한 맞춤 기업</h1>
               <p className="mp-head-desc">
                 AI가 분석한 커리어 패스에 맞는 큐레이션입니다.
               </p>
@@ -223,24 +229,4 @@ export default function MyPageEmployee() {
       </div>
     </div>
   );
-}
-
-function gradient(colorA: string, colorB: string) {
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
-    <defs>
-      <radialGradient id="g1" cx="20%" cy="20%" r="90%">
-        <stop offset="0%" stop-color="#${colorA}" stop-opacity="0.55"/>
-        <stop offset="60%" stop-color="#${colorA}" stop-opacity="0.1"/>
-        <stop offset="100%" stop-color="#${colorB}" stop-opacity="1"/>
-      </radialGradient>
-      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#${colorB}"/>
-        <stop offset="100%" stop-color="#${colorB}"/>
-      </linearGradient>
-    </defs>
-    <rect width="1200" height="800" fill="url(#g2)"/>
-    <rect width="1200" height="800" fill="url(#g1)"/>
-  </svg>`;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

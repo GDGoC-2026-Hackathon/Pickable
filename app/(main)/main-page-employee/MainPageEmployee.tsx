@@ -71,57 +71,63 @@ export default function MainPageEmployee() {
     async (
       pageNum: number,
       append: boolean,
-      previousData?: JobPostingListItem[]
+      previousData?: JobPostingListItem[],
+      signal?: AbortSignal
     ) => {
-      if (!append) setState({ status: 'loading' })
-      const params = new URLSearchParams({
-        page: String(pageNum),
-        limit: String(DEFAULT_LIMIT),
-        status: 'OPEN',
-      })
-      const res = await fetch(`/api/job-postings?${params}`)
-      const json = await res.json()
-
-      if (!res.ok) {
-        setState({
-          status: 'error',
-          message: json?.error?.message ?? '공고 목록을 불러오지 못했습니다.',
+      try {
+        if (!append) setState({ status: 'loading' })
+        const params = new URLSearchParams({
+          page: String(pageNum),
+          limit: String(DEFAULT_LIMIT),
+          status: 'OPEN',
         })
-        return
-      }
+        const res = await fetch(`/api/job-postings?${params}`, { signal })
+        const json = await res.json()
 
-      const list = json?.data ?? []
-      const pagination = json?.pagination ?? {
-        page: pageNum,
-        totalPages: 1,
-        total: list.length,
-      }
+        if (signal?.aborted) return
+        if (!res.ok) {
+          setState({
+            status: 'error',
+            message: json?.error?.message ?? '공고 목록을 불러오지 못했습니다.',
+          })
+          return
+        }
 
-      setState({
-        status: 'success',
-        data:
-          append && previousData && previousData.length >= 0
-            ? [...previousData, ...list]
-            : list,
-        pagination: {
-          page: pagination.page,
-          totalPages: pagination.totalPages ?? 1,
-          total: pagination.total ?? list.length,
-        },
-        loadingMore: false,
-      })
+        const list = json?.data ?? []
+        const pagination = json?.pagination ?? {
+          page: pageNum,
+          totalPages: 1,
+          total: list.length,
+        }
+
+        setState({
+          status: 'success',
+          data:
+            append && previousData && previousData.length >= 0
+              ? [...previousData, ...list]
+              : list,
+          pagination: {
+            page: pagination.page,
+            totalPages: pagination.totalPages ?? 1,
+            total: pagination.total ?? list.length,
+          },
+          loadingMore: false,
+        })
+      } catch (err) {
+        const isAbort =
+          (typeof DOMException !== 'undefined' && err instanceof DOMException && err.name === 'AbortError') ||
+          (err instanceof Error && err.name === 'AbortError')
+        if (isAbort) return
+        throw err
+      }
     },
     []
   )
 
   useEffect(() => {
-    let cancelled = false
-    fetchList(1, false, undefined).then(() => {
-      if (cancelled) return
-    })
-    return () => {
-      cancelled = true
-    }
+    const controller = new AbortController()
+    fetchList(1, false, undefined, controller.signal)
+    return () => controller.abort()
   }, [fetchList])
 
   const loadMore = useCallback(() => {

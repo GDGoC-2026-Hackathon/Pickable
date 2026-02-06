@@ -1,9 +1,13 @@
 'use client'
 
 import React, { useCallback } from "react";
+import { useSession } from "next-auth/react";
 import FlippableRecruitmentCard from "@/components/layout/FlippableRecruitmentCard";
 
 export default function MainPageEmployee() {
+  const { data: session } = useSession();
+  const userName = session?.user?.name || session?.user?.email || "회원";
+
   // UI 목업 데이터
   const items = Array.from({ length: 6 }).map((_, i) => ({
     id: i + 1,
@@ -45,7 +49,7 @@ export default function MainPageEmployee() {
             <div>
               <h1 className="mpe-title">맞춤형 기업 공고 전체보기</h1>
               <p className="mpe-subtitle">
-                AI가 분석한 김지우 님의 커리어 패스에 맞는 모든 기업을 카드 형식으로 만나보세요.
+                AI가 분석한 {userName} 님의 커리어 패스에 맞는 모든 기업을 카드 형식으로 만나보세요.
               </p>
             </div>
 
