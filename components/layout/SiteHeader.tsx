@@ -9,11 +9,18 @@ export async function SiteHeader() {
   const session = await auth()
   const user = session?.user
 
+  const homeHref =
+    user?.role === 'CORPORATION'
+      ? '/dashboard-company'
+      : user?.role === 'JOB_SEEKER'
+        ? '/my-page-employee'
+        : '/'
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.headerInner}>
-          <Link className={styles.brand} href="/">
+          <Link className={styles.brand} href={homeHref}>
             Pickable
           </Link>
           {user ? (
@@ -28,4 +35,3 @@ export async function SiteHeader() {
     </header>
   )
 }
-

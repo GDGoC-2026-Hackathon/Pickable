@@ -214,6 +214,16 @@
     gap: 18px;
     padding-bottom: 40px;
   }
+
+  .mpe-cardLink {
+    cursor: pointer;
+  }
+
+  .mpe-cardLink:focus-visible {
+    outline: 3px solid rgba(29, 94, 255, 0.28);
+    outline-offset: 4px;
+    border-radius: 22px;
+  }
   
   /* Footer */
   .mpe-footer{

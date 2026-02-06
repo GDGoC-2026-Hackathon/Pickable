@@ -3,9 +3,6 @@
 import Link from 'next/link'
 import { useRouter } from "next/navigation";
 
-import React from "react";
-import "./ProfileEmployee.css";
-
 export default function ProfileEmployee() {
   const router = useRouter();
 

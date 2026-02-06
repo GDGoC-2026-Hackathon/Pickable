@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useState, FormEvent, useCallback, useEffect } from 'react'
+import React, { useState, FormEvent, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { openDaumPostcode } from '@/lib/daum-postcode'
-import '../profile-employee/ProfileEmployee.css'
 
 type ProfileData = {
   birthDate: string
@@ -61,6 +60,8 @@ const EMPLOYMENT_OPTIONS = [
 
 export default function EditProfileEmployee() {
   const router = useRouter()
+  const skillInputRef = useRef<HTMLInputElement>(null)
+  const isComposingRef = useRef(false)
   const [birthDate, setBirthDate] = useState('')
   const [gender, setGender] = useState<string>('MALE')
   const [educationLevel, setEducationLevel] = useState('')
@@ -79,6 +80,24 @@ export default function EditProfileEmployee() {
   const [error, setError] = useState<string | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [profileLoadDone, setProfileLoadDone] = useState(false)
+
+  function normalizeBirthDate(value: string | null | undefined) {
+    if (!value) return ''
+
+    // ISO string: 1990-01-01T00:00:00.000Z → 1990-01-01
+    if (/^\d{4}-\d{2}-\d{2}/.test(value)) return value.slice(0, 10)
+
+    // Some browsers allow 5~6 digit years in <input type="date"> via typing
+    // e.g. 202026-01-01 → 2026-01-01
+    if (/^\d{6}-\d{2}-\d{2}$/.test(value)) return value.slice(2)
+    if (/^\d{5}-\d{2}-\d{2}$/.test(value)) return value.slice(1)
+
+    // Digits only: 19900101 → 1990-01-01
+    if (/^\d{8}$/.test(value))
+      return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`
+
+    return value
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -105,7 +124,7 @@ export default function EditProfileEmployee() {
         const profileJson = await profileRes.json()
         const p: ProfileData = profileJson?.data
         if (p) {
-          setBirthDate(p.birthDate ?? '')
+          setBirthDate(normalizeBirthDate(p.birthDate))
           setGender(p.gender ?? 'MALE')
           setEducationLevel(p.educationLevel ?? '')
           setMajor(p.major ?? '')
@@ -175,7 +194,7 @@ export default function EditProfileEmployee() {
       major: major.trim(),
       desiredJobRole: desiredJobRole.trim(),
       militaryStatus,
-      birthDate,
+      birthDate: normalizeBirthDate(birthDate),
       gender,
     }
     if (desiredLocation.trim()) body.desiredLocation = desiredLocation.trim()
@@ -268,7 +287,7 @@ export default function EditProfileEmployee() {
                     type="date"
                     className="pe-input"
                     value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
+                    onChange={(e) => setBirthDate(normalizeBirthDate(e.target.value))}
                     required
                   />
                 </div>
@@ -439,20 +458,36 @@ export default function EditProfileEmployee() {
                 ))}
                 {showSkillInput ? (
                   <input
+                    ref={skillInputRef}
                     className="pe-input"
                     style={{ width: '180px', height: '34px', borderRadius: '999px', padding: '0 14px', fontSize: '13px' }}
                     placeholder="스킬 입력 후 Enter"
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
+                    onCompositionStart={() => {
+                      isComposingRef.current = true
+                    }}
+                    onCompositionEnd={() => {
+                      isComposingRef.current = false
+                    }}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      // IME(한글) 입력 중 Enter 처리 시 마지막 글자 중복/누락되는 문제 방지
+                      // - composing 중에는 Enter를 무시하고, 조합이 끝난 다음 Enter에서 추가되도록 함
+                      if (
+                        e.key === 'Enter' &&
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        !(e.nativeEvent as any)?.isComposing &&
+                        !isComposingRef.current
+                      ) {
                         e.preventDefault()
-                        addSkill(skillInput)
+                        addSkill(e.currentTarget.value)
                         setSkillInput('')
+                        if (skillInputRef.current) skillInputRef.current.value = ''
                       }
                     }}
-                    onBlur={() => {
-                      if (skillInput.trim()) addSkill(skillInput)
+                    onBlur={(e) => {
+                      if (isComposingRef.current) return
+                      if (e.currentTarget.value.trim()) addSkill(e.currentTarget.value)
                       setSkillInput('')
                       setShowSkillInput(false)
                     }}

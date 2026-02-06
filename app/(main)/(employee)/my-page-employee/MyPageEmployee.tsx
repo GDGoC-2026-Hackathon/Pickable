@@ -1,4 +1,3 @@
-import "./MyPageEmployee.css";
 import FlippableRecruitmentCard from "@/components/layout/FlippableRecruitmentCard";
 import Link from 'next/link'
 
@@ -8,7 +7,7 @@ type PreviewItem = {
   companyDesc: string;
   matchRate: number;
   tags: string[];
-  image: string; // preview 배경 이미지
+  image: string; 
   positionTitle: string;
   deadline: string;
   experience: string;
@@ -23,11 +22,11 @@ export default function MyPageEmployee() {
   const previewItems: PreviewItem[] = [
     {
       id: "toss",
-      companyName: "토스 (Toss)",
-      companyDesc: "금융의 모든 것",
+      companyName: "클라우드 펄스",
+      companyDesc: "SaaS 전문 강소기업",
       matchRate: 98,
-      tags: ["핀테크", "유니콘"],
-      image: "/mock/toss.jpg",
+      tags: ["핀테크", "B2B"],
+      image: gradient("0b63ff", "0b1220"),
       positionTitle: "Product Designer",
       deadline: "2025.03.20",
       experience: "경력 3년 이상",
@@ -38,11 +37,11 @@ export default function MyPageEmployee() {
     },
     {
       id: "karrot",
-      companyName: "당근 (Karrot)",
-      companyDesc: "이웃과 함께하는 생활",
+      companyName: "이지스퍼블리싱",
+      companyDesc: "브랜드 경험을 설계합니다",
       matchRate: 95,
-      tags: ["플랫폼", "커뮤니티"],
-      image: "/mock/karrot.jpg",
+      tags: ["브랜딩", "UX/UI"],
+      image: gradient("7c3aed", "111827"),
       positionTitle: "Frontend Engineer",
       deadline: "2025.03.20",
       experience: "경력 2년 이상",
@@ -53,11 +52,11 @@ export default function MyPageEmployee() {
     },
     {
       id: "karrot-2",
-      companyName: "당근 (Karrot)",
-      companyDesc: "이웃과 함께하는 생활",
+      companyName: "VinSign",
+      companyDesc: "데이터 기반 이커머스",
       matchRate: 95,
-      tags: ["플랫폼", "커뮤니티"],
-      image: "/mock/karrot.jpg",
+      tags: ["이커머스", "데이터"],
+      image: gradient("1fbf7a", "0b1220"),
       positionTitle: "UX Researcher",
       deadline: "2025.03.20",
       experience: "경력 3년 이상",
@@ -68,11 +67,11 @@ export default function MyPageEmployee() {
     },
     {
       id: "musinsa",
-      companyName: "무신사 (Musinsa)",
-      companyDesc: "패션의 모든 것",
+      companyName: "넥스트 웨이브",
+      companyDesc: "디지털 랩",
       matchRate: 92,
-      tags: ["패션", "이커머스"],
-      image: "/mock/musinsa.jpg",
+      tags: ["기술중심", "팀문화"],
+      image: gradient("0b1220", "111827"),
       positionTitle: "Brand Marketer",
       deadline: "2025.03.20",
       experience: "경력 4년 이상",
@@ -133,7 +132,7 @@ export default function MyPageEmployee() {
                 <div className="mp-schedule-icon" aria-hidden="true">🎥</div>
                 <div className="mp-schedule-body">
                   <div className="mp-schedule-time">14:00 - 15:00</div>
-                  <div className="mp-schedule-text">카카오뱅크 1차 면접</div>
+                  <div className="mp-schedule-text">클라우드 펄스 1차 면접</div>
                 </div>
               </div>
 
@@ -141,7 +140,7 @@ export default function MyPageEmployee() {
                 <div className="mp-schedule-icon is-orange" aria-hidden="true">📄</div>
                 <div className="mp-schedule-body">
                   <div className="mp-schedule-time">23:59 마감</div>
-                  <div className="mp-schedule-text">토스 프로덕트 디자이너 서류</div>
+                  <div className="mp-schedule-text">모멘트 디자인 프로덕트 디자이너 서류</div>
                 </div>
               </div>
             </div>
@@ -158,7 +157,7 @@ export default function MyPageEmployee() {
               <div className="mp-recent-item">
                 <div className="mp-recent-dot is-green" aria-hidden="true" />
                 <div className="mp-recent-body">
-                  <div className="mp-recent-company">라인 (LINE)</div>
+                  <div className="mp-recent-company">클라우드 펄스</div>
                   <div className="mp-recent-meta">프로덕트 디자이너 · 서류 검토 중</div>
                 </div>
                 <button className="mp-ghost" type="button">상세 보기</button>
@@ -167,7 +166,7 @@ export default function MyPageEmployee() {
               <div className="mp-recent-item">
                 <div className="mp-recent-dot is-yellow" aria-hidden="true" />
                 <div className="mp-recent-body">
-                  <div className="mp-recent-company">우아한형제들</div>
+                  <div className="mp-recent-company">모멘트 디자인</div>
                   <div className="mp-recent-meta">UX 리서처 · 과제 진행 중</div>
                 </div>
                 <button className="mp-ghost" type="button">과제 제출</button>
@@ -224,4 +223,24 @@ export default function MyPageEmployee() {
       </div>
     </div>
   );
+}
+
+function gradient(colorA: string, colorB: string) {
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+    <defs>
+      <radialGradient id="g1" cx="20%" cy="20%" r="90%">
+        <stop offset="0%" stop-color="#${colorA}" stop-opacity="0.55"/>
+        <stop offset="60%" stop-color="#${colorA}" stop-opacity="0.1"/>
+        <stop offset="100%" stop-color="#${colorB}" stop-opacity="1"/>
+      </radialGradient>
+      <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#${colorB}"/>
+        <stop offset="100%" stop-color="#${colorB}"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#g2)"/>
+    <rect width="1200" height="800" fill="url(#g1)"/>
+  </svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

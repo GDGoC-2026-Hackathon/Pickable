@@ -1,5 +1,6 @@
-import React from "react";
-import "./MainPageEmployee.css";
+'use client'
+
+import React, { useCallback } from "react";
 import FlippableRecruitmentCard from "@/components/layout/FlippableRecruitmentCard";
 
 export default function MainPageEmployee() {
@@ -17,12 +18,23 @@ export default function MainPageEmployee() {
     location: "광화문",
     salary: "4000만원 이상",
     workTime: "09:00 ~ 18:00",
+    applicationUrl: "https://careers.company.com/jobs/123",
     liked: i % 4 === 0,
     image:
       i % 2 === 0
         ? gradient("0b63ff", "0b1220")
         : gradient("7c3aed", "111827"),
   }));
+
+  const navigateToApplicationUrl = useCallback((url: string) => {
+    if (!url) return;
+    // 기존 RecruitmentCard의 지원하기가 새 탭을 여는 동작과 맞춤
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+    window.location.href = url;
+  }, []);
 
   return (
     <div className="mpe-page">
@@ -51,34 +63,51 @@ export default function MainPageEmployee() {
 
           <section className="mpe-grid">
             {items.map((it) => (
-              <FlippableRecruitmentCard
+              <div
                 key={it.id}
-                flipOnHover
-                side="back"
-                front={{
-                  variant: "preview",
-                  companyName: it.companyName,
-                  companyDesc: it.companyDesc,
-                  matchRate: it.matchRate,
-                  tags: it.tags,
-                  image: it.image,
+                className="mpe-cardLink"
+                role="link"
+                tabIndex={0}
+                onClick={(e) => {
+                  const target = e.target as HTMLElement | null;
+                  if (target?.closest("a,button,input,textarea,select,label")) return;
+                  navigateToApplicationUrl(it.applicationUrl);
                 }}
-                back={{
-                  variant: "back",
-                  companyName: it.companyName,
-                  companyDesc: it.companyDesc,
-                  matchRate: it.matchRate,
-                  hiringLabel: it.hiringLabel,
-                  tags: it.tags,
-                  positionTitle: it.positionTitle,
-                  deadline: it.deadline,
-                  experience: it.experience,
-                  location: it.location,
-                  salary: it.salary,
-                  workTime: it.workTime,
-                  liked: it.liked,
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigateToApplicationUrl(it.applicationUrl);
+                  }
                 }}
-              />
+              >
+                <FlippableRecruitmentCard
+                  flipOnHover
+                  side="back"
+                  front={{
+                    variant: "preview",
+                    companyName: it.companyName,
+                    companyDesc: it.companyDesc,
+                    matchRate: it.matchRate,
+                    tags: it.tags,
+                    image: it.image,
+                  }}
+                  back={{
+                    companyName: it.companyName,
+                    companyDesc: it.companyDesc,
+                    matchRate: it.matchRate,
+                    hiringLabel: it.hiringLabel,
+                    tags: it.tags,
+                    positionTitle: it.positionTitle,
+                    deadline: it.deadline,
+                    experience: it.experience,
+                    location: it.location,
+                    salary: it.salary,
+                    workTime: it.workTime,
+                    liked: it.liked,
+                    applicationUrl: it.applicationUrl,
+                  }}
+                />
+              </div>
             ))}
           </section>
         </div>
