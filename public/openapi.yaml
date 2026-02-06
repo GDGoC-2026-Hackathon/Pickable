@@ -407,22 +407,77 @@ components:
               type: { type: string, enum: [CERTIFICATE, LANGUAGE] }
               name: { type: string }
               score: { type: string }
+      example:
+        educationLevel: "BACHELOR"
+        major: "컴퓨터공학"
+        desiredJobRole: "백엔드 개발자"
+        militaryStatus: "COMPLETED"
+        desiredLocation: "서울특별시 강남구"
+        desiredSalaryRange: "RANGE_3000_3600"
+        commuteStart: "09:00"
+        commuteEnd: "18:00"
+        employmentType: "FULL_TIME"
+        birthDate: "1999-05-15"
+        gender: "MALE"
+        skills: ["Python", "Django", "PostgreSQL", "Docker"]
+        experiences:
+          - type: "ACTIVITY"
+            title: "Google Developer Student Club 리드"
+            description: "대학교 GDSC 리드로 활동하며 기술 세미나 운영"
+            isJobRelated: true
+          - type: "AWARD"
+            title: "교내 해커톤 대상"
+            description: "AI 기반 취업 매칭 서비스 개발"
+            isJobRelated: true
+        credentials:
+          - type: "CERTIFICATE"
+            name: "정보처리기사"
+          - type: "LANGUAGE"
+            name: "TOEIC"
+            score: "900"
 
     CorporationSignup:
       type: object
       required: [name, industry, address, companySize]
       properties:
-        name: { type: string }
-        industry: { type: string }
-        address: { type: string }
+        name:
+          type: string
+          description: 기업명
+        industry:
+          type: string
+          description: 업종/산업
+        address:
+          type: string
+          description: 주소
         companySize:
           type: string
           enum: [STARTUP, SMALL, MEDIUM, LARGE, ENTERPRISE]
-        thumbnailUrl: { type: string }
-        description: { type: string }
-        welfare: { type: string }
-        homepageUrl: { type: string }
-        phone: { type: string }
+          description: 기업 규모
+        thumbnailUrl:
+          type: string
+          description: 기업 대표 이미지 URL (선택)
+        description:
+          type: string
+          description: 기업 소개 (선택)
+        welfare:
+          type: string
+          description: 복리후생 (선택)
+        homepageUrl:
+          type: string
+          description: 홈페이지 URL (선택)
+        phone:
+          type: string
+          description: 대표 연락처 (선택)
+      example:
+        name: "클라우드 펄스"
+        industry: "SaaS"
+        address: "서울특별시 강남구 테헤란로 123"
+        companySize: "STARTUP"
+        thumbnailUrl: "https://example.com/company-logo.png"
+        description: "SaaS 전문 강소기업"
+        welfare: "재택 근무, 스톡옵션, 도서 구매 지원"
+        homepageUrl: "https://cloudpulse.io"
+        phone: "02-1234-5678"
 
     # ── 채용 공고 스키마 ──
 
