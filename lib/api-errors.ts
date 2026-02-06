@@ -89,6 +89,12 @@ export const API_ERRORS = {
     message: "선택한 역할과 일치하지 않는 요청입니다.",
   },
 
+  BRANDING_CARD_NOT_FOUND: {
+    code: "BRANDING_CARD_NOT_FOUND",
+    status: 404,
+    message: "브랜딩 카드를 찾을 수 없습니다.",
+  },
+
   // 500 - 서버 오류
   INTERNAL_ERROR: {
     code: "INTERNAL_ERROR",
@@ -99,6 +105,16 @@ export const API_ERRORS = {
     code: "DB_ERROR",
     status: 500,
     message: "데이터베이스 오류가 발생했습니다.",
+  },
+  AI_GENERATION_ERROR: {
+    code: "AI_GENERATION_ERROR",
+    status: 500,
+    message: "AI 콘텐츠 생성 중 오류가 발생했습니다.",
+  },
+  AI_RATE_LIMIT: {
+    code: "AI_RATE_LIMIT",
+    status: 429,
+    message: "AI 요청이 너무 많습니다. 잠시 후 다시 시도해주세요.",
   },
 } as const;
 
