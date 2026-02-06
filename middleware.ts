@@ -1,8 +1,10 @@
-// 인증 미들웨어
-// matcher에 해당하는 경로는 로그인 필수, 나머지(api, 정적 파일, 로그인 페이지)는 제외
+// 인증 미들웨어 (Edge Runtime)
 
-export { auth as middleware } from "@/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
+
+export default NextAuth(authConfig).auth;
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|login).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

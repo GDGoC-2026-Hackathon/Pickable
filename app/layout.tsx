@@ -1,19 +1,22 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from "next";
+import { SessionProvider } from "@/components/providers/session-provider";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Pickable',
-  description: 'GDGoC 해커톤 프로젝트',
-}
+  title: "Pickable",
+  description: "GDGoC 해커톤 프로젝트",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
-  )
+  );
 }
