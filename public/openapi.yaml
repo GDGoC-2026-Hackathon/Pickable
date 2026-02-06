@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Pickable API
-  description: 회원가입·인증 등 구현된 API 명세 (NextAuth 세션 쿠키 인증)
-  version: 0.1.0
+  description: 회원가입·인증·채용공고 API 명세 (NextAuth 세션 쿠키 인증)
+  version: 0.2.0
 
 servers:
   - url: /
@@ -15,6 +15,8 @@ tags:
     description: 인증·현재 사용자
   - name: Signup
     description: 역할 선택 및 회원가입
+  - name: JobPostings
+    description: 채용 공고 (목록 조회 · 상세 조회 · 생성)
 
 paths:
   /api/health:
@@ -215,6 +217,125 @@ paths:
         "500":
           $ref: "#/components/responses/DBError"
 
+  # ──────────────────────────────────────
+  # 채용 공고
+  # ──────────────────────────────────────
+
+  /api/job-postings:
+    get:
+      tags: [JobPostings]
+      summary: 공고 목록 조회
+      description: |
+        채용 공고 목록을 페이지네이션으로 조회합니다.
+        로그인한 취준생(JOB_SEEKER)의 경우 매칭률(matchRate)이 함께 반환됩니다.
+        비로그인 사용자도 조회 가능합니다.
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1, minimum: 1 }
+          description: 페이지 번호
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10, minimum: 1, maximum: 50 }
+          description: 페이지당 항목 수
+        - name: status
+          in: query
+          schema: { type: string, enum: [OPEN, CLOSED] }
+          description: 채용 상태 필터
+      responses:
+        "200":
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/JobPostingListItem" }
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+        "500":
+          $ref: "#/components/responses/DBError"
+
+    post:
+      tags: [JobPostings]
+      summary: 공고 생성
+      description: |
+        기업(CORPORATION) 역할의 사용자만 호출 가능.
+        기업 등록(Corporation)이 완료된 상태여야 합니다.
+      security: [sessionCookie: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateJobPosting" }
+      responses:
+        "201":
+          description: 생성됨
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      title: { type: string }
+                      status: { type: string, enum: [OPEN, CLOSED] }
+                      createdAt: { type: string, format: date-time }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: 기업 정보 없음
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: CORPORATION_NOT_FOUND, message: "기업 정보를 찾을 수 없습니다." }
+        "422":
+          description: 역할 미선택 또는 역할 불일치
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+  /api/job-postings/{id}:
+    get:
+      tags: [JobPostings]
+      summary: 공고 상세 조회
+      description: |
+        특정 채용 공고의 상세 정보를 조회합니다.
+        로그인한 취준생의 경우 매칭률이 함께 반환됩니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+          description: 공고 ID
+      responses:
+        "200":
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/JobPostingDetail" }
+        "404":
+          description: 공고 없음
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: JOB_POSTING_NOT_FOUND, message: "채용 공고를 찾을 수 없습니다." }
+        "500":
+          $ref: "#/components/responses/DBError"
+
 components:
   securitySchemes:
     sessionCookie:
@@ -302,6 +423,171 @@ components:
         welfare: { type: string }
         homepageUrl: { type: string }
         phone: { type: string }
+
+    # ── 채용 공고 스키마 ──
+
+    CreateJobPosting:
+      type: object
+      required: [title, jobTrack, minEducationLevel, militaryPolicy, careerPolicy]
+      properties:
+        title:
+          type: string
+          description: "뽑는 직무 (e.g. Front-end Engineer)"
+        jobTrack:
+          type: string
+          description: "직무 트랙 (e.g. 기술/개발 트랙)"
+        minEducationLevel:
+          type: string
+          enum: [HIGH_SCHOOL, ASSOCIATE, BACHELOR, MASTER, DOCTORATE]
+          description: 필수 학력 요건
+        militaryPolicy:
+          type: string
+          enum: [NOT_RELEVANT, REQUIRED, BONUS, NOT_REFLECTED]
+          description: "병역 여부 (무관/필수/가산점 부여/미반영)"
+        careerPolicy:
+          type: string
+          enum: [NOT_RELEVANT, REQUIRED, BONUS, NOT_REFLECTED]
+          description: "직무 관련 경력 (무관/필수/가산점 부여/미반영)"
+        deadline:
+          type: string
+          format: date
+          description: "마감일 (YYYY-MM-DD)"
+        preferredCondition:
+          type: string
+          description: "우대조건 (e.g. 경력 3년 이상)"
+        salaryRange:
+          type: string
+          enum: [UNDER_2400, RANGE_2400_3000, RANGE_3000_3600, RANGE_3600_4200, RANGE_4200_5000, OVER_5000]
+          description: 급여 조건 (범위 선택)
+        salaryDescription:
+          type: string
+          description: "급여 조건 텍스트 (e.g. 면접 후 결정 (회사 내규에 따름))"
+        location:
+          type: string
+          description: "근무지 (e.g. 광화문)"
+        workStart:
+          type: string
+          description: "출근 시간 (HH:mm, e.g. 09:00)"
+        workEnd:
+          type: string
+          description: "퇴근 시간 (HH:mm, e.g. 18:00)"
+        applicationUrl:
+          type: string
+          format: uri
+          description: "지원 링크 바로가기 URL"
+        aiEvalCredential:
+          type: boolean
+          default: false
+          description: "AI 정량 평가 — 자격증/어학 (정량 점수화)"
+        aiEvalExperience:
+          type: boolean
+          default: false
+          description: "AI 정량 평가 — 대외/해외경험 (경험 가점)"
+        aiEvalAward:
+          type: boolean
+          default: false
+          description: "AI 정량 평가 — 수상 내역 (직무 연관성)"
+        skills:
+          type: array
+          items: { type: string }
+          description: 요구 기술 스택
+
+    JobPostingListItem:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        status: { type: string, enum: [OPEN, CLOSED] }
+        deadline: { type: string, format: date-time, nullable: true }
+        preferredCondition: { type: string, nullable: true }
+        salaryRange:
+          type: string
+          enum: [UNDER_2400, RANGE_2400_3000, RANGE_3000_3600, RANGE_3600_4200, RANGE_4200_5000, OVER_5000]
+          nullable: true
+        salaryDescription: { type: string, nullable: true, description: "급여 조건 텍스트" }
+        location: { type: string, nullable: true }
+        workStart: { type: string, nullable: true }
+        workEnd: { type: string, nullable: true }
+        matchRate:
+          type: integer
+          nullable: true
+          description: "매칭률 (인증된 취준생인 경우, 0~100)"
+        createdAt: { type: string, format: date-time }
+        corporation:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            description: { type: string, nullable: true }
+            thumbnailUrl: { type: string, nullable: true }
+            tags:
+              type: array
+              items: { type: string }
+              description: "기업 태그 (e.g. 핀테크, 유니콘, 시리즈D)"
+
+    JobPostingDetail:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        jobTrack: { type: string }
+        status: { type: string, enum: [OPEN, CLOSED] }
+        minEducationLevel:
+          type: string
+          enum: [HIGH_SCHOOL, ASSOCIATE, BACHELOR, MASTER, DOCTORATE]
+        militaryPolicy:
+          type: string
+          enum: [NOT_RELEVANT, REQUIRED, BONUS, NOT_REFLECTED]
+        careerPolicy:
+          type: string
+          enum: [NOT_RELEVANT, REQUIRED, BONUS, NOT_REFLECTED]
+        deadline: { type: string, format: date-time, nullable: true }
+        preferredCondition: { type: string, nullable: true }
+        salaryRange:
+          type: string
+          enum: [UNDER_2400, RANGE_2400_3000, RANGE_3000_3600, RANGE_3600_4200, RANGE_4200_5000, OVER_5000]
+          nullable: true
+        salaryDescription: { type: string, nullable: true, description: "급여 조건 텍스트" }
+        location: { type: string, nullable: true }
+        workStart: { type: string, nullable: true }
+        workEnd: { type: string, nullable: true }
+        applicationUrl: { type: string, nullable: true }
+        aiEvalCredential: { type: boolean }
+        aiEvalExperience: { type: boolean }
+        aiEvalAward: { type: boolean }
+        skills:
+          type: array
+          items: { type: string }
+        matchRate:
+          type: integer
+          nullable: true
+          description: "매칭률 (인증된 취준생인 경우)"
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        corporation:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            description: { type: string, nullable: true }
+            thumbnailUrl: { type: string, nullable: true }
+            industry: { type: string }
+            address: { type: string }
+            companySize:
+              type: string
+              enum: [STARTUP, SMALL, MEDIUM, LARGE, ENTERPRISE]
+            homepageUrl: { type: string, nullable: true }
+            tags:
+              type: array
+              items: { type: string }
+
+    Pagination:
+      type: object
+      properties:
+        page: { type: integer }
+        limit: { type: integer }
+        total: { type: integer }
+        totalPages: { type: integer }
 
   responses:
     Unauthorized:
