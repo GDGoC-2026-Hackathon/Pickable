@@ -1,6 +1,5 @@
 import Link from 'next/link'
 
-import { CompanyInfoCard } from '@/components/company/CompanyInfoCard'
 import { JobPostingsList } from '@/components/company/JobPostingsList'
 import RecruitmentCard from '@/components/layout/RecruitmentCard'
 
@@ -81,8 +80,6 @@ export default function DashboardCompanyPage() {
       </section>
 
       <JobPostingsList />
-
-      <CompanyInfoCard />
     </>
   )
 }

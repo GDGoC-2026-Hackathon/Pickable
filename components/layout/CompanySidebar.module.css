@@ -23,15 +23,6 @@
   margin: 0 auto;
 }
 
-.avatar {
-  background: rgba(11, 18, 32, 0.06);
-  object-fit: cover;
-}
-
-.avatarSkeleton {
-  background: rgba(11, 18, 32, 0.08);
-}
-
 .companyName {
   margin-top: 12px;
   text-align: center;

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 import type { CorporationProfile } from '@/types/next-auth'
+import { useCompanyDraft } from '@/components/company/CompanyDraftContext'
 
 import styles from './CompanySidebar.module.css'
 
@@ -31,6 +32,7 @@ const DEFAULT_AVATAR = '/icons/techwave-o.avif'
 
 export function CompanySidebar() {
   const pathname = usePathname()
+  const { draft } = useCompanyDraft()
   const { data: session, status } = useSession()
   const [fallbackProfile, setFallbackProfile] =
     useState<CorporationProfile | null>(null)
@@ -52,9 +54,15 @@ export function CompanySidebar() {
 
   const profile = session?.corporation ?? fallbackProfile
   const loading = status === 'loading'
+
+  const isEditProfilePage = pathname?.startsWith('/edit-profile-company')
   const avatarSrc = profile?.thumbnailUrl || DEFAULT_AVATAR
-  const companyName = profile?.name ?? '—'
-  const companyMeta = profile?.industry ?? '—'
+  const companyName = isEditProfilePage
+    ? draft.name.trim() || 'sample'
+    : profile?.name ?? '—'
+  const companyMeta = isEditProfilePage
+    ? draft.industry.trim() || 'sample'
+    : profile?.industry ?? '—'
 
   return (
     <aside className={styles.sidebar} aria-label="Company dashboard sidebar">
@@ -62,12 +70,7 @@ export function CompanySidebar() {
         {loading ? (
           <div className={styles.avatarSkeleton} aria-hidden />
         ) : (
-          <img
-            className={styles.avatar}
-            src={avatarSrc}
-            alt=""
-            aria-hidden
-          />
+          <img className={styles.avatar} src={avatarSrc} alt="" aria-hidden />
         )}
         <div className={styles.companyName}>
           {loading ? '…' : companyName}
