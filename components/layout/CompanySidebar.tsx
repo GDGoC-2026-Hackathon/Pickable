@@ -1,7 +1,11 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+
+import type { CorporationProfile } from '@/types/next-auth'
 
 import { useCompanyDraft } from '@/components/company/CompanyDraftContext'
 
@@ -25,29 +29,56 @@ const NAV_ITEMS = [
   },
 ] as const
 
+const DEFAULT_AVATAR = '/icons/techwave-o.avif'
+
 export function CompanySidebar() {
   const pathname = usePathname()
   const { draft } = useCompanyDraft()
+  const { data: session, status } = useSession()
+  const [fallbackProfile, setFallbackProfile] =
+    useState<CorporationProfile | null>(null)
+
+  // 세션에 기업 정보가 없으면 API로 한 번 더 조회 (예: 예전에 로그인한 JWT)
+  useEffect(() => {
+    if (status !== 'authenticated' || session?.corporation) return
+    let cancelled = false
+    fetch('/api/corporation/profile')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (cancelled || !json?.data) return
+        setFallbackProfile(json.data)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [status, session?.corporation])
+
+  const profile = session?.corporation ?? fallbackProfile
+  const loading = status === 'loading'
 
   const isEditProfilePage = pathname?.startsWith('/edit-profile-company')
+  const avatarSrc = profile?.thumbnailUrl || DEFAULT_AVATAR
   const companyName = isEditProfilePage
     ? draft.name.trim() || 'sample'
-    : '테크웨이브 (TechWave)'
+    : profile?.name ?? '—'
   const companyMeta = isEditProfilePage
     ? draft.industry.trim() || 'sample'
-    : 'IT · 소프트웨어 개발'
+    : profile?.industry ?? '—'
 
   return (
     <aside className={styles.sidebar} aria-label="Company dashboard sidebar">
       <div className={styles.profileCard}>
-        <img
-          className={styles.avatar}
-          src="/icons/company-logo.png"
-          alt=""
-          aria-hidden
-        />
-        <div className={styles.companyName}>{companyName}</div>
-        <div className={styles.companyMeta}>{companyMeta}</div>
+        {loading ? (
+          <div className={styles.avatarSkeleton} aria-hidden />
+        ) : (
+          <img className={styles.avatar} src={avatarSrc} alt="" aria-hidden />
+        )}
+        <div className={styles.companyName}>
+          {loading ? '…' : companyName}
+        </div>
+        <div className={styles.companyMeta}>
+          {loading ? '…' : companyMeta}
+        </div>
         <nav className={styles.nav} aria-label="Company dashboard">
           {NAV_ITEMS.map((item) => {
             const isActive =

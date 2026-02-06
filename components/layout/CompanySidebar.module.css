@@ -14,14 +14,38 @@
   padding: 18px;
 }
 
-.avatar {
+.avatar,
+.avatarSkeleton {
   width: 88px;
   height: 88px;
   border-radius: 22px;
-  background: rgba(11, 18, 32, 0.06);
-  object-fit: cover;
   display: block;
   margin: 0 auto;
+}
+
+.avatar {
+  background: rgba(11, 18, 32, 0.06);
+  object-fit: cover;
+}
+
+.avatarSkeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(11, 18, 32, 0.06) 0%,
+    rgba(11, 18, 32, 0.1) 45%,
+    rgba(11, 18, 32, 0.06) 100%
+  );
+  background-size: 240% 100%;
+  animation: avatar-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes avatar-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }
 
 .companyName {
