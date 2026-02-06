@@ -171,6 +171,9 @@
 }
 
 .apply {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: auto;
   height: 48px;
   border-radius: 16px;
@@ -179,11 +182,25 @@
   background: var(--rc-blue);
   color: #fff;
   font-weight: 900;
+  font-size: 15px;
+  text-decoration: none;
   box-shadow: 0 14px 26px rgba(29, 94, 255, 0.18);
+  box-sizing: border-box;
+}
+
+.apply:hover {
+  filter: brightness(1.05);
 }
 
 .apply:active {
   transform: translateY(1px);
+}
+
+.applyDisabled {
+  cursor: not-allowed;
+  background: #94a3b8;
+  box-shadow: none;
+  opacity: 0.85;
 }
 
 /* ===== preview (my-page-employee) ===== */
