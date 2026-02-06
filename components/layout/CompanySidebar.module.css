@@ -16,8 +16,6 @@
 
 .avatar,
 .avatarSkeleton {
-.avatar,
-.avatarSkeleton {
   width: 88px;
   height: 88px;
   border-radius: 22px;
@@ -95,5 +93,4 @@
   .sidebar {
     position: static;
   }
-}
 }

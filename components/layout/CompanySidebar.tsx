@@ -7,6 +7,8 @@ import { useSession } from 'next-auth/react'
 
 import type { CorporationProfile } from '@/types/next-auth'
 
+import { useCompanyDraft } from '@/components/company/CompanyDraftContext'
+
 import styles from './CompanySidebar.module.css'
 
 const NAV_ITEMS = [
@@ -50,11 +52,13 @@ export function CompanySidebar() {
     }
   }, [status, session?.corporation])
 
+  const { draft } = useCompanyDraft()
   const profile = session?.corporation ?? fallbackProfile
   const loading = status === 'loading'
   const avatarSrc = profile?.thumbnailUrl || DEFAULT_AVATAR
-  const companyName = profile?.name ?? '—'
-  const companyMeta = profile?.industry ?? '—'
+  // 폼에서 입력 중인 내용을 프로필 카드에 실시간 반영 (드래프트 우선)
+  const companyName = (draft.name?.trim() || profile?.name) ?? '—'
+  const companyMeta = (draft.industry?.trim() || profile?.industry) ?? '—'
 
   return (
     <aside className={styles.sidebar} aria-label="Company dashboard sidebar">
