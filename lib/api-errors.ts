@@ -44,6 +44,16 @@ export const API_ERRORS = {
     status: 404,
     message: "사용자를 찾을 수 없습니다.",
   },
+  CORPORATION_NOT_FOUND: {
+    code: "CORPORATION_NOT_FOUND",
+    status: 404,
+    message: "기업 정보를 찾을 수 없습니다. 기업 등록을 먼저 완료해주세요.",
+  },
+  JOB_POSTING_NOT_FOUND: {
+    code: "JOB_POSTING_NOT_FOUND",
+    status: 404,
+    message: "채용 공고를 찾을 수 없습니다.",
+  },
 
   // 409 - 충돌
   CONFLICT: {
@@ -55,6 +65,28 @@ export const API_ERRORS = {
     code: "EMAIL_ALREADY_EXISTS",
     status: 409,
     message: "이미 등록된 이메일입니다.",
+  },
+  ROLE_ALREADY_SET: {
+    code: "ROLE_ALREADY_SET",
+    status: 409,
+    message: "이미 역할이 설정되어 있습니다.",
+  },
+  PROFILE_ALREADY_EXISTS: {
+    code: "PROFILE_ALREADY_EXISTS",
+    status: 409,
+    message: "이미 프로필이 등록되어 있습니다.",
+  },
+
+  // 422 - 처리 불가
+  ROLE_NOT_SET: {
+    code: "ROLE_NOT_SET",
+    status: 422,
+    message: "역할을 먼저 선택해주세요.",
+  },
+  ROLE_MISMATCH: {
+    code: "ROLE_MISMATCH",
+    status: 422,
+    message: "선택한 역할과 일치하지 않는 요청입니다.",
   },
 
   // 500 - 서버 오류
