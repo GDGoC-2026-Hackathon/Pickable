@@ -1,0 +1,332 @@
+openapi: 3.0.3
+info:
+  title: Pickable API
+  description: 회원가입·인증 등 구현된 API 명세 (NextAuth 세션 쿠키 인증)
+  version: 0.1.0
+
+servers:
+  - url: /
+    description: 상대 경로 (프론트와 동일 오리진)
+
+tags:
+  - name: Health
+    description: 서버 상태
+  - name: Auth
+    description: 인증·현재 사용자
+  - name: Signup
+    description: 역할 선택 및 회원가입
+
+paths:
+  /api/health:
+    get:
+      tags: [Health]
+      summary: 헬스 체크
+      responses:
+        "200":
+          description: 정상
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  timestamp: { type: string, format: date-time }
+
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: 현재 로그인 사용자
+      security: [sessionCookie: []]
+      responses:
+        "200":
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      name: { type: string, nullable: true }
+                      email: { type: string, nullable: true }
+                      image: { type: string, nullable: true }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/signup/status:
+    get:
+      tags: [Signup]
+      summary: 가입 상태 조회
+      description: 역할 선택 여부(role), 프로필/기업 등록 여부(hasProfile)
+      security: [sessionCookie: []]
+      responses:
+        "200":
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                        enum: [JOB_SEEKER, CORPORATION]
+                        nullable: true
+                      hasProfile: { type: boolean }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/UserNotFound"
+        "500":
+          $ref: "#/components/responses/DBError"
+
+  /api/signup/role:
+    post:
+      tags: [Signup]
+      summary: 역할 선택
+      description: 로그인 후 1회만 설정 가능 (JOB_SEEKER | CORPORATION)
+      security: [sessionCookie: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [JOB_SEEKER, CORPORATION]
+      responses:
+        "201":
+          description: 생성됨
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      role: { type: string, enum: [JOB_SEEKER, CORPORATION] }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          description: 이미 역할 설정됨
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: ROLE_ALREADY_SET, message: "이미 역할이 설정되어 있습니다." }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+  /api/signup/job-seeker:
+    post:
+      tags: [Signup]
+      summary: 취준생 프로필 등록
+      description: role=JOB_SEEKER인 사용자만, 1회 등록
+      security: [sessionCookie: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/JobSeekerSignup" }
+      responses:
+        "201":
+          description: 생성됨
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      createdAt: { type: string, format: date-time }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          description: 역할 미선택 또는 역할 불일치
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "409":
+          description: 이미 프로필 등록됨
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: PROFILE_ALREADY_EXISTS, message: "이미 프로필이 등록되어 있습니다." }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+  /api/signup/corporation:
+    post:
+      tags: [Signup]
+      summary: 기업 등록
+      description: role=CORPORATION인 사용자만, 1회 등록
+      security: [sessionCookie: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CorporationSignup" }
+      responses:
+        "201":
+          description: 생성됨
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      name: { type: string }
+                      createdAt: { type: string, format: date-time }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          description: 역할 미선택 또는 역할 불일치
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "409":
+          description: 이미 기업 등록됨
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: PROFILE_ALREADY_EXISTS, message: "이미 기업이 등록되어 있습니다." }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: authjs.session-token
+      description: NextAuth 세션 쿠키 (로그인 후 자동 설정)
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+
+    JobSeekerSignup:
+      type: object
+      required:
+        - educationLevel
+        - major
+        - desiredJobRole
+        - militaryStatus
+        - birthDate
+        - gender
+      properties:
+        educationLevel:
+          type: string
+          enum: [HIGH_SCHOOL, ASSOCIATE, BACHELOR, MASTER, DOCTORATE]
+        major: { type: string }
+        desiredJobRole: { type: string }
+        militaryStatus:
+          type: string
+          enum: [NOT_APPLICABLE, COMPLETED, EXEMPT, SERVING, NOT_COMPLETED]
+        desiredLocation: { type: string }
+        desiredSalaryRange:
+          type: string
+          enum: [UNDER_2400, RANGE_2400_3000, RANGE_3000_3600, RANGE_3600_4200, RANGE_4200_5000, OVER_5000]
+        commuteStart: { type: string, description: "HH:mm" }
+        commuteEnd: { type: string, description: "HH:mm" }
+        employmentType:
+          type: string
+          enum: [FULL_TIME, CONTRACT, INTERN, FREELANCE]
+        birthDate: { type: string, format: date, description: "YYYY-MM-DD" }
+        gender:
+          type: string
+          enum: [MALE, FEMALE, OTHER]
+        skills:
+          type: array
+          items: { type: string }
+        experiences:
+          type: array
+          items:
+            type: object
+            required: [type, title]
+            properties:
+              type: { type: string, enum: [ACTIVITY, AWARD, OVERSEAS, VOLUNTEER] }
+              title: { type: string }
+              description: { type: string }
+              isJobRelated: { type: boolean, default: false }
+        credentials:
+          type: array
+          items:
+            type: object
+            required: [type, name]
+            properties:
+              type: { type: string, enum: [CERTIFICATE, LANGUAGE] }
+              name: { type: string }
+              score: { type: string }
+
+    CorporationSignup:
+      type: object
+      required: [name, industry, address, companySize]
+      properties:
+        name: { type: string }
+        industry: { type: string }
+        address: { type: string }
+        companySize:
+          type: string
+          enum: [STARTUP, SMALL, MEDIUM, LARGE, ENTERPRISE]
+        thumbnailUrl: { type: string }
+        description: { type: string }
+        welfare: { type: string }
+        homepageUrl: { type: string }
+        phone: { type: string }
+
+  responses:
+    Unauthorized:
+      description: 로그인 필요
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error: { code: UNAUTHORIZED, message: "로그인이 필요합니다." }
+    UserNotFound:
+      description: 사용자 없음
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    ValidationError:
+      description: 입력값 오류
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error: { code: VALIDATION_ERROR, message: "입력값이 올바르지 않습니다." }
+    DBError:
+      description: DB 오류
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error: { code: DB_ERROR, message: "데이터베이스 오류가 발생했습니다." }
