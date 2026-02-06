@@ -1,0 +1,119 @@
+.card {
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 40px rgba(2, 8, 23, 0.06);
+  padding: 18px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(11, 18, 32, 0.68);
+}
+
+.input {
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  padding: 12px 12px;
+  font-size: 14px;
+  outline: none;
+  background: #fbfcff;
+}
+
+.input:focus {
+  border-color: rgba(11, 99, 255, 0.36);
+  box-shadow: 0 0 0 4px rgba(11, 99, 255, 0.14);
+  background: #ffffff;
+}
+
+.addressRow {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.buttonRow {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancelButton {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.saveButton {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 0;
+  background: #0b63ff;
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(11, 99, 255, 0.22);
+}
+
+.saveButton:hover {
+  background: #0a57e0;
+}
+
+.searchButton {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(11, 18, 32, 0.02);
+  font-weight: 900;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .addressRow {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .buttonRow {
+    justify-content: stretch;
+  }
+
+  .cancelButton,
+  .saveButton {
+    flex: 1;
+  }
+}
+
