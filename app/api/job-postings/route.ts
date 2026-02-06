@@ -51,6 +51,7 @@ export async function GET(request: Request) {
           location: true,
           workStart: true,
           workEnd: true,
+          applicationUrl: true,
           createdAt: true,
           corporation: {
             select: {
@@ -91,6 +92,7 @@ export async function GET(request: Request) {
       location: p.location,
       workStart: p.workStart,
       workEnd: p.workEnd,
+      applicationUrl: p.applicationUrl ?? null,
       matchRate: matchMap.get(p.id) ?? null,
       createdAt: p.createdAt.toISOString(),
       corporation: {

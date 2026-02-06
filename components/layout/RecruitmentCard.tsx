@@ -27,6 +27,8 @@ type DefaultProps = BaseProps & {
   location: string;
   salary: string;
   workTime: string;
+  /** 지원하기 클릭 시 이동할 URL (없으면 버튼 비활성/안내) */
+  applicationUrl?: string | null;
 };
 
 export type RecruitmentCardProps = PreviewProps | DefaultProps;
@@ -96,6 +98,7 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
     salary,
     workTime,
     liked = false,
+    applicationUrl,
   } = props;
 
   return (
@@ -160,9 +163,20 @@ export default function RecruitmentCard(props: RecruitmentCardProps) {
         </div>
       </div>
 
-      <button className={styles.apply} type="button">
-        지원하기
-      </button>
+      {applicationUrl ? (
+        <a
+          className={styles.apply}
+          href={applicationUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          지원하기
+        </a>
+      ) : (
+        <span className={`${styles.apply} ${styles.applyDisabled}`} title="지원 URL이 등록되지 않은 공고입니다">
+          지원하기
+        </span>
+      )}
     </article>
   );
 }

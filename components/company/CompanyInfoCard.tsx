@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 
 import { openDaumPostcode } from '@/lib/daum-postcode'
 
+import { useCompanyDraft } from '@/components/company/CompanyDraftContext'
+
 import styles from './CompanyInfoCard.module.css'
 
 const COMPANY_SIZE_OPTIONS = [
@@ -22,6 +24,7 @@ export function CompanyInfoCard({ variant = 'edit' }: { variant?: Variant }) {
   const addressInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { setDraft } = useCompanyDraft()
 
   const isRegister = variant === 'register'
 
@@ -111,6 +114,9 @@ export function CompanyInfoCard({ variant = 'edit' }: { variant?: Variant }) {
               placeholder="예: 테크웨이브 (TechWave)"
               required={isRegister}
               disabled={!isRegister}
+              onChange={
+                isRegister ? (e) => setDraft({ name: e.currentTarget.value }) : undefined
+              }
             />
           </div>
 
@@ -125,6 +131,11 @@ export function CompanyInfoCard({ variant = 'edit' }: { variant?: Variant }) {
               placeholder="예: IT · 소프트웨어 개발"
               required={isRegister}
               disabled={!isRegister}
+              onChange={
+                isRegister
+                  ? (e) => setDraft({ industry: e.currentTarget.value })
+                  : undefined
+              }
             />
           </div>
 
@@ -136,10 +147,13 @@ export function CompanyInfoCard({ variant = 'edit' }: { variant?: Variant }) {
               id="companySize"
               name="companySize"
               className={styles.select}
+              defaultValue=""
               required={isRegister}
               disabled={!isRegister}
             >
-              <option value="">선택해주세요</option>
+              <option value="" disabled hidden>
+                기업 규모 선택
+              </option>
               {COMPANY_SIZE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}

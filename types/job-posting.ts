@@ -102,6 +102,7 @@ export type JobPostingListItem = {
   location: string | null;
   workStart: string | null;
   workEnd: string | null;
+  applicationUrl: string | null;
   matchRate: number | null; // 매칭률 (인증된 취준생인 경우)
   createdAt: string;
 

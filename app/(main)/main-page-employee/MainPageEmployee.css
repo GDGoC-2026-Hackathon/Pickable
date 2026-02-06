@@ -146,6 +146,66 @@
   .mpe-action-ico{
     color: #64748b;
   }
+
+  .mpe-loading,
+  .mpe-empty {
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--mpe-muted);
+    font-size: 15px;
+  }
+
+  .mpe-error {
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .mpe-retry {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--mpe-line);
+    background: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--mpe-blue);
+  }
+
+  .mpe-retry:hover {
+    background: rgba(29, 94, 255, 0.06);
+  }
+
+  .mpe-more {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 40px;
+  }
+
+  .mpe-more-btn {
+    min-width: 160px;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid var(--mpe-line);
+    background: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--mpe-text);
+  }
+
+  .mpe-more-btn:hover:not(:disabled) {
+    background: rgba(15, 23, 42, 0.04);
+  }
+
+  .mpe-more-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
   
   /* Grid */
   .mpe-grid{

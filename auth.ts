@@ -7,9 +7,12 @@ import { prisma } from "@/lib/db";
 import { authConfig } from "@/auth.config";
 import type { CorporationProfile } from "@/types/next-auth";
 
-async function getCorporationProfile(
+async function getUserRoleAndCorporation(
   userId: string
-): Promise<CorporationProfile | null> {
+): Promise<{
+  role: "JOB_SEEKER" | "CORPORATION" | null;
+  corporation: CorporationProfile | null;
+}> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -24,12 +27,21 @@ async function getCorporationProfile(
       },
     },
   });
-  if (user?.role !== "CORPORATION" || !user.corporation) return null;
+
+  const role = (user?.role as "JOB_SEEKER" | "CORPORATION") ?? null;
+
+  if (user?.role !== "CORPORATION" || !user.corporation) {
+    return { role, corporation: null };
+  }
+
   return {
-    id: user.corporation.id,
-    name: user.corporation.name,
-    thumbnailUrl: user.corporation.thumbnailUrl,
-    industry: user.corporation.industry,
+    role,
+    corporation: {
+      id: user.corporation.id,
+      name: user.corporation.name,
+      thumbnailUrl: user.corporation.thumbnailUrl,
+      industry: user.corporation.industry,
+    },
   };
 }
 
@@ -42,13 +54,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       if (user) token.id = user.id;
       if (user?.id) {
-        const corporation = await getCorporationProfile(user.id);
+        const { role, corporation } = await getUserRoleAndCorporation(user.id);
+        token.role = role;
         if (corporation) token.corporation = corporation;
       }
       return token;
     },
     session({ session, token }) {
-      if (session.user) session.user.id = token.id as string;
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = (token.role as "JOB_SEEKER" | "CORPORATION" | null) ?? null;
+      }
       if (token.corporation)
         session.corporation = token.corporation as CorporationProfile;
       return session;

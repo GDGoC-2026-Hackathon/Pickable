@@ -251,16 +251,30 @@
 }
 
 .mp-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 40px;
-  padding: 0 14px;
+  padding: 0 18px;
   border-radius: 14px;
   border: none;
   background: #1d5eff;
   color: #fff;
   font-weight: 900;
+  font-size: 14px;
   cursor: pointer;
   text-decoration: none;
-  text-align: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.mp-primary:hover {
+  background: #0b4fd4;
+}
+
+.mp-primary:active {
+  transform: scale(0.98);
 }
 
 .mp-grid {
@@ -270,11 +284,20 @@
 }
 
 @media (max-width: 980px) {
-  .mypage {
+  .mypage-container {
     grid-template-columns: 1fr;
   }
 
   .mp-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mp-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mp-primary {
+    align-self: flex-start;
   }
 }

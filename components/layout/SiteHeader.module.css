@@ -37,5 +37,73 @@
   font-size: 14px;
   font-weight: 600;
   color: rgba(11, 18, 32, 0.85);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.userName:hover {
+  color: #0b63ff;
+}
+
+.userMenuWrap {
+  position: relative;
+}
+
+.settingsBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(11, 18, 32, 0.6);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.settingsBtn:hover {
+  background: rgba(11, 18, 32, 0.06);
+  color: rgba(11, 18, 32, 0.85);
+}
+
+.settingsBtn[aria-expanded="true"] {
+  background: rgba(11, 99, 255, 0.08);
+  color: #0b63ff;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  min-width: 160px;
+  padding: 6px 0;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  z-index: 20;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(11, 18, 32, 0.85);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dropdownItem:hover {
+  background: rgba(11, 18, 32, 0.04);
 }
 

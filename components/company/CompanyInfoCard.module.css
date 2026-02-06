@@ -96,6 +96,11 @@
   cursor: pointer;
 }
 
+.select:required:invalid {
+  color: rgba(11, 18, 32, 0.45);
+  font-weight: 500;
+}
+
 .select:disabled {
   cursor: not-allowed;
 }
