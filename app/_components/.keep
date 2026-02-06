@@ -1,0 +1,8 @@
+# _components - App 전용 프라이빗 컴포넌트
+# 언더스코어(_) 접두사로 라우팅에서 제외되는 프라이빗 폴더입니다.
+# app/ 디렉토리 내에서만 사용되는 페이지 전용 컴포넌트를 둡니다.
+#
+# 작업할 파일:
+# - Providers.tsx       → 전역 Provider 래퍼 (ThemeProvider, QueryClientProvider 등)
+# - Navigation.tsx      → 네비게이션 바 컴포넌트
+# - PageTransition.tsx  → 페이지 전환 애니메이션 래퍼

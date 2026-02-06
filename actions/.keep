@@ -1,0 +1,9 @@
+# actions - Server Actions
+# Next.js의 Server Actions를 정의하는 폴더입니다.
+# 'use server' 디렉티브를 사용하여 서버에서 실행되는 함수를 작성합니다.
+# form 제출, 데이터 뮤테이션 등에 활용됩니다.
+#
+# 작업할 파일:
+# - auth.ts             → 로그인, 로그아웃, 회원가입 서버 액션
+# - user.ts             → 사용자 프로필 업데이트, 삭제 등
+# - upload.ts           → 파일 업로드 처리

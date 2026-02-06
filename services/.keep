@@ -1,0 +1,9 @@
+# services - 외부 서비스 / 데이터 접근 계층
+# 외부 API, 데이터베이스 쿼리 등 데이터를 가져오는 로직을 모아놓는 폴더입니다.
+# Server Components에서 직접 호출하거나 Server Actions에서 사용합니다.
+#
+# 작업할 파일:
+# - userService.ts      → 사용자 데이터 CRUD 함수
+# - authService.ts      → 인증 관련 서비스 (토큰 검증, 세션 관리 등)
+# - emailService.ts     → 이메일 전송 서비스 (Resend, SendGrid 등)
+# - storageService.ts   → 파일 스토리지 서비스 (S3, GCS 등)

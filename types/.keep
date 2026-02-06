@@ -1,0 +1,9 @@
+# types - TypeScript 타입 정의
+# 프로젝트 전체에서 공유되는 타입/인터페이스 정의를 모아놓는 폴더입니다.
+#
+# 작업할 파일:
+# - index.ts            → 공통 타입 re-export 배럴 파일
+# - user.ts             → 사용자 관련 타입 (User, UserProfile 등)
+# - api.ts              → API 요청/응답 타입 (ApiResponse<T>, PaginatedResult 등)
+# - database.ts         → DB 모델 타입 (Prisma 자동생성 외 커스텀 타입)
+# - next-auth.d.ts      → NextAuth 타입 확장 (세션에 커스텀 필드 추가 등)

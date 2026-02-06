@@ -1,0 +1,11 @@
+# common - 공통 비즈니스 컴포넌트
+# 여러 페이지에서 공유되는 도메인 관련 컴포넌트를 모아놓는 폴더입니다.
+# ui/는 도메인 무관, common/은 비즈니스 로직 포함.
+#
+# 작업할 파일:
+# - SearchBar.tsx       → 검색 바 컴포넌트
+# - UserCard.tsx        → 사용자 정보 카드
+# - EmptyState.tsx      → 데이터 없을 때 표시할 빈 상태 UI
+# - ErrorFallback.tsx   → 에러 발생 시 표시할 폴백 UI
+# - LoadingSpinner.tsx  → 로딩 스피너/인디케이터
+# - Pagination.tsx      → 페이지네이션 컴포넌트

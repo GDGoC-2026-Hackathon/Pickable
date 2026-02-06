@@ -1,0 +1,11 @@
+# hooks - 커스텀 React Hooks
+# 재사용 가능한 커스텀 훅을 모아놓는 폴더입니다.
+# "use" 접두사로 파일명을 짓는 것이 컨벤션입니다.
+#
+# 작업할 파일:
+# - useAuth.ts          → 인증 상태 관리 훅
+# - useDebounce.ts      → 디바운스 처리 훅 (검색 입력 등)
+# - useMediaQuery.ts    → 반응형 미디어쿼리 감지 훅
+# - useLocalStorage.ts  → 로컬스토리지 상태 관리 훅
+# - useIntersection.ts  → Intersection Observer 훅 (무한 스크롤 등)
+# - useClickOutside.ts  → 외부 클릭 감지 훅 (모달, 드롭다운 닫기)

@@ -1,0 +1,10 @@
+# middleware - 미들웨어 관련 헬퍼
+# Next.js 미들웨어의 로직을 분리하여 관리합니다.
+# 루트의 middleware.ts가 진입점이고, 여기에 세부 로직을 모듈화합니다.
+#
+# 참고: Next.js의 middleware.ts는 반드시 프로젝트 루트(또는 src/)에 위치해야 합니다.
+#
+# 작업할 파일:
+# - (루트) middleware.ts → 미들웨어 진입점 (매 요청마다 실행)
+# - auth.ts             → 인증 체크 미들웨어 로직
+# - rateLimit.ts        → API 요청 속도 제한 로직

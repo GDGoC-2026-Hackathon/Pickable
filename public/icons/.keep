@@ -1,0 +1,8 @@
+# icons - 아이콘/파비콘 파일
+# 파비콘, PWA 아이콘 등 아이콘 파일을 보관합니다.
+#
+# 넣어야 할 파일:
+# - favicon.ico         → 파비콘 (브라우저 탭 아이콘)
+# - icon-192x192.png    → PWA 아이콘 (192px)
+# - icon-512x512.png    → PWA 아이콘 (512px)
+# - apple-touch-icon.png → iOS 홈 화면 아이콘

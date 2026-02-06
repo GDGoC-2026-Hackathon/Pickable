@@ -1,0 +1,10 @@
+# api - API Route Handlers
+# Next.js App Router의 Route Handler를 정의하는 폴더입니다.
+# 각 엔드포인트별 폴더를 만들고 route.ts를 작성합니다.
+#
+# 작업할 파일:
+# - health/route.ts     → 헬스체크 API (이미 존재)
+# - auth/route.ts       → 인증 관련 API
+# - users/route.ts      → 사용자 CRUD API
+# - users/[id]/route.ts → 특정 사용자 API (동적 라우트)
+# - webhook/route.ts    → 외부 서비스 웹훅 수신

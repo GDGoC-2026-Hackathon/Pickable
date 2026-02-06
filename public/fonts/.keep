@@ -1,0 +1,7 @@
+# fonts - 커스텀 폰트 파일
+# self-hosting 할 폰트 파일을 보관합니다.
+# next/font/local로 불러와서 사용합니다. (FOUT/FOIT 방지)
+#
+# 넣어야 할 파일:
+# - PretendardVariable.woff2  → 한국어 가변 폰트 (권장)
+# - GeistSans.woff2           → Vercel Geist 폰트 (영문)

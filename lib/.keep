@@ -1,0 +1,10 @@
+# lib - 라이브러리/유틸리티 함수
+# 프로젝트 전체에서 사용되는 유틸리티 함수와 외부 라이브러리 설정을 모아놓는 폴더입니다.
+#
+# 작업할 파일:
+# - utils.ts            → 범용 유틸리티 함수 (cn(), formatDate(), 등)
+# - db.ts               → 데이터베이스 클라이언트 설정 (Prisma, Drizzle 등)
+# - auth.ts             → 인증 라이브러리 설정 (NextAuth, Clerk 등)
+# - validations.ts      → Zod 등을 활용한 데이터 검증 스키마
+# - fetcher.ts          → API 호출 래퍼 함수 (fetch, axios 설정)
+# - fonts.ts            → 폰트 설정 (next/font 활용)

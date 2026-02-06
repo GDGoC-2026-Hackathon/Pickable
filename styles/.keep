@@ -1,0 +1,9 @@
+# styles - 스타일 관련 파일
+# 글로벌 스타일, 테마, CSS 변수 등을 관리합니다.
+# app/globals.css가 메인 진입점이고, 여기에 추가 스타일 파일을 둡니다.
+#
+# 작업할 파일:
+# - theme.ts            → 테마 설정 (색상 팔레트, 브레이크포인트 등)
+# - animations.css      → 커스텀 CSS 애니메이션/키프레임
+# - typography.css      → 타이포그래피 스타일
+# - variables.css       → CSS 커스텀 프로퍼티 (디자인 토큰)

@@ -1,0 +1,9 @@
+# images - 정적 이미지 파일
+# 프로젝트에서 사용하는 정적 이미지를 보관합니다.
+# Next.js의 <Image> 컴포넌트에서 src="/images/파일명"으로 참조합니다.
+#
+# 넣어야 할 파일:
+# - logo.svg            → 서비스 로고
+# - og-image.png        → Open Graph 메타 이미지 (SNS 공유 시 표시)
+# - hero-banner.webp    → 히어로 섹션 배너 이미지
+# - placeholder.png     → 이미지 로딩 전 플레이스홀더

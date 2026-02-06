@@ -1,0 +1,11 @@
+# (main) - 메인 서비스 라우트 그룹
+# 로그인 후 접근하는 주요 서비스 페이지들을 모아놓는 그룹입니다.
+#
+# 작업할 파일:
+# - layout.tsx          → 메인 레이아웃 (Header, Footer, Sidebar 포함)
+# - page.tsx            → 메인/대시보드 페이지 (루트 "/" 에 매핑)
+# - loading.tsx         → 로딩 UI (React Suspense 연동)
+# - error.tsx           → 에러 바운더리 UI
+# - not-found.tsx       → 404 페이지
+# - profile/page.tsx    → 프로필 페이지
+# - settings/page.tsx   → 설정 페이지

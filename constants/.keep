@@ -1,0 +1,9 @@
+# constants - 상수 정의
+# 하드코딩을 피하고, 프로젝트 전체에서 사용되는 상수를 중앙 관리합니다.
+#
+# 작업할 파일:
+# - index.ts            → 상수 re-export 배럴 파일
+# - routes.ts           → 라우트 경로 상수 (ROUTES.HOME, ROUTES.LOGIN 등)
+# - config.ts           → 앱 설정 상수 (APP_NAME, ITEMS_PER_PAGE 등)
+# - messages.ts         → UI 텍스트/에러 메시지 상수
+# - enums.ts            → 열거형 (UserRole, Status 등)
