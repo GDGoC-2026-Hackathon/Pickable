@@ -1,11 +1,34 @@
 import Link from 'next/link'
 
 import { JobPostingsList } from '@/components/company/JobPostingsList'
-import RecruitmentCard from '@/components/layout/RecruitmentCard'
+import FlippableRecruitmentCard from '@/components/layout/FlippableRecruitmentCard'
 
 import styles from './dashboard-company-page.module.css'
 
 export default function DashboardCompanyPage() {
+  const brandingCards = [
+    {
+      id: 'card-1',
+      companyName: '테크웨이브',
+      companyDesc: 'AI 브랜딩 스튜디오',
+      jobTitle: '브랜드 디자이너',
+      jobSubtitle: '브랜딩/채용',
+      matchRate: 98,
+      tags: ['기술중심', '팀문화', '성장환경'],
+      image: gradient('0b63ff', '0b1220'),
+    },
+    {
+      id: 'card-2',
+      companyName: '테크웨이브',
+      companyDesc: 'AI 브랜딩 스튜디오',
+      jobTitle: 'UX 리서처',
+      jobSubtitle: '리서치/채용',
+      matchRate: 92,
+      tags: ['유연근무', '리모트', '스톡옵션'],
+      image: gradient('7c3aed', '111827'),
+    },
+  ]
+
   return (
     <>
       <section className={styles.sectionCard} aria-label="Generated branding cards">
@@ -17,54 +40,36 @@ export default function DashboardCompanyPage() {
         </div>
 
         <div className={styles.brandingGrid}>
-          <FlippableRecruitmentCard
-            front={{
-              variant: 'preview',
-              companyName: '테크웨이브',
-              companyDesc: 'AI 브랜딩 스튜디오',
-              matchRate: 98,
-              tags: ['기술중심', '팀문화', '성장환경'],
-              image: gradient('0b63ff', '0b1220'),
-            }}
-            back={{
-              companyName: '테크웨이브',
-              companyDesc: 'AI 브랜딩 스튜디오',
-              matchRate: 98,
-              hiringLabel: '사용 중',
-              tags: ['기술중심', '팀문화', '성장환경'],
-              positionTitle: '브랜딩 카드 상세',
-              deadline: '2025.12.31',
-              experience: '브랜딩/채용',
-              location: '서울 강남구',
-              salary: '—',
-              workTime: '—',
-              liked: false,
-            }}
-          />
-          <FlippableRecruitmentCard
-            front={{
-              variant: 'preview',
-              companyName: '테크웨이브',
-              companyDesc: 'AI 브랜딩 스튜디오',
-              matchRate: 92,
-              tags: ['유연근무', '리모트', '스톡옵션'],
-              image: gradient('7c3aed', '111827'),
-            }}
-            back={{
-              companyName: '테크웨이브',
-              companyDesc: 'AI 브랜딩 스튜디오',
-              matchRate: 92,
-              hiringLabel: '사용 중',
-              tags: ['유연근무', '리모트', '스톡옵션'],
-              positionTitle: '브랜딩 카드 상세',
-              deadline: '2025.12.31',
-              experience: '브랜딩/채용',
-              location: '서울 강남구',
-              salary: '—',
-              workTime: '—',
-              liked: false,
-            }}
-          />
+          {brandingCards.map((card) => (
+            <FlippableRecruitmentCard
+              key={card.id}
+              flipOnHover
+              className={styles.brandingFlip}
+              front={{
+                variant: 'preview',
+                companyName: card.companyName,
+                companyDesc: card.companyDesc,
+                matchRate: card.matchRate,
+                tags: card.tags,
+                image: card.image,
+              }}
+              back={{
+                variant: 'back',
+                companyName: card.jobTitle,
+                companyDesc: card.jobSubtitle,
+                matchRate: card.matchRate,
+                hiringLabel: '채용 중',
+                tags: card.tags,
+                positionTitle: card.jobTitle,
+                deadline: '2025.12.31',
+                experience: card.jobSubtitle,
+                location: '서울 강남구',
+                salary: '—',
+                workTime: '—',
+                liked: false,
+              }}
+            />
+          ))}
           <div className={styles.brandingCard}>
             <div className={styles.brandingCreate}>
               <div className={styles.createInner}>
@@ -104,23 +109,3 @@ function gradient(colorA: string, colorB: string) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
 
-function FlippableRecruitmentCard({
-  front,
-  back,
-}: {
-  front: Parameters<typeof RecruitmentCard>[0]
-  back: Parameters<typeof RecruitmentCard>[0]
-}) {
-  return (
-    <div className={styles.flip}>
-      <div className={styles.flipInner}>
-        <div className={styles.flipFace}>
-          <RecruitmentCard {...front} />
-        </div>
-        <div className={`${styles.flipFace} ${styles.flipBack}`}>
-          <RecruitmentCard {...back} />
-        </div>
-      </div>
-    </div>
-  )
-}

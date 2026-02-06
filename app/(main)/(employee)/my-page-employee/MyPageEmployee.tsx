@@ -1,5 +1,5 @@
 import "./MyPageEmployee.css";
-import RecruitmentCard from "@/components/layout/RecruitmentCard";
+import FlippableRecruitmentCard from "@/components/layout/FlippableRecruitmentCard";
 import Link from 'next/link'
 
 type PreviewItem = {
@@ -9,6 +9,13 @@ type PreviewItem = {
   matchRate: number;
   tags: string[];
   image: string; // preview 배경 이미지
+  positionTitle: string;
+  deadline: string;
+  experience: string;
+  location: string;
+  salary: string;
+  workTime: string;
+  hiringLabel: string;
 };
 
 export default function MyPageEmployee() {
@@ -21,6 +28,13 @@ export default function MyPageEmployee() {
       matchRate: 98,
       tags: ["핀테크", "유니콘"],
       image: "/mock/toss.jpg",
+      positionTitle: "Product Designer",
+      deadline: "2025.03.20",
+      experience: "경력 3년 이상",
+      location: "서울 강남구",
+      salary: "4000만원 이상",
+      workTime: "09:00 ~ 18:00",
+      hiringLabel: "채용 중",
     },
     {
       id: "karrot",
@@ -29,6 +43,13 @@ export default function MyPageEmployee() {
       matchRate: 95,
       tags: ["플랫폼", "커뮤니티"],
       image: "/mock/karrot.jpg",
+      positionTitle: "Frontend Engineer",
+      deadline: "2025.03.20",
+      experience: "경력 2년 이상",
+      location: "서울 성동구",
+      salary: "면접 후 결정",
+      workTime: "10:00 ~ 19:00",
+      hiringLabel: "채용 중",
     },
     {
       id: "karrot-2",
@@ -37,6 +58,13 @@ export default function MyPageEmployee() {
       matchRate: 95,
       tags: ["플랫폼", "커뮤니티"],
       image: "/mock/karrot.jpg",
+      positionTitle: "UX Researcher",
+      deadline: "2025.03.20",
+      experience: "경력 3년 이상",
+      location: "서울 성동구",
+      salary: "면접 후 결정",
+      workTime: "10:00 ~ 19:00",
+      hiringLabel: "채용 중",
     },
     {
       id: "musinsa",
@@ -45,6 +73,13 @@ export default function MyPageEmployee() {
       matchRate: 92,
       tags: ["패션", "이커머스"],
       image: "/mock/musinsa.jpg",
+      positionTitle: "Brand Marketer",
+      deadline: "2025.03.20",
+      experience: "경력 4년 이상",
+      location: "서울 서초구",
+      salary: "5000만원 이상",
+      workTime: "09:30 ~ 18:30",
+      hiringLabel: "채용 중",
     },
   ];
 
@@ -156,16 +191,32 @@ export default function MyPageEmployee() {
 
           <section className="mp-grid">
             {previewItems.map((it) => (
-              <RecruitmentCard
+              <FlippableRecruitmentCard
                 key={it.id}
-                variant="preview"
-                companyName={it.companyName}
-                companyDesc={it.companyDesc}
-                matchRate={it.matchRate}
-                tags={it.tags}
-                image={it.image}
-              // 아래 default 전용 필드들은 preview에서는 필요 없음
-              // (props 타입을 선택적(optional)로 바꿔둔 상태여야 함)
+                flipOnHover
+                front={{
+                  variant: "preview",
+                  companyName: it.companyName,
+                  companyDesc: it.companyDesc,
+                  matchRate: it.matchRate,
+                  tags: it.tags,
+                  image: it.image,
+                }}
+                back={{
+                  variant: "back",
+                  companyName: it.companyName,
+                  companyDesc: it.companyDesc,
+                  matchRate: it.matchRate,
+                  hiringLabel: it.hiringLabel,
+                  tags: it.tags,
+                  positionTitle: it.positionTitle,
+                  deadline: it.deadline,
+                  experience: it.experience,
+                  location: it.location,
+                  salary: it.salary,
+                  workTime: it.workTime,
+                  liked: false,
+                }}
               />
             ))}
           </section>
