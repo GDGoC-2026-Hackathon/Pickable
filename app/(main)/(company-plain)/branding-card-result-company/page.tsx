@@ -57,14 +57,6 @@ export default function BrandingCardResultCompanyPage() {
 
       <div className={styles.grid}>
         <section className={styles.leftCol} aria-label="Preview">
-          <div className={styles.previewHeader}>
-            <div className={styles.previewTitleRow}>
-              <span className={styles.previewDot} aria-hidden />
-              <div className={styles.previewTitle}>실시간 미리보기</div>
-              <div className={styles.previewHint}>구직자에게 보여지는 화면입니다</div>
-            </div>
-          </div>
-
           <div className={styles.previewCardWrap}>
             <div className={styles.previewScaled}>
               <RecruitmentCard
@@ -75,6 +67,14 @@ export default function BrandingCardResultCompanyPage() {
                 tags={['#자율출퇴근', '#무제한휴가', '#성장지원금']}
                 image={gradient('0b63ff', '0b1220')}
               />
+            </div>
+          </div>
+
+          <div className={styles.previewHeader}>
+            <div className={styles.previewTitleRow}>
+              <span className={styles.previewDot} aria-hidden />
+              <div className={styles.previewTitle}>실시간 미리보기</div>
+              <div className={styles.previewHint}>구직자에게 보여지는 화면입니다</div>
             </div>
           </div>
         </section>

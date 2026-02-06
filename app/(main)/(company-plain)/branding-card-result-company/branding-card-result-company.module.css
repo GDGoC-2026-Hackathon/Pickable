@@ -96,12 +96,12 @@
 
 .leftCol {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   align-content: start;
 }
 
 .previewHeader {
-  padding: 6px 2px 0;
+  padding: 4px 2px 0;
 }
 
 .previewTitleRow {
