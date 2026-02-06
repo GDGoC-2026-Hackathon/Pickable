@@ -1,0 +1,422 @@
+:root{
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --line: #e6edf6;
+    --blue: #1d5eff;
+    --blue-weak: rgba(29, 94, 255, 0.10);
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+  }
+  
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", Arial, "Helvetica Neue", sans-serif; color: var(--text); }
+  
+  .pe-page{
+    min-height: 100vh;
+    background: var(--bg);
+  }
+  
+  /* Topbar */
+  .pe-topbar{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(246, 248, 251, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(230, 237, 246, 0.7);
+  }
+  
+  .pe-topbar-inner{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .pe-logo{
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--blue);
+    font-size: 18px;
+  }
+  
+  .pe-topbar-right{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .pe-user-pill{
+    border: 1px solid var(--line);
+    background: white;
+    border-radius: 999px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    cursor: pointer;
+  }
+  
+  .pe-avatar{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #eef2ff;
+  }
+  
+  .pe-user-name{
+    font-size: 13px;
+    color: #0b1220;
+    font-weight: 600;
+  }
+  
+  .pe-pill-caret{ color: #94a3b8; font-size: 12px; }
+  
+  .pe-gear{
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+  }
+  
+  /* Layout */
+  .pe-main{
+    padding: 26px 0 44px;
+  }
+  
+  .pe-container{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .pe-title-area{
+    margin: 18px 0 22px;
+  }
+  
+  .pe-eyebrow{
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.6px;
+  }
+  
+  .pe-title{
+    margin: 8px 0 6px;
+    font-size: 30px;
+    letter-spacing: -0.8px;
+  }
+  
+  .pe-subtitle{
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  /* Cards */
+  .pe-card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    padding: 22px 22px;
+    margin-top: 16px;
+  }
+  
+  .pe-card-head{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  
+  .pe-icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: #f1f5ff;
+    border: 1px solid rgba(29, 94, 255, 0.15);
+  }
+  
+  .pe-card-title{
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+  }
+  
+  .pe-help{
+    margin: -6px 0 14px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  
+  /* Forms */
+  .pe-grid{
+    display: grid;
+    gap: 14px;
+  }
+  
+  .pe-grid-2{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .pe-span-2{ grid-column: span 2; }
+  
+  .pe-field{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .pe-label{
+    font-size: 12px;
+    color: #334155;
+    font-weight: 700;
+  }
+  
+  .pe-input{
+    width: 100%;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: #fbfdff;
+    padding: 0 14px;
+    outline: none;
+    color: #0b1220;
+  }
+  
+  .pe-input::placeholder{
+    color: #94a3b8;
+  }
+  
+  .pe-input:focus{
+    border-color: rgba(29, 94, 255, 0.45);
+    box-shadow: 0 0 0 4px var(--blue-weak);
+    background: white;
+  }
+  
+  .pe-input-wrap{
+    position: relative;
+  }
+  
+  .pe-input-icon{
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+    pointer-events: none;
+  }
+  
+  /* Segmented */
+  .pe-seg{
+    display: flex;
+    gap: 10px;
+  }
+  
+  .pe-seg-btn{
+    flex: 1;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: #fbfdff;
+    cursor: pointer;
+    font-weight: 700;
+    color: #64748b;
+  }
+  
+  .pe-seg-btn.is-active{
+    border-color: rgba(29, 94, 255, 0.55);
+    background: rgba(29, 94, 255, 0.08);
+    color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(29, 94, 255, 0.10);
+  }
+  
+  /* Chips */
+  .pe-chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .pe-chip{
+    border: 1px solid var(--line);
+    background: #fbfdff;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    color: #475569;
+  }
+  
+  .pe-chip.is-selected{
+    border-color: rgba(29, 94, 255, 0.55);
+    color: white;
+    background: var(--blue);
+  }
+  
+  .pe-chip-add{
+    background: white;
+    border-style: dashed;
+    color: #64748b;
+  }
+  
+  /* Dark upload card */
+  .pe-card-dark{
+    background: radial-gradient(1200px 400px at 30% 0%, rgba(29,94,255,0.18), rgba(0,0,0,0)),
+                linear-gradient(180deg, #0b1220, #0a1020);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  
+  .pe-card-title-dark{
+    color: #e5e7eb;
+  }
+  
+  .pe-upload{
+    margin-top: 6px;
+  }
+  
+  .pe-upload-box{
+    border: 2px dashed rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.04);
+    border-radius: 18px;
+    padding: 26px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .pe-upload-title{
+    color: rgba(229,231,235,0.9);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+  }
+  
+  .pe-upload-btn{
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.10);
+    color: #f3f4f6;
+    cursor: pointer;
+    font-weight: 800;
+  }
+  
+  .pe-upload-note{
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: rgba(229,231,235,0.75);
+    font-size: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  
+  .pe-info-dot{
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    background: rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.9);
+    font-size: 12px;
+  }
+  
+  /* CTA */
+  .pe-cta{
+    margin-top: 18px;
+  }
+  
+  .pe-cta-btn{
+    width: 100%;
+    height: 54px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    background: var(--blue);
+    color: white;
+    font-weight: 900;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    box-shadow: 0 14px 30px rgba(29, 94, 255, 0.22);
+  }
+  
+  .pe-cta-btn:active{
+    transform: translateY(1px);
+  }
+  
+  /* Footer */
+  .pe-footer{
+    margin-top: 26px;
+    padding: 16px 2px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+  
+  .pe-footer-left{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .pe-footer-brand{
+    font-weight: 900;
+    color: #0b1220;
+  }
+  
+  .pe-footer-right{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  
+  .pe-footer-link{
+    color: #64748b;
+    text-decoration: none;
+  }
+  
+  .pe-footer-link:hover{
+    color: #0b1220;
+  }
+  
+  /* Responsive */
+  @media (max-width: 760px){
+    .pe-grid-2{ grid-template-columns: 1fr; }
+    .pe-span-2{ grid-column: auto; }
+    .pe-title{ font-size: 24px; }
+    .pe-topbar-inner{ padding: 12px 14px; }
+    .pe-container{ padding: 0 14px; }
+    .pe-footer{ flex-direction: column; align-items: flex-start; }
+  }
+  

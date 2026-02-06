@@ -1,1 +1,1 @@
-export { default } from './(main)/onboarding/page'
+export { default } from './(main)/edit-profile-employee/page'
