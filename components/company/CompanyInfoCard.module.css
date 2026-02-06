@@ -3,20 +3,22 @@
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 18px 40px rgba(2, 8, 23, 0.06);
-  padding: 18px;
+  padding: 22px;
+  color: #0b1220;
 }
 
 .title {
   font-size: 18px;
   font-weight: 900;
   letter-spacing: -0.02em;
+  color: #0b1220;
 }
 
 .grid {
-  margin-top: 16px;
+  margin-top: 18px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
 .field {
@@ -31,12 +33,18 @@
 }
 
 .input {
-  border-radius: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 14px 14px;
   font-size: 14px;
   outline: none;
-  background: #fbfcff;
+  background: rgba(11, 18, 32, 0.02);
+  font-weight: 800;
+}
+
+.input::placeholder {
+  font-weight: 500;
+  color: rgba(11, 18, 32, 0.45);
 }
 
 .input:focus {
@@ -49,37 +57,39 @@
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: 12px;
   align-items: end;
 }
 
 .buttonRow {
-  margin-top: 18px;
+  margin-top: 22px;
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
 }
 
 .cancelButton {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  background: #ffffff;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 0;
+  background: rgba(11, 18, 32, 0.04);
   font-weight: 900;
   cursor: pointer;
+  color: rgba(11, 18, 32, 0.6);
 }
 
 .saveButton {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 12px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 14px;
   border: 0;
   background: #0b63ff;
   color: #ffffff;
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(11, 99, 255, 0.22);
+  min-width: 160px;
 }
 
 .saveButton:hover {
@@ -87,14 +97,15 @@
 }
 
 .searchButton {
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  background: rgba(11, 18, 32, 0.02);
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 0;
+  background: rgba(11, 18, 32, 0.04);
   font-weight: 900;
   cursor: pointer;
   white-space: nowrap;
+  color: rgba(11, 18, 32, 0.68);
 }
 
 @media (max-width: 760px) {
@@ -114,6 +125,6 @@
   .cancelButton,
   .saveButton {
     flex: 1;
+    min-width: 0;
   }
 }
-

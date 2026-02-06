@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import { CompanyInfoCard } from '@/components/company/CompanyInfoCard'
+
 import styles from './dashboard-company-page.module.css'
 
 export default function DashboardCompanyPage() {
@@ -49,18 +51,23 @@ export default function DashboardCompanyPage() {
 
         <div className={styles.jobList}>
           <JobRow
+            logoSrc="/images/logo1.png"
+            logoAlt="logo1"
             title="시니어 백엔드 엔지니어 (Java/Spring)"
             location="서울 강남구"
             type="정규직"
             badge="D-14"
           />
           <JobRow
+            logoSrc="/images/logo2.png"
+            logoAlt="logo2"
             title="프로덕트 디자이너 (UI/UX)"
             location="서울 강남구"
             type="정규직"
-            badge="상시채용"
           />
           <JobRow
+            logoSrc="/images/logo3.png"
+            logoAlt="logo3"
             title="데이터 분석가 (Data Analyst)"
             location="서울 강남구"
             type="인턴"
@@ -69,6 +76,8 @@ export default function DashboardCompanyPage() {
           />
         </div>
       </section>
+
+      <CompanyInfoCard />
     </>
   )
 }
@@ -103,38 +112,49 @@ function BrandingCard({
 }
 
 function JobRow({
+  logoSrc,
+  logoAlt,
   title,
   location,
   type,
   badge,
   tone,
 }: {
+  logoSrc: string
+  logoAlt: string
   title: string
   location: string
   type: string
-  badge: string
+  badge?: string
   tone?: 'danger'
 }) {
   const badgeClass =
     tone === 'danger'
       ? styles.closed
-      : badge.startsWith('D-')
+      : badge?.startsWith('D-')
         ? styles.dDay
         : undefined
 
   return (
     <div className={styles.jobRow}>
-      <div className={styles.jobLeft}>
-        <div className={styles.jobIcon} aria-hidden>
-          {'</>'}
+        <div className={styles.jobLeft}>
+        <div className={styles.jobLogoWrap}>
+          <img className={styles.jobLogo} src={logoSrc} alt={logoAlt} />
         </div>
         <div className={styles.jobText}>
           <div className={styles.jobTitle}>{title}</div>
           <div className={styles.jobMeta}>
-            <span>{location}</span>
-            <span>·</span>
-            <span>{type}</span>
-            <span className={badgeClass}>{badge}</span>
+            <span className={styles.metaItem}>
+              <span className={styles.pin} aria-hidden>
+                <PinIcon />
+              </span>
+              <span>{location}</span>
+            </span>
+            <span className={styles.metaDivider} aria-hidden>
+              ·
+            </span>
+            <span className={styles.metaItem}>{type}</span>
+            {badge ? <span className={badgeClass}>{badge}</span> : null}
           </div>
         </div>
       </div>
@@ -142,9 +162,78 @@ function JobRow({
         <button className={styles.ghostButton} type="button">
           수정
         </button>
-        <button className={styles.iconButton} type="button" aria-label="Delete" />
+        <button className={styles.trashButton} type="button" aria-label="Delete">
+          <TrashIcon />
+        </button>
       </div>
     </div>
   )
 }
 
+function PinIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+    </svg>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M4 7h16"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M10 11v7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M14 11v7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6 7l1 14h10l1-14"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 7V4h6v3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}

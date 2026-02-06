@@ -6,9 +6,21 @@ import { usePathname } from 'next/navigation'
 import styles from './CompanySidebar.module.css'
 
 const NAV_ITEMS = [
-  { href: '/dashboard-company', label: '대시보드' },
-  { href: '/guide-company', label: '채용 공고 가이드' },
-  { href: '/edit-profile-company', label: '기업 정보 수정' },
+  {
+    href: '/dashboard-company',
+    label: '대시보드',
+    iconBase: 'dashboard',
+  },
+  {
+    href: '/guide-company',
+    label: '채용 공고 가이드',
+    iconBase: 'lightbulb',
+  },
+  {
+    href: '/edit-profile-company',
+    label: '기업 정보 수정',
+    iconBase: 'settings',
+  },
 ] as const
 
 export function CompanySidebar() {
@@ -26,15 +38,19 @@ export function CompanySidebar() {
               pathname === item.href ||
               (item.href !== '/dashboard-company' &&
                 pathname.startsWith(item.href))
+            const iconSrc = `/icons/${item.iconBase}-${isActive ? 'activated' : 'disabled'}.png`
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={isActive ? styles.navItemActive : styles.navItem}
               >
-                <span className={styles.navIcon} aria-hidden>
-                  ▦
-                </span>
+                <img
+                  className={styles.navIcon}
+                  src={iconSrc}
+                  alt=""
+                  aria-hidden
+                />
                 <span>{item.label}</span>
               </Link>
             )
