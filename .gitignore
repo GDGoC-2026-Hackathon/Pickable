@@ -28,9 +28,16 @@ yarn-error.log*
 .env*.local
 .env
 
+# prisma (자동 생성 클라이언트)
+prisma/generated/
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
