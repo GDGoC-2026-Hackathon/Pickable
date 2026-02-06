@@ -1,0 +1,287 @@
+.sectionCard {
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 40px rgba(2, 8, 23, 0.06);
+  padding: 18px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.linkAction {
+  font-size: 12px;
+  font-weight: 900;
+  color: #0b63ff;
+  text-decoration: none;
+}
+
+.brandingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.brandingCard {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(2, 8, 23, 0.06);
+}
+
+.brandingImageBlue,
+.brandingImagePink,
+.brandingCreate {
+  height: 240px;
+  position: relative;
+}
+
+.brandingImageBlue {
+  background:
+    radial-gradient(900px 280px at 20% 15%, rgba(11, 99, 255, 0.55), transparent 55%),
+    linear-gradient(135deg, #0b1220 0%, #0f172a 100%);
+}
+
+.brandingImagePink {
+  background:
+    radial-gradient(900px 280px at 70% 15%, rgba(236, 72, 153, 0.55), transparent 55%),
+    linear-gradient(135deg, #0b1220 0%, #111827 100%);
+}
+
+.brandingOverlay {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.brandPill {
+  display: inline-flex;
+  width: fit-content;
+  height: 20px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.brandingTitle {
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.brandingActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.applyButton {
+  flex: 1;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.moreButton {
+  width: 40px;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.brandingCreate {
+  display: grid;
+  place-items: center;
+  background: #fbfcff;
+  border: 2px dashed rgba(15, 23, 42, 0.14);
+}
+
+.createInner {
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  color: rgba(11, 18, 32, 0.7);
+}
+
+.createPlus {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  background: rgba(11, 18, 32, 0.06);
+  color: rgba(11, 18, 32, 0.5);
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.createTitle {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.createSub {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, 0.55);
+}
+
+.listHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.subText {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.6);
+  font-weight: 800;
+}
+
+.addButton {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 0;
+  background: #0b63ff;
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(11, 99, 255, 0.22);
+}
+
+.addButton:hover {
+  background: #0a57e0;
+}
+
+.jobList {
+  display: grid;
+  gap: 10px;
+}
+
+.jobRow {
+  border-radius: 16px;
+  background: rgba(11, 18, 32, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  padding: 12px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.jobLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.jobIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(11, 99, 255, 0.1);
+  color: #0b63ff;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.jobText {
+  min-width: 0;
+}
+
+.jobTitle {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jobMeta {
+  margin-top: 4px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.6);
+  font-weight: 800;
+}
+
+.dDay {
+  color: #0b63ff;
+}
+
+.closed {
+  color: #ef4444;
+}
+
+.jobRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.ghostButton {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.iconButton {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(11, 18, 32, 0.02);
+  cursor: pointer;
+}
+
+@media (max-width: 980px) {
+  .brandingGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
