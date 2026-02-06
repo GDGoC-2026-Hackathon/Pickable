@@ -12,9 +12,10 @@
   font-weight: 900;
   letter-spacing: -0.02em;
   color: #0b1220;
+  margin-bottom: 0;
 }
 
-.grid {
+.formGrid {
   margin-top: 18px;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -24,6 +25,7 @@
 .field {
   display: grid;
   gap: 6px;
+  align-content: start;
 }
 
 .label {
@@ -32,7 +34,26 @@
   color: rgba(11, 18, 32, 0.68);
 }
 
-.input {
+.required {
+  color: #ef4444;
+}
+
+.error {
+  margin-top: 12px;
+  margin-bottom: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
   border-radius: 14px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   padding: 14px 14px;
@@ -40,17 +61,55 @@
   outline: none;
   background: rgba(11, 18, 32, 0.02);
   font-weight: 800;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
-.input::placeholder {
+.input::placeholder,
+.textarea::placeholder {
   font-weight: 500;
   color: rgba(11, 18, 32, 0.45);
 }
 
-.input:focus {
+.input:focus,
+.select:focus,
+.textarea:focus {
   border-color: rgba(11, 99, 255, 0.36);
   box-shadow: 0 0 0 4px rgba(11, 99, 255, 0.14);
   background: #ffffff;
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: rgba(11, 18, 32, 0.04);
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%230b1220' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.select:disabled {
+  cursor: not-allowed;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 88px;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 6px;
+  align-content: start;
 }
 
 .addressRow {
@@ -66,6 +125,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .cancelButton {
@@ -75,8 +135,13 @@
   border: 0;
   background: rgba(11, 18, 32, 0.04);
   font-weight: 900;
+  font-size: 14px;
   cursor: pointer;
   color: rgba(11, 18, 32, 0.6);
+}
+
+.cancelButton:hover {
+  background: rgba(11, 18, 32, 0.08);
 }
 
 .saveButton {
@@ -87,13 +152,19 @@
   background: #0b63ff;
   color: #ffffff;
   font-weight: 900;
+  font-size: 14px;
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(11, 99, 255, 0.22);
   min-width: 160px;
 }
 
-.saveButton:hover {
+.saveButton:hover:not(:disabled) {
   background: #0a57e0;
+}
+
+.saveButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .searchButton {
@@ -103,13 +174,18 @@
   border: 0;
   background: rgba(11, 18, 32, 0.04);
   font-weight: 900;
+  font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
   color: rgba(11, 18, 32, 0.68);
 }
 
+.searchButton:hover {
+  background: rgba(11, 18, 32, 0.08);
+}
+
 @media (max-width: 760px) {
-  .grid {
+  .formGrid {
     grid-template-columns: 1fr;
   }
 
