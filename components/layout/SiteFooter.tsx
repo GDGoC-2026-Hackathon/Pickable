@@ -11,9 +11,23 @@ export function SiteFooter() {
               중소기업과 취준생의 성장을 연결하는, 리크루팅/브랜딩 플랫폼입니다.
             </p>
             <div className={styles.socialRow} aria-label="social links">
-              <span className={styles.socialDot} aria-hidden />
-              <span className={styles.socialDot} aria-hidden />
-              <span className={styles.socialDot} aria-hidden />
+              <a className={styles.socialDot} href="#" aria-label="Instagram">
+                <img className={styles.socialIcon} src="/icons/ig.png" alt="" />
+              </a>
+              <a className={styles.socialDot} href="#" aria-label="LinkedIn">
+                <img
+                  className={styles.socialIcon}
+                  src="/icons/linkedin.png"
+                  alt=""
+                />
+              </a>
+              <a className={styles.socialDot} href="#" aria-label="YouTube">
+                <img
+                  className={styles.socialIcon}
+                  src="/icons/youtube.png"
+                  alt=""
+                />
+              </a>
             </div>
           </div>
 
@@ -61,4 +75,3 @@ function FooterCol({ title, items }: { title: string; items: string[] }) {
     </div>
   )
 }
-
