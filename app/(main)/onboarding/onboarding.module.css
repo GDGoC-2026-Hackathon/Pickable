@@ -306,46 +306,20 @@
 }
 
 .previewCard {
+  --preview-scale: 1.18;
+  --preview-base-h: 420px;
   border-radius: 20px;
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 20px 50px rgba(2, 8, 23, 0.08);
   overflow: hidden;
-}
-
-.flip {
-  position: relative;
-  min-height: 420px;
-  perspective: 1200px;
-}
-
-.flipInner {
-  position: relative;
-  min-height: 420px;
-  transform-style: preserve-3d;
-  transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  transition-delay: 0s;
-}
-
-.flip:hover .flipInner {
-  transform: rotateY(180deg);
-  transition-delay: 0.5s;
-}
-
-.flipFace {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-}
-
-.flipBack {
-  transform: rotateY(180deg);
+  height: calc(var(--preview-base-h) * var(--preview-scale));
 }
 
 .previewScaled {
-  transform: scale(1.18);
+  transform: scale(var(--preview-scale));
   transform-origin: top left;
-  width: calc(100% / 1.18);
+  width: calc(100% / var(--preview-scale));
 }
 
 .previewImage {
