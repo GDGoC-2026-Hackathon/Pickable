@@ -1,7 +1,10 @@
 // 채용 공고 유효성 검증
 // 외부 라이브러리 없이 순수 타입 가드 + 검증 함수 사용
 
-import type { CreateJobPostingRequest } from "@/types/job-posting";
+import type {
+  CreateJobPostingRequest,
+  UpdateJobPostingRequest,
+} from "@/types/job-posting";
 
 type ValidationOk<T> = { ok: true; data: T };
 type ValidationFail = { ok: false; message: string };
@@ -149,4 +152,125 @@ export function validateCreateJobPosting(
   }
 
   return { ok: true, data: b as unknown as CreateJobPostingRequest };
+}
+
+// ── 공고 수정 검증 (모든 필드 선택) ──
+
+const POSTING_STATUSES = ["OPEN", "CLOSED"] as const;
+
+export function validateUpdateJobPosting(
+  body: unknown
+): ValidationResult<UpdateJobPostingRequest> {
+  if (!body || typeof body !== "object")
+    return fail("요청 본문이 비어있습니다.");
+
+  const b = body as Record<string, unknown>;
+
+  // 최소 1개 필드가 있어야 함
+  const knownFields = [
+    "title",
+    "jobTrack",
+    "status",
+    "minEducationLevel",
+    "militaryPolicy",
+    "careerPolicy",
+    "deadline",
+    "preferredCondition",
+    "salaryRange",
+    "salaryDescription",
+    "location",
+    "workStart",
+    "workEnd",
+    "applicationUrl",
+    "aiEvalCredential",
+    "aiEvalExperience",
+    "aiEvalAward",
+    "skills",
+  ];
+  const hasAtLeastOne = knownFields.some((key) => b[key] !== undefined);
+  if (!hasAtLeastOne) return fail("수정할 필드가 최소 1개 이상 필요합니다.");
+
+  // 선택 문자열 필드
+  if (b.title !== undefined && !isNonEmptyString(b.title))
+    return fail("title(뽑는 직무)은 비어있을 수 없습니다.");
+  if (b.jobTrack !== undefined && !isNonEmptyString(b.jobTrack))
+    return fail("jobTrack(직무 트랙)은 비어있을 수 없습니다.");
+
+  // 선택 enum 필드
+  if (b.status !== undefined && !isEnum(b.status, POSTING_STATUSES))
+    return fail("status는 OPEN 또는 CLOSED여야 합니다.");
+  if (
+    b.minEducationLevel !== undefined &&
+    !isEnum(b.minEducationLevel, EDUCATION_LEVELS)
+  )
+    return fail("minEducationLevel이 올바르지 않습니다.");
+  if (
+    b.militaryPolicy !== undefined &&
+    !isEnum(b.militaryPolicy, FILTER_POLICIES)
+  )
+    return fail("militaryPolicy가 올바르지 않습니다.");
+  if (
+    b.careerPolicy !== undefined &&
+    !isEnum(b.careerPolicy, FILTER_POLICIES)
+  )
+    return fail("careerPolicy가 올바르지 않습니다.");
+
+  // 선택 필드: 마감일
+  if (b.deadline !== undefined && b.deadline !== null) {
+    if (!isDateString(b.deadline))
+      return fail("deadline은 YYYY-MM-DD 형식이어야 합니다.");
+  }
+
+  // 선택 필드: 급여 범위
+  if (
+    b.salaryRange !== undefined &&
+    b.salaryRange !== null &&
+    !isEnum(b.salaryRange, SALARY_RANGES)
+  ) {
+    return fail("salaryRange가 올바르지 않습니다.");
+  }
+
+  // 선택 필드: 시간
+  if (b.workStart !== undefined && b.workStart !== null) {
+    if (!isTimeString(b.workStart))
+      return fail("workStart는 HH:mm 형식이어야 합니다.");
+  }
+  if (b.workEnd !== undefined && b.workEnd !== null) {
+    if (!isTimeString(b.workEnd))
+      return fail("workEnd는 HH:mm 형식이어야 합니다.");
+  }
+
+  // 선택 필드: 지원 링크 URL 검증
+  if (b.applicationUrl !== undefined && b.applicationUrl !== null) {
+    if (!isNonEmptyString(b.applicationUrl))
+      return fail("applicationUrl이 비어있습니다.");
+    if (!isValidUrl(b.applicationUrl))
+      return fail("applicationUrl은 http:// 또는 https://로 시작해야 합니다.");
+  }
+
+  // 선택 필드: AI 평가 boolean
+  if (
+    b.aiEvalCredential !== undefined &&
+    typeof b.aiEvalCredential !== "boolean"
+  )
+    return fail("aiEvalCredential은 boolean이어야 합니다.");
+  if (
+    b.aiEvalExperience !== undefined &&
+    typeof b.aiEvalExperience !== "boolean"
+  )
+    return fail("aiEvalExperience는 boolean이어야 합니다.");
+  if (b.aiEvalAward !== undefined && typeof b.aiEvalAward !== "boolean")
+    return fail("aiEvalAward는 boolean이어야 합니다.");
+
+  // 선택 필드: 기술 스택
+  if (b.skills !== undefined) {
+    if (
+      !Array.isArray(b.skills) ||
+      !b.skills.every((s: unknown) => isNonEmptyString(s))
+    ) {
+      return fail("skills는 비어있지 않은 문자열 배열이어야 합니다.");
+    }
+  }
+
+  return { ok: true, data: b as unknown as UpdateJobPostingRequest };
 }

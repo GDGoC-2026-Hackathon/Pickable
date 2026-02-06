@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Pickable API
   description: 회원가입·인증·채용공고 API 명세 (NextAuth 세션 쿠키 인증)
-  version: 0.2.0
+  version: 0.4.0
 
 servers:
   - url: /
@@ -16,9 +16,15 @@ tags:
   - name: Signup
     description: 역할 선택 및 회원가입
   - name: JobPostings
-    description: 채용 공고 (목록 조회 · 상세 조회 · 생성)
+    description: 채용 공고 열람 (취준생·비로그인용 — 목록 조회 · 상세 조회)
+  - name: CorporationJobPostings
+    description: 기업 전용 공고 관리 (자사 공고 목록 · 생성 · 수정 · 삭제)
 
 paths:
+  # ──────────────────────────────────────
+  # Health
+  # ──────────────────────────────────────
+
   /api/health:
     get:
       tags: [Health]
@@ -33,6 +39,10 @@ paths:
                 properties:
                   status: { type: string, example: ok }
                   timestamp: { type: string, format: date-time }
+
+  # ──────────────────────────────────────
+  # Auth
+  # ──────────────────────────────────────
 
   /api/auth/me:
     get:
@@ -56,6 +66,10 @@ paths:
                       image: { type: string, nullable: true }
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+  # ──────────────────────────────────────
+  # Signup
+  # ──────────────────────────────────────
 
   /api/signup/status:
     get:
@@ -218,7 +232,7 @@ paths:
           $ref: "#/components/responses/DBError"
 
   # ──────────────────────────────────────
-  # 채용 공고
+  # 채용 공고 열람 (취준생·비로그인용)
   # ──────────────────────────────────────
 
   /api/job-postings:
@@ -258,11 +272,105 @@ paths:
         "500":
           $ref: "#/components/responses/DBError"
 
-    post:
+  /api/job-postings/{id}:
+    get:
       tags: [JobPostings]
+      summary: 공고 상세 조회
+      description: |
+        특정 채용 공고의 상세 정보를 조회합니다.
+        로그인한 취준생의 경우 매칭률이 함께 반환됩니다.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+          description: 공고 ID
+      responses:
+        "200":
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/JobPostingDetail" }
+        "404":
+          description: 공고 없음
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: JOB_POSTING_NOT_FOUND, message: "채용 공고를 찾을 수 없습니다." }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+  # ──────────────────────────────────────
+  # 기업 전용 공고 관리
+  # ──────────────────────────────────────
+
+  /api/corporation/job-postings:
+    get:
+      tags: [CorporationJobPostings]
+      summary: 자사 공고 목록 조회
+      description: |
+        기업(CORPORATION) 역할의 사용자가 자사 채용 공고를 조회합니다.
+        기본적으로 활성 공고(OPEN + 마감일 미경과)만 반환합니다.
+        status 파라미터로 필터를 변경할 수 있습니다.
+        - 미지정(기본): 활성 공고만 (OPEN + 마감 전/상시)
+        - CLOSED: 마감 공고만
+        - ALL: 전체
+      security: [sessionCookie: []]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1, minimum: 1 }
+          description: 페이지 번호
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10, minimum: 1, maximum: 50 }
+          description: 페이지당 항목 수
+        - name: status
+          in: query
+          schema: { type: string, enum: [OPEN, CLOSED, ALL] }
+          description: "공고 필터 (미지정: 활성 공고만, CLOSED: 마감 공고, ALL: 전체)"
+      responses:
+        "200":
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/CorporationJobPostingItem" }
+                      pagination:
+                        $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: 기업 정보 없음
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: CORPORATION_NOT_FOUND, message: "기업 정보를 찾을 수 없습니다." }
+        "422":
+          description: 역할 미선택 또는 역할 불일치
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+    post:
+      tags: [CorporationJobPostings]
       summary: 공고 생성
       description: |
-        기업(CORPORATION) 역할의 사용자만 호출 가능.
+        기업(CORPORATION) 역할의 사용자가 새 채용 공고를 등록합니다.
         기업 등록(Corporation)이 완료된 상태여야 합니다.
       security: [sessionCookie: []]
       requestBody:
@@ -304,13 +412,75 @@ paths:
         "500":
           $ref: "#/components/responses/DBError"
 
-  /api/job-postings/{id}:
-    get:
-      tags: [JobPostings]
-      summary: 공고 상세 조회
+  /api/corporation/job-postings/{id}:
+    patch:
+      tags: [CorporationJobPostings]
+      summary: 공고 수정
       description: |
-        특정 채용 공고의 상세 정보를 조회합니다.
-        로그인한 취준생의 경우 매칭률이 함께 반환됩니다.
+        기업(CORPORATION) 역할의 사용자가 자사 공고를 수정합니다.
+        본인 기업의 공고만 수정 가능합니다.
+        모든 필드는 선택이며, 전달된 필드만 업데이트됩니다.
+      security: [sessionCookie: []]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+          description: 공고 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateJobPosting" }
+      responses:
+        "200":
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      title: { type: string }
+                      status: { type: string, enum: [OPEN, CLOSED] }
+                      updatedAt: { type: string, format: date-time }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: 본인 기업의 공고가 아닌 경우
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: FORBIDDEN, message: "본인 기업의 공고만 접근할 수 있습니다." }
+        "404":
+          description: 공고 없음
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: JOB_POSTING_NOT_FOUND, message: "채용 공고를 찾을 수 없습니다." }
+        "422":
+          description: 역할 미선택 또는 역할 불일치
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "500":
+          $ref: "#/components/responses/DBError"
+
+    delete:
+      tags: [CorporationJobPostings]
+      summary: 공고 삭제
+      description: |
+        기업(CORPORATION) 역할의 사용자가 자사 공고를 삭제합니다.
+        본인 기업의 공고만 삭제 가능합니다.
+        연결된 기술 스택(JobSkill) 등은 Cascade로 함께 삭제됩니다.
+      security: [sessionCookie: []]
       parameters:
         - name: id
           in: path
@@ -319,13 +489,26 @@ paths:
           description: 공고 ID
       responses:
         "200":
-          description: 성공
+          description: 삭제 성공
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data: { $ref: "#/components/schemas/JobPostingDetail" }
+                  data:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      deleted: { type: boolean, example: true }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: 본인 기업의 공고가 아닌 경우
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              example:
+                error: { code: FORBIDDEN, message: "본인 기업의 공고만 접근할 수 있습니다." }
         "404":
           description: 공고 없음
           content:
@@ -333,6 +516,11 @@ paths:
               schema: { $ref: "#/components/schemas/Error" }
               example:
                 error: { code: JOB_POSTING_NOT_FOUND, message: "채용 공고를 찾을 수 없습니다." }
+        "422":
+          description: 역할 미선택 또는 역할 불일치
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
         "500":
           $ref: "#/components/responses/DBError"
 
@@ -353,6 +541,8 @@ components:
           properties:
             code: { type: string }
             message: { type: string }
+
+    # ── 회원가입 스키마 ──
 
     JobSeekerSignup:
       type: object
@@ -407,24 +597,79 @@ components:
               type: { type: string, enum: [CERTIFICATE, LANGUAGE] }
               name: { type: string }
               score: { type: string }
+      example:
+        educationLevel: "BACHELOR"
+        major: "컴퓨터공학"
+        desiredJobRole: "백엔드 개발자"
+        militaryStatus: "COMPLETED"
+        desiredLocation: "서울특별시 강남구"
+        desiredSalaryRange: "RANGE_3000_3600"
+        commuteStart: "09:00"
+        commuteEnd: "18:00"
+        employmentType: "FULL_TIME"
+        birthDate: "1999-05-15"
+        gender: "MALE"
+        skills: ["Python", "Django", "PostgreSQL", "Docker"]
+        experiences:
+          - type: "ACTIVITY"
+            title: "Google Developer Student Club 리드"
+            description: "대학교 GDSC 리드로 활동하며 기술 세미나 운영"
+            isJobRelated: true
+          - type: "AWARD"
+            title: "교내 해커톤 대상"
+            description: "AI 기반 취업 매칭 서비스 개발"
+            isJobRelated: true
+        credentials:
+          - type: "CERTIFICATE"
+            name: "정보처리기사"
+          - type: "LANGUAGE"
+            name: "TOEIC"
+            score: "900"
 
     CorporationSignup:
       type: object
       required: [name, industry, address, companySize]
       properties:
-        name: { type: string }
-        industry: { type: string }
-        address: { type: string }
+        name:
+          type: string
+          description: 기업명
+        industry:
+          type: string
+          description: 업종/산업
+        address:
+          type: string
+          description: 주소
         companySize:
           type: string
           enum: [STARTUP, SMALL, MEDIUM, LARGE, ENTERPRISE]
-        thumbnailUrl: { type: string }
-        description: { type: string }
-        welfare: { type: string }
-        homepageUrl: { type: string }
-        phone: { type: string }
+          description: 기업 규모
+        thumbnailUrl:
+          type: string
+          description: 기업 대표 이미지 URL (선택)
+        description:
+          type: string
+          description: 기업 소개 (선택)
+        welfare:
+          type: string
+          description: 복리후생 (선택)
+        homepageUrl:
+          type: string
+          description: 홈페이지 URL (선택)
+        phone:
+          type: string
+          description: 대표 연락처 (선택)
+      example:
+        name: "클라우드 펄스"
+        industry: "SaaS"
+        address: "서울특별시 강남구 테헤란로 123"
+        companySize: "STARTUP"
+        thumbnailUrl: "https://example.com/company-logo.png"
+        description: "SaaS 전문 강소기업"
+        welfare: "재택 근무, 스톡옵션, 도서 구매 지원"
+        homepageUrl: "https://cloudpulse.io"
+        phone: "02-1234-5678"
 
-    # ── 채용 공고 스키마 ──
+    # ── 채용 공고 스키마 (공통) ──
 
     CreateJobPosting:
       type: object
@@ -451,7 +696,7 @@ components:
         deadline:
           type: string
           format: date
-          description: "마감일 (YYYY-MM-DD)"
+          description: "마감일 (YYYY-MM-DD, 미입력 시 상시채용)"
         preferredCondition:
           type: string
           description: "우대조건 (e.g. 경력 3년 이상)"
@@ -464,7 +709,7 @@ components:
           description: "급여 조건 텍스트 (e.g. 면접 후 결정 (회사 내규에 따름))"
         location:
           type: string
-          description: "근무지 (e.g. 광화문)"
+          description: "근무지 (e.g. 서울 강남구)"
         workStart:
           type: string
           description: "출근 시간 (HH:mm, e.g. 09:00)"
@@ -491,6 +736,134 @@ components:
           type: array
           items: { type: string }
           description: 요구 기술 스택
+      example:
+        title: "시니어 백엔드 개발자 (Python/Django)"
+        jobTrack: "기술/개발 트랙"
+        minEducationLevel: "HIGH_SCHOOL"
+        militaryPolicy: "NOT_RELEVANT"
+        careerPolicy: "NOT_RELEVANT"
+        deadline: "2026-02-28"
+        preferredCondition: "경력 3년 이상, AWS 클라우드 숙련자"
+        salaryRange: "UNDER_2400"
+        salaryDescription: "면접 후 결정 (회사 내규에 따름)"
+        location: "서울특별시 강남구 테헤란로"
+        workStart: "09:00"
+        workEnd: "18:00"
+        applicationUrl: "https://careers.company.com/jobs/123"
+        aiEvalCredential: false
+        aiEvalExperience: false
+        aiEvalAward: false
+        skills: ["Python", "Django", "AWS", "PostgreSQL"]
+
+    UpdateJobPosting:
+      type: object
+      description: 공고 수정 요청 (모든 필드 선택, 최소 1개 이상 필요)
+      properties:
+        title:
+          type: string
+          description: "뽑는 직무"
+        jobTrack:
+          type: string
+          description: "직무 트랙"
+        status:
+          type: string
+          enum: [OPEN, CLOSED]
+          description: "채용 상태"
+        minEducationLevel:
+          type: string
+          enum: [HIGH_SCHOOL, ASSOCIATE, BACHELOR, MASTER, DOCTORATE]
+        militaryPolicy:
+          type: string
+          enum: [NOT_RELEVANT, REQUIRED, BONUS, NOT_REFLECTED]
+        careerPolicy:
+          type: string
+          enum: [NOT_RELEVANT, REQUIRED, BONUS, NOT_REFLECTED]
+        deadline:
+          type: string
+          format: date
+          nullable: true
+          description: "마감일 (YYYY-MM-DD, null로 상시채용 전환 가능)"
+        preferredCondition:
+          type: string
+          nullable: true
+        salaryRange:
+          type: string
+          enum: [UNDER_2400, RANGE_2400_3000, RANGE_3000_3600, RANGE_3600_4200, RANGE_4200_5000, OVER_5000]
+          nullable: true
+        salaryDescription:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        workStart:
+          type: string
+          nullable: true
+          description: "HH:mm"
+        workEnd:
+          type: string
+          nullable: true
+          description: "HH:mm"
+        applicationUrl:
+          type: string
+          format: uri
+          nullable: true
+        aiEvalCredential: { type: boolean }
+        aiEvalExperience: { type: boolean }
+        aiEvalAward: { type: boolean }
+        skills:
+          type: array
+          items: { type: string }
+          description: "요구 기술 스택 (전체 교체)"
+      example:
+        title: "시니어 프론트엔드 개발자"
+        status: "CLOSED"
+        deadline: null
+        skills: ["React", "TypeScript"]
+
+    # ── 기업 전용 응답 스키마 ──
+
+    CorporationJobPostingItem:
+      type: object
+      description: |
+        기업 전용 자사 공고 목록 아이템.
+        프론트엔드에서 jobTrack 값으로 직무 아이콘을 매핑할 수 있습니다.
+      properties:
+        id: { type: string }
+        title:
+          type: string
+          description: "직무 이름 (e.g. 시니어 백엔드 엔지니어)"
+        jobTrack:
+          type: string
+          description: "직무 트랙 — 프론트에서 직무 로고 아이콘 매핑 키로 사용"
+        status: { type: string, enum: [OPEN, CLOSED] }
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: "마감일 (null이면 상시채용)"
+        daysLeft:
+          type: integer
+          nullable: true
+          description: "마감까지 남은 일수 (null=상시채용, 0=오늘마감, 음수=이미 경과)"
+        location:
+          type: string
+          nullable: true
+          description: "근무지 주소"
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      example:
+        id: "clx1abc..."
+        title: "시니어 백엔드 엔지니어 (Java/Spring)"
+        jobTrack: "기술/개발 트랙"
+        status: "OPEN"
+        deadline: "2026-02-21T00:00:00.000Z"
+        daysLeft: 14
+        location: "서울 강남구"
+        createdAt: "2026-01-15T09:00:00.000Z"
+        updatedAt: "2026-01-15T09:00:00.000Z"
+
+    # ── 취준생용 응답 스키마 ──
 
     JobPostingListItem:
       type: object
