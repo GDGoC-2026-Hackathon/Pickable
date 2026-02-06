@@ -7,6 +7,9 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 export const metadata: Metadata = {
   title: "Pickable",
   description: "GDGoC 해커톤 프로젝트",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

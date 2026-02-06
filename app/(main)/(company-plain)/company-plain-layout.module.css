@@ -1,0 +1,11 @@
+.page {
+  min-height: calc(100vh - 140px);
+  background: #f6f8fb;
+  padding: 36px 0 72px;
+}
+
+.container {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
