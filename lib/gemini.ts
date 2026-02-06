@@ -9,24 +9,22 @@ const globalForGemini = globalThis as unknown as {
   geminiClient: GoogleGenerativeAI | undefined;
 };
 
-function createGeminiClient() {
+function getGeminiClient(): GoogleGenerativeAI {
+  if (globalForGemini.geminiClient) {
+    return globalForGemini.geminiClient;
+  }
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.");
   }
-  return new GoogleGenerativeAI(apiKey);
-}
-
-export const gemini =
-  globalForGemini.geminiClient ?? createGeminiClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForGemini.geminiClient = gemini;
+  const client = new GoogleGenerativeAI(apiKey);
+  globalForGemini.geminiClient = client;
+  return client;
 }
 
 // 브랜딩 카드 생성용 모델 (JSON 모드)
 export function getBrandingModel() {
-  return gemini.getGenerativeModel({
+  return getGeminiClient().getGenerativeModel({
     model: "gemini-2.0-flash",
     generationConfig: {
       responseMimeType: "application/json",

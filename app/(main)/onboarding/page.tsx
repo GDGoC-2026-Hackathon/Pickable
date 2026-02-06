@@ -1,20 +1,15 @@
 import type { ReactNode } from 'react'
 
-import { SiteFooter } from '@/components/layout/SiteFooter'
-import { SiteHeader } from '@/components/layout/SiteHeader'
-
 import styles from './onboarding.module.css'
 
 export default function OnboardingPage() {
   return (
     <div className={styles.page}>
-      <SiteHeader />
       <main className={styles.main}>
         <Hero />
         <CompanyStudio />
         <JobSeekerSection />
       </main>
-      <SiteFooter />
     </div>
   )
 }

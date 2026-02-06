@@ -1,57 +1,27 @@
-"use client";
-
-import { useEffect } from "react";
-import dynamic from "next/dynamic";
-import "swagger-ui-react/swagger-ui.css";
-
-const SwaggerUI = dynamic(() => import("swagger-ui-react"), {
-  ssr: false,
-  loading: () => (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        fontSize: "1.2rem",
-        color: "#666",
-      }}
-    >
-      API 문서를 불러오는 중...
-    </div>
-  ),
-});
-
 export default function ApiDocsPage() {
-  useEffect(() => {
-    // swagger-ui-react 내부 ModelCollapse 등이 사용하는
-    // deprecated lifecycle 메서드 경고를 억제
-    const originalError = console.error;
-    console.error = (...args: unknown[]) => {
-      if (
-        typeof args[0] === "string" &&
-        args[0].includes("UNSAFE_componentWillReceiveProps")
-      ) {
-        return;
-      }
-      originalError.apply(console, args);
-    };
-
-    return () => {
-      console.error = originalError;
-    };
-  }, []);
-
   return (
-    <div
-      style={{
-        height: "100vh",
-        background: "#ffffff",
-        color: "#3b4151",
-        overflowY: "auto",
-      }}
-    >
-      <SwaggerUI url="/openapi.yaml" />
-    </div>
+    <main style={{ padding: 28 }}>
+      <section
+        style={{
+          maxWidth: 840,
+          margin: "0 auto",
+          borderRadius: 18,
+          background: "#fff",
+          border: "1px solid rgba(15, 23, 42, 0.06)",
+          boxShadow: "0 18px 40px rgba(2, 8, 23, 0.06)",
+          padding: 18,
+        }}
+      >
+        <h1 style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em" }}>
+          API 문서
+        </h1>
+        <p style={{ marginTop: 10, color: "rgba(11, 18, 32, 0.62)", fontWeight: 800 }}>
+          현재 `swagger-ui-react` 의존성이 설치되어 있지 않아 Swagger UI 렌더링을
+          비활성화했습니다.
+          <br />
+          (CI/Cloud Run 환경에서 빌드가 실패하지 않도록 임시 처리)
+        </p>
+      </section>
+    </main>
   );
 }
