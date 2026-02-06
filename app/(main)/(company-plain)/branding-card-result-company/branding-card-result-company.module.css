@@ -82,9 +82,24 @@
 
 .secondaryButton:disabled,
 .primaryButton:disabled {
-  opacity: 1;
+  opacity: 0.65;
   cursor: not-allowed;
-  pointer-events: none;
+}
+
+.secondaryButton:not(:disabled) {
+  cursor: pointer;
+}
+
+.secondaryButton:not(:disabled):hover {
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.primaryButton:not(:disabled) {
+  cursor: pointer;
+}
+
+.primaryButton:not(:disabled):hover {
+  background: #0a57e0;
 }
 
 .grid {
@@ -236,6 +251,14 @@
   color: rgba(11, 18, 32, 0.32);
 }
 
+.fieldHint {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, 0.45);
+  line-height: 1.4;
+}
+
 .inputRow {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -278,7 +301,38 @@
   font-weight: 900;
 }
 
+.refreshButton:not(:disabled) {
+  cursor: pointer;
+}
+
+.refreshButton:not(:disabled):hover {
+  background: rgba(11, 99, 255, 0.06);
+  border-color: rgba(11, 99, 255, 0.18);
+  color: #0b63ff;
+}
+
 .refreshButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.refreshButtonSmall {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(11, 99, 255, 0.18);
+  background: rgba(11, 99, 255, 0.06);
+  color: rgba(11, 99, 255, 0.95);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.refreshButtonSmall:hover {
+  background: rgba(11, 99, 255, 0.12);
+}
+
+.refreshButtonSmall:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
@@ -304,10 +358,6 @@
   font-weight: 900;
 }
 
-.chipX {
-  opacity: 0.55;
-}
-
 .chipAdd {
   height: 32px;
   padding: 0 12px;
@@ -317,11 +367,88 @@
   color: rgba(11, 18, 32, 0.5);
   font-weight: 900;
   font-size: 12px;
+  cursor: pointer;
+}
+
+.chipAdd:hover {
+  border-color: rgba(11, 99, 255, 0.25);
+  color: #0b63ff;
 }
 
 .chipAdd:disabled {
   cursor: not-allowed;
   opacity: 0.8;
+}
+
+.chipX {
+  opacity: 0.55;
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.chipX:hover {
+  opacity: 1;
+}
+
+.chipAddWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chipInput {
+  height: 32px;
+  width: 100px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px dashed rgba(15, 23, 42, 0.18);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+  outline: none;
+}
+
+.chipInput:focus {
+  border-color: rgba(11, 99, 255, 0.36);
+  background: rgba(11, 99, 255, 0.04);
+}
+
+/* ── 로딩 ── */
+
+.loadingWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  gap: 16px;
+}
+
+.loadingSpinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 3px solid rgba(11, 99, 255, 0.18);
+  border-top-color: #0b63ff;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-weight: 900;
+  font-size: 14px;
+  color: rgba(11, 18, 32, 0.55);
+  letter-spacing: -0.02em;
 }
 
 .tipCard {
