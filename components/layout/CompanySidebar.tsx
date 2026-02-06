@@ -57,18 +57,6 @@ export function CompanySidebar() {
           })}
         </nav>
       </div>
-
-      <div className={styles.premiumCard} aria-label="Premium plan">
-        <div className={styles.premiumKicker}>PREMIUM PLAN</div>
-        <div className={styles.premiumTitle}>
-          AI 브랜딩 카드로
-          <br />
-          더욱 효과적으로 홍보하세요!
-        </div>
-        <button className={styles.premiumButton} type="button">
-          플랜 업그레이드
-        </button>
-      </div>
     </aside>
   )
 }
