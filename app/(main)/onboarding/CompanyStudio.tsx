@@ -23,7 +23,7 @@ export function CompanyStudio() {
     status === 'authenticated' && session?.user?.role === 'CORPORATION'
 
   const displayCompanyName = useMemo(() => {
-    return companyName.trim() || 'Sample'
+    return companyName.trim() || '클라우드 펄스'
   }, [companyName])
 
   const handleCreateBrandingCard = useCallback(async () => {
@@ -186,21 +186,21 @@ export function CompanyStudio() {
                 front={{
                   variant: 'preview',
                   companyName: displayCompanyName,
-                  companyDesc: 'AI 브랜딩 스튜디오',
+                  companyDesc: 'SaaS 전문 강소기업',
                   matchRate: 98,
-                  tags: ['#기술중심', '#팀문화', '#성장환경'],
-                  image: gradient('0b63ff', '0b1220'),
+                  tags: ['#핀테크', '#B2B', '#성장환경'],
+                  image: 'https://blog.kakaocdn.net/dna/BRper/btsPUZ4Ka3l/AAAAAAAAAAAAAAAAAAAAAA3gBEvInLIlxegJlmB-dHJWstD4g4Sb_3VfgDgUV9fd/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ZK9xuJBlNec75aAZCYOReQxBBQA%3D',
                 }}
                 back={{
                   companyName: displayCompanyName,
-                  companyDesc: 'Front-end Engineer',
+                  companyDesc: 'SaaS 전문 강소기업',
                   matchRate: 98,
                   hiringLabel: '채용 중',
-                  tags: [],
-                  positionTitle: 'Front-end Engineer',
+                  tags: ['핀테크', 'B2B'],
+                  positionTitle: 'Product Designer',
                   deadline: '2026.02.20',
                   experience: '경력 3년 이상',
-                  location: '광화문',
+                  location: '서울 강남구',
                   salary: '4,000만원 이상',
                   workTime: '09:00 ~ 18:00',
                   liked: false,

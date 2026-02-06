@@ -4,6 +4,7 @@ import { signIn } from '@/auth'
 import { CompanyStudio } from './CompanyStudio'
 import { JobSeekerSection } from './JobSeekerSection'
 
+
 import styles from './onboarding.module.css'
 
 export default function OnboardingPage() {
@@ -25,7 +26,7 @@ function Hero() {
         <div className={styles.heroTop}>
           <p className={styles.heroKicker}>성장의 기회를 연결하는</p>
           <h1 className={styles.heroTitle}>
-            중소기업 AI 브랜딩 &amp; 추천 플랫폼
+            SME Branding &amp; Smart Matching
           </h1>
           <p className={styles.heroSub}>
             당신의 역할에 맞춰 Pickable의 모든 기능을 시작해보세요.
