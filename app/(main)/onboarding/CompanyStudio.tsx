@@ -193,10 +193,10 @@ export function CompanyStudio() {
                 }}
                 back={{
                   companyName: displayCompanyName,
-                  companyDesc: 'SaaS 전문 강소기업',
+                  companyDesc: 'Front-end Engineer',
                   matchRate: 98,
                   hiringLabel: '채용 중',
-                  tags: ['핀테크', '유니콘', '시리즈D'],
+                  tags: [],
                   positionTitle: 'Front-end Engineer',
                   deadline: '2025.03.20',
                   experience: '경력 3년 이상',

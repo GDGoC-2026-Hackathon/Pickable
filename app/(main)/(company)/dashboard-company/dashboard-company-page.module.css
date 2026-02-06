@@ -131,6 +131,7 @@
   place-items: center;
   background: #fbfcff;
   border: 2px dashed rgba(15, 23, 42, 0.14);
+  border-radius: 16px;
   height: 100%;
 }
 

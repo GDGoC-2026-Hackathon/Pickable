@@ -2,11 +2,13 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import "./ProfileCompany.css";
 
 type CardMode = "upload" | "ai";
 
 export default function ProfileCompany() {
+  const router = useRouter();
   const [form, setForm] = useState({
     companyName: "",
     industry: "IT / 소프트웨어",
@@ -45,6 +47,7 @@ export default function ProfileCompany() {
     // TODO: API 연동
     console.log("submit", { ...form, mode, prompt, sampleFileName });
     alert("기업 프로필 등록(데모) 완료!");
+    router.push("/branding-card-result-company");
   };
 
   return (
