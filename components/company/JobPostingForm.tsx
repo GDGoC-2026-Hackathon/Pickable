@@ -461,37 +461,6 @@ export function JobPostingForm(props: JobPostingFormProps) {
         />
       </div>
 
-      {/* ── AI 정량 평가 ── */}
-      <div className={styles.field}>
-        <label className={styles.label}>AI 정량 평가 항목</label>
-        <div className={styles.checkboxGroup}>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={form.aiEvalCredential}
-              onChange={(e) => update('aiEvalCredential', e.target.checked)}
-            />
-            자격증 / 어학
-          </label>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={form.aiEvalExperience}
-              onChange={(e) => update('aiEvalExperience', e.target.checked)}
-            />
-            대외 / 해외 경험
-          </label>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={form.aiEvalAward}
-              onChange={(e) => update('aiEvalAward', e.target.checked)}
-            />
-            수상 내역
-          </label>
-        </div>
-      </div>
-
       {/* ── 제출 버튼 ── */}
       <button
         type="submit"

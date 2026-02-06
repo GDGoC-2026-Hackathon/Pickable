@@ -33,9 +33,11 @@ export default function DashboardCompanyPage() {
 
   useEffect(() => {
     let cancelled = false
-
-    fetch('/api/corporation/branding-card', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
+    fetch('/api/corporation/branding-card')
+      .then((res) => {
+        if (!res.ok) return null
+        return res.json()
+      })
       .then((json) => {
         if (cancelled || !json?.data) return
         setCard(json.data as BrandingCardItem)
@@ -43,7 +45,6 @@ export default function DashboardCompanyPage() {
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
-
     return () => {
       cancelled = true
     }
@@ -51,24 +52,27 @@ export default function DashboardCompanyPage() {
 
   const companyName = session?.corporation?.name ?? '기업'
 
-  const tagList = useMemo(() => {
+  const tagsWithHash = useMemo(() => {
     if (!card?.keywords?.length) return ['#기술중심', '#팀문화', '#성장환경']
     return card.keywords.map((k) => (k.startsWith('#') ? k : `#${k}`))
   }, [card?.keywords])
 
+  const tagsPlain = useMemo(() => {
+    return tagsWithHash.map((t) => t.replace(/^#/, ''))
+  }, [tagsWithHash])
+
   const cardImage = useMemo(() => {
     if (!card) return gradient(...BG_COLORS.navy)
+
     const url = card.backgroundUrl ?? null
     if (url && (url.startsWith('http://') || url.startsWith('https://'))) return url
+
     return gradient(...(BG_COLORS[card.backgroundStyle] ?? BG_COLORS.navy))
   }, [card])
 
   return (
     <>
-      <section
-        className={styles.sectionCard}
-        aria-label="Generated branding cards"
-      >
+      <section className={styles.sectionCard} aria-label="Generated branding cards">
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>생성된 브랜딩 카드</div>
           <Link className={styles.linkAction} href="/branding-card-result-company">
@@ -99,7 +103,7 @@ export default function DashboardCompanyPage() {
                   companyName,
                   companyDesc: card.catchphrase,
                   matchRate: 98,
-                  tags: tagList,
+                  tags: tagsWithHash,
                   image: cardImage,
                 }}
                 back={{
@@ -107,7 +111,7 @@ export default function DashboardCompanyPage() {
                   companyDesc: card.catchphrase,
                   matchRate: 98,
                   hiringLabel: card.status === 'PUBLISHED' ? '공개 중' : '초안',
-                  tags: tagList.map((t) => t.replace(/^#/, '')),
+                  tags: tagsPlain,
                   positionTitle: '브랜딩 카드',
                   deadline: '—',
                   experience: '편집하기',
@@ -164,4 +168,3 @@ function gradient(colorA: string, colorB: string) {
   </svg>`
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
-
