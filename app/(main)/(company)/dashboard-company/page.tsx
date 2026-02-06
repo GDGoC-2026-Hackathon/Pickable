@@ -39,44 +39,7 @@ export default function DashboardCompanyPage() {
         </div>
       </section>
 
-      <section className={styles.sectionCard} aria-label="Job postings management">
-        <div className={styles.listHeaderRow}>
-          <div>
-            <div className={styles.sectionTitle}>채용 공고 관리</div>
-            <div className={styles.subText}>현재 활성화된 공고 3개</div>
-          </div>
-          <a className={styles.addButton} href="/add-recruitment-company">
-            + 공고 추가하기
-          </a>
-        </div>
-
-        <div className={styles.jobList}>
-          <JobRow
-            logoSrc="/images/logo1.png"
-            logoAlt="logo1"
-            title="시니어 백엔드 엔지니어 (Java/Spring)"
-            location="서울 강남구"
-            type="정규직"
-            badge="D-14"
-          />
-          <JobRow
-            logoSrc="/images/logo2.png"
-            logoAlt="logo2"
-            title="프로덕트 디자이너 (UI/UX)"
-            location="서울 강남구"
-            type="정규직"
-          />
-          <JobRow
-            logoSrc="/images/logo3.png"
-            logoAlt="logo3"
-            title="데이터 분석가 (Data Analyst)"
-            location="서울 강남구"
-            type="인턴"
-            badge="오늘마감"
-            tone="danger"
-          />
-        </div>
-      </section>
+      <JobPostingsList />
 
       <CompanyInfoCard />
     </>
