@@ -125,7 +125,7 @@ export default function DashboardCompanyPage() {
           ) : null}
 
           <Link
-            href={card ? '/branding-card-result-company' : '/onboarding#companies'}
+            href={card ? '/branding-card-result-company' : '/profile-company'}
             className={styles.brandingCard}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
