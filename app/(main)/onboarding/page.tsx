@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import Link from 'next/link'
 
 import styles from './onboarding.module.css'
 
@@ -34,12 +35,14 @@ function Hero() {
             description="AI 브랜딩으로 회사의 가치를 높이고, 최적의 인재를 만나보세요."
             buttonLabel="Google 계정으로 기업 로그인"
             icon={<BriefcaseIcon />}
+            intent="CORPORATION"
           />
           <RoleCard
             title="취업 준비생이라면"
             description="나에게 맞는 중소기업을 추천받고, 커리어 로드맵을 설계해보세요."
             buttonLabel="Google 계정으로 취준생 로그인"
             icon={<SparkleIcon />}
+            intent="JOB_SEEKER"
           />
         </div>
       </div>
@@ -52,21 +55,27 @@ function RoleCard({
   description,
   buttonLabel,
   icon,
+  intent,
 }: {
   title: string
   description: string
   buttonLabel: string
   icon: ReactNode
+  intent: 'JOB_SEEKER' | 'CORPORATION'
 }) {
+  const href = {
+    pathname: '/login',
+    query: { callbackUrl: `/after-login?intent=${intent}` },
+  } as const
   return (
     <section className={styles.roleCard} aria-label={title}>
       <div className={styles.roleIcon}>{icon}</div>
       <h2 className={styles.roleTitle}>{title}</h2>
       <p className={styles.roleDesc}>{description}</p>
-      <button className={styles.googleButton} type="button">
+      <Link className={styles.googleButton} href={href}>
         <GoogleIcon />
         <span>{buttonLabel}</span>
-      </button>
+      </Link>
     </section>
   )
 }
