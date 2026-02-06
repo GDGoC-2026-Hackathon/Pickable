@@ -7,6 +7,33 @@ import type {
   PostingStatus,
 } from "@/prisma/generated/prisma/client";
 
+// ── 공고 수정 요청 (모든 필드 선택) ──
+
+export type UpdateJobPostingRequest = {
+  title?: string;
+  jobTrack?: string;
+  status?: PostingStatus;
+
+  minEducationLevel?: EducationLevel;
+  militaryPolicy?: FilterPolicy;
+  careerPolicy?: FilterPolicy;
+
+  deadline?: string | null;
+  preferredCondition?: string | null;
+  salaryRange?: SalaryRange | null;
+  salaryDescription?: string | null;
+  location?: string | null;
+  workStart?: string | null;
+  workEnd?: string | null;
+  applicationUrl?: string | null;
+
+  aiEvalCredential?: boolean;
+  aiEvalExperience?: boolean;
+  aiEvalAward?: boolean;
+
+  skills?: string[];
+};
+
 // ── 공고 생성 요청 ──
 
 export type CreateJobPostingRequest = {

@@ -1,21 +1,9 @@
 // /api/job-postings
-// GET  — 공고 목록 조회 (페이지네이션, 인증 선택)
-// POST — 공고 생성 (기업 전용, 인증 필수)
+// GET — 공고 목록 조회 (취준생·비로그인용, 페이지네이션, 인증 선택)
 
-import { requireAuth, getAuthSession } from "@/lib/auth-helpers";
-import { success, error, parseBody } from "@/lib/api";
+import { getAuthSession } from "@/lib/auth-helpers";
+import { error } from "@/lib/api";
 import { prisma } from "@/lib/db";
-import { validateCreateJobPosting } from "@/lib/validations/job-posting";
-import type { CreateJobPostingRequest } from "@/types/job-posting";
-import type {
-  EducationLevel,
-  SalaryRange,
-  FilterPolicy,
-} from "@/prisma/generated/prisma/client";
-
-// ────────────────────────────────────────
-// GET  /api/job-postings — 공고 목록 조회
-// ────────────────────────────────────────
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -125,104 +113,6 @@ export async function GET(request: Request) {
         },
       },
       { status: 200 }
-    );
-  } catch {
-    return error("DB_ERROR");
-  }
-}
-
-// ────────────────────────────────────────
-// POST /api/job-postings — 공고 생성
-// ────────────────────────────────────────
-
-export async function POST(request: Request) {
-  // 인증 확인
-  const { session, errorResponse } = await requireAuth();
-  if (errorResponse) return errorResponse;
-
-  const userId = session!.user.id;
-
-  // 요청 파싱
-  const body = await parseBody<CreateJobPostingRequest>(request);
-  if (!body) return error("INVALID_JSON");
-
-  // 유효성 검증
-  const validation = validateCreateJobPosting(body);
-  if (!validation.ok) return error("VALIDATION_ERROR", validation.message);
-
-  const data = validation.data;
-
-  try {
-    // 역할 확인 (기업만 공고 등록 가능)
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        role: true,
-        corporation: { select: { id: true } },
-      },
-    });
-
-    if (!user) return error("USER_NOT_FOUND");
-    if (!user.role) return error("ROLE_NOT_SET");
-    if (user.role !== "CORPORATION") return error("ROLE_MISMATCH");
-    if (!user.corporation) return error("CORPORATION_NOT_FOUND");
-
-    const corporationId = user.corporation.id;
-
-    // 공고 생성 (기술 스택 포함)
-    const posting = await prisma.jobPosting.create({
-      data: {
-        corporationId,
-
-        // 기본 정보
-        title: data.title.trim(),
-        jobTrack: data.jobTrack.trim(),
-
-        // Hard Filter
-        minEducationLevel: data.minEducationLevel as EducationLevel,
-        militaryPolicy: data.militaryPolicy as FilterPolicy,
-        careerPolicy: data.careerPolicy as FilterPolicy,
-
-        // 조건
-        deadline: data.deadline ? new Date(data.deadline) : null,
-        preferredCondition: data.preferredCondition?.trim() || null,
-        salaryRange: (data.salaryRange as SalaryRange) || null,
-        salaryDescription: data.salaryDescription?.trim() || null,
-        location: data.location?.trim() || null,
-        workStart: data.workStart || null,
-        workEnd: data.workEnd || null,
-        applicationUrl: data.applicationUrl?.trim() || null,
-
-        // AI 평가
-        aiEvalCredential: data.aiEvalCredential ?? false,
-        aiEvalExperience: data.aiEvalExperience ?? false,
-        aiEvalAward: data.aiEvalAward ?? false,
-
-        // 기술 스택
-        skills: data.skills?.length
-          ? {
-              create: data.skills.map((skillName) => ({
-                skillName: skillName.trim(),
-              })),
-            }
-          : undefined,
-      },
-      select: {
-        id: true,
-        title: true,
-        status: true,
-        createdAt: true,
-      },
-    });
-
-    return success(
-      {
-        id: posting.id,
-        title: posting.title,
-        status: posting.status,
-        createdAt: posting.createdAt.toISOString(),
-      },
-      201
     );
   } catch {
     return error("DB_ERROR");

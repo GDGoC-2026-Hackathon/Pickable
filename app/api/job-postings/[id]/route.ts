@@ -1,4 +1,4 @@
-// GET /api/job-postings/[id] — 공고 상세 조회
+// GET /api/job-postings/[id] — 공고 상세 조회 (취준생·비로그인용)
 
 import { getAuthSession } from "@/lib/auth-helpers";
 import { error } from "@/lib/api";
