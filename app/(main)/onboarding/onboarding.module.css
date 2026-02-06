@@ -432,6 +432,49 @@
   background: #ffffff;
   padding: 16px;
   box-shadow: 0 18px 40px rgba(2, 8, 23, 0.06);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.demoHoverArea {
+  position: relative;
+  overflow: hidden;
+}
+
+.jobCard:hover {
+  transform: translateY(-1px);
+}
+
+.demoOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(11, 18, 32, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease;
+  z-index: 2;
+}
+
+.demoOverlayText {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: rgba(11, 18, 32, 0.72);
+  font-size: 13px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demoHoverArea:hover .demoOverlay,
+.demoHoverArea:focus-visible .demoOverlay,
+.demoHoverArea:has(:focus-visible) .demoOverlay {
+  opacity: 1;
 }
 
 .jobTop {

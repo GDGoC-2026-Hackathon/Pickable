@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 'use client'
 
+import type { ReactNode } from 'react'
 import { useCallback, useState } from 'react'
 
 import { Snackbar } from '@/components/ui/Snackbar'
@@ -61,19 +62,19 @@ export function JobSeekerSection() {
         </div>
 
         <div className={styles.widgetGrid}>
-          <div className={styles.widgetCard}>
-            <div className={styles.widgetHeader}>
-              <div className={styles.widgetTitle}>2025.01 채용 캘린더</div>
-              <div className={styles.widgetNav} aria-hidden>
-                <span className={styles.widgetNavBtn}>‹</span>
-                <span className={styles.widgetNavBtn}>›</span>
+            <DemoCard className={styles.widgetCard} onDemoAction={handleDemoAction}>
+              <div className={styles.widgetHeader}>
+                <div className={styles.widgetTitle}>2025.01 채용 캘린더</div>
+                <div className={styles.widgetNav} aria-hidden>
+                  <span className={styles.widgetNavBtn}>‹</span>
+                  <span className={styles.widgetNavBtn}>›</span>
+                </div>
               </div>
-            </div>
-            <CalendarMock />
-          </div>
+              <CalendarMock />
+            </DemoCard>
 
           <div className={styles.widgetStack}>
-            <div className={styles.widgetCard}>
+            <DemoCard className={styles.widgetCard} onDemoAction={handleDemoAction}>
               <div className={styles.widgetTitleRow}>
                 <span className={styles.widgetTitle}>실시간 공고 링크</span>
                 <span className={styles.pulse} aria-hidden />
@@ -82,9 +83,9 @@ export function JobSeekerSection() {
                 <li className={styles.linkItem}>클라우드 펄스 채용</li>
                 <li className={styles.linkItem}>모멘트 디자인 채용</li>
               </ul>
-            </div>
+            </DemoCard>
 
-            <div className={styles.ctaCard}>
+            <DemoCard className={styles.ctaCard} onDemoAction={handleDemoAction}>
               <div className={styles.ctaTitle}>
                 이 기업을 저격한<br />
                 선배들의 커리어는?
@@ -99,12 +100,12 @@ export function JobSeekerSection() {
               >
                 인사이트 리포트 보기
               </button>
-            </div>
+            </DemoCard>
           </div>
         </div>
 
         <div className={styles.lowerGrid}>
-          <div className={styles.widgetCard}>
+          <DemoCard className={styles.widgetCard} onDemoAction={handleDemoAction}>
             <div className={styles.widgetTitle}>커리어 추천: 테크웨이브</div>
             <div className={styles.timeline}>
               <div className={styles.timelineStep}>
@@ -129,10 +130,10 @@ export function JobSeekerSection() {
                 </div>
               </div>
             </div>
-          </div>
+          </DemoCard>
 
           <div className={styles.widgetStack}>
-            <div className={styles.widgetCard}>
+            <DemoCard className={styles.widgetCard} onDemoAction={handleDemoAction}>
               <div className={styles.widgetTitle}>불합격 시 재도전 가이드</div>
               <p className={styles.mutedText}>
                 이력서, 포트폴리오, 면접 피드백을 기반으로 다음 액션을
@@ -140,9 +141,9 @@ export function JobSeekerSection() {
               </p>
               <div className={styles.checkItem}>기술 면접 빈틈 키워드 분석</div>
               <div className={styles.checkItem}>포트폴리오 개선 포인트 진단</div>
-            </div>
+            </DemoCard>
 
-            <div className={styles.storyCard}>
+            <DemoCard className={styles.storyCard} onDemoAction={handleDemoAction}>
               <div className={styles.storyBody}>
                 <div className={styles.storyName}>박민서 님의 커리어 로드맵</div>
                 <div className={styles.storySub}>
@@ -156,13 +157,40 @@ export function JobSeekerSection() {
               >
                 스토리 보기
               </button>
-            </div>
+            </DemoCard>
           </div>
         </div>
       </div>
 
       <Snackbar message={snackbarMsg} />
     </section>
+  )
+}
+
+function DemoCard({
+  className,
+  children,
+  onDemoAction,
+}: {
+  className: string
+  children: ReactNode
+  onDemoAction: () => void
+}) {
+  return (
+    <div
+      className={`${styles.demoHoverArea} ${className}`}
+      role="button"
+      tabIndex={0}
+      onClick={onDemoAction}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onDemoAction()
+      }}
+    >
+      <div className={styles.demoOverlay} aria-hidden>
+        <div className={styles.demoOverlayText}>예시입니다.</div>
+      </div>
+      {children}
+    </div>
   )
 }
 
@@ -183,7 +211,7 @@ function JobCard({
 }) {
   return (
     <article
-      className={styles.jobCard}
+      className={`${styles.jobCard} ${styles.demoHoverArea}`}
       role="button"
       tabIndex={0}
       onClick={onDemoAction}
@@ -191,6 +219,9 @@ function JobCard({
         if (e.key === 'Enter' || e.key === ' ') onDemoAction()
       }}
     >
+      <div className={styles.demoOverlay} aria-hidden>
+        <div className={styles.demoOverlayText}>예시입니다.</div>
+      </div>
       <div className={styles.jobTop}>
         <div className={styles.jobLogo} aria-hidden>
           {title.slice(0, 1)}
@@ -256,4 +287,3 @@ function CalendarMock() {
     </div>
   )
 }
-
