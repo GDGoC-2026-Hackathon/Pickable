@@ -2,6 +2,8 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 import RecruitmentCard from '@/components/layout/RecruitmentCard'
 import { Snackbar } from '@/components/ui/Snackbar'
@@ -9,26 +11,68 @@ import { Snackbar } from '@/components/ui/Snackbar'
 import styles from './onboarding.module.css'
 
 export function CompanyStudio() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [companyName, setCompanyName] = useState('')
+  const [companyUrl, setCompanyUrl] = useState('')
+  const [companyDesc, setCompanyDesc] = useState('')
   const [snackbarMsg, setSnackbarMsg] = useState<string | null>(null)
+  const [generating, setGenerating] = useState(false)
+
+  const isCorporation =
+    status === 'authenticated' && session?.user?.role === 'CORPORATION'
 
   const displayCompanyName = useMemo(() => {
     return companyName.trim() || 'Sample'
   }, [companyName])
 
-  const handleCreateBrandingCard = useCallback(() => {
-    // re-trigger even if same message
-    setSnackbarMsg(null)
-    requestAnimationFrame(() => setSnackbarMsg('로그인 후 이용 바랍니다'))
+  const handleCreateBrandingCard = useCallback(async () => {
+    if (!isCorporation) {
+      // 로그인 안 되어 있으면 로그인 유도
+      const prefersReducedMotion =
+        window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      })
+      setSnackbarMsg(null)
+      requestAnimationFrame(() =>
+        setSnackbarMsg('기업 계정으로 로그인 후 이용 바랍니다'),
+      )
+      return
+    }
 
-    const prefersReducedMotion =
-      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+    // 기업 로그인 상태 → 폼 입력값과 함께 generate API 호출
+    setGenerating(true)
+    try {
+      const body: { prompt?: string; companyName?: string; companyUrl?: string; companyDesc?: string } = {}
+      if (companyName.trim()) body.companyName = companyName.trim()
+      if (companyUrl.trim()) body.companyUrl = companyUrl.trim()
+      if (companyDesc.trim()) body.companyDesc = companyDesc.trim()
 
-    window.scrollTo({
-      top: 0,
-      behavior: prefersReducedMotion ? 'auto' : 'smooth',
-    })
-  }, [])
+      const res = await fetch('/api/corporation/branding-card/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) {
+        const json = await res.json().catch(() => null)
+        const msg = json?.error?.message ?? 'AI 브랜딩 카드 생성에 실패했습니다.'
+        setSnackbarMsg(null)
+        requestAnimationFrame(() => setSnackbarMsg(msg))
+        return
+      }
+      // 생성 성공 → 결과 페이지로 이동
+      router.push('/branding-card-result-company')
+    } catch {
+      setSnackbarMsg(null)
+      requestAnimationFrame(() =>
+        setSnackbarMsg('네트워크 오류가 발생했습니다. 다시 시도해주세요.'),
+      )
+    } finally {
+      setGenerating(false)
+    }
+  }, [isCorporation, router, companyName, companyUrl, companyDesc])
 
   return (
     <section id="companies" className={styles.sectionAlt}>
@@ -45,7 +89,25 @@ export function CompanyStudio() {
         </div>
 
         <div className={styles.companyGrid}>
-          <div className={styles.card}>
+          <div className={styles.card} style={{ position: 'relative' }}>
+            {/* 로그인 안 된 상태: 오버레이 */}
+            {!isCorporation && (
+              <div className={styles.formOverlay}>
+                <div className={styles.formOverlayInner}>
+                  <div className={styles.formOverlayIcon} aria-hidden>
+                    🔒
+                  </div>
+                  <div className={styles.formOverlayTitle}>
+                    기업 계정으로 로그인하고 사용하세요
+                  </div>
+                  <div className={styles.formOverlaySub}>
+                    AI 브랜딩 카드를 제작하려면 기업 담당자 계정이 필요합니다.
+                    <br />
+                    위의 &quot;Google 계정으로 기업 로그인&quot; 버튼을 눌러주세요.
+                  </div>
+                </div>
+              </div>
+            )}
             <form
               className={styles.form}
               aria-label="AI 브랜딩 스튜디오 폼"
@@ -61,6 +123,7 @@ export function CompanyStudio() {
                   placeholder="회사명을 입력해보세요"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.currentTarget.value)}
+                  disabled={!isCorporation}
                 />
               </div>
               <div className={styles.fieldRow}>
@@ -71,26 +134,22 @@ export function CompanyStudio() {
                   id="companyUrl"
                   className={styles.input}
                   placeholder="https://..."
+                  value={companyUrl}
+                  onChange={(e) => setCompanyUrl(e.currentTarget.value)}
+                  disabled={!isCorporation}
                 />
               </div>
               <div className={styles.fieldRow}>
-                <label className={styles.label} htmlFor="descLong">
-                  회사 한문장 소개
-                </label>
-                <textarea
-                  id="descLong"
-                  className={styles.textarea}
-                  placeholder="회사의 핵심 가치를 한문장으로 간단히 적어주세요 (AI가 이를 바탕으로 작성합니다)"
-                />
-              </div>
-              <div className={styles.fieldRow}>
-                <label className={styles.label} htmlFor="descShort">
+                <label className={styles.label} htmlFor="companyDesc">
                   회사 한줄 소개
                 </label>
                 <textarea
-                  id="descShort"
+                  id="companyDesc"
                   className={styles.textarea}
-                  placeholder="회사의 핵심 키워드나 문장을 간단히 적어주세요 (AI가 이를 바탕으로 작성합니다)"
+                  placeholder="회사의 핵심 가치나 한줄 소개를 적어주세요 (AI 브랜딩 카드 생성 시 참고됩니다)"
+                  value={companyDesc}
+                  onChange={(e) => setCompanyDesc(e.currentTarget.value)}
+                  disabled={!isCorporation}
                 />
               </div>
 
@@ -98,8 +157,9 @@ export function CompanyStudio() {
                 className={styles.primaryButton}
                 type="button"
                 onClick={handleCreateBrandingCard}
+                disabled={generating}
               >
-                AI 브랜딩 카드 무료 제작하기
+                {generating ? 'AI가 카드를 생성 중입니다...' : 'AI 브랜딩 카드 무료 제작하기'}
               </button>
 
               <div className={styles.noticeCard} role="note">

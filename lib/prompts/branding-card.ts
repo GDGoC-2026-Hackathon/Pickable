@@ -37,11 +37,20 @@ const COMPANY_SIZE_MAP: Record<string, string> = {
   ENTERPRISE: "대기업 그룹",
 };
 
+// ── 브랜딩 카드 제작 시 사용자가 입력한 내용 (선택) ──
+
+export interface BrandingFormInput {
+  companyName?: string;
+  companyUrl?: string;
+  companyDesc?: string;
+}
+
 // ── 전체 브랜딩 카드 생성 프롬프트 ──
 
 export function buildBrandingPrompt(
   corporation: CorporationForBranding,
-  userPrompt?: string
+  userPrompt?: string,
+  formInput?: BrandingFormInput
 ): string {
   const companySize =
     COMPANY_SIZE_MAP[corporation.companySize] || corporation.companySize;
@@ -50,11 +59,26 @@ export function buildBrandingPrompt(
   const jobTitles =
     corporation.jobPostings.map((j) => j.title).join(", ") || "없음";
 
+  const hasFormInput =
+    formInput &&
+    (formInput.companyName || formInput.companyUrl || formInput.companyDesc);
+
+  const formSection = hasFormInput
+    ? `
+## ★ 브랜딩 카드 제작 시 기업 담당자가 입력한 내용 (이 내용을 반드시 반영하세요)
+- 입력한 회사명: ${formInput!.companyName || "—"}
+- 입력한 웹사이트: ${formInput!.companyUrl || "—"}
+- 입력한 회사 한줄 소개: ${formInput!.companyDesc || "—"}
+
+위 "제작 시 입력한 내용"을 우선하여, 슬로건·소개문·키워드에 반드시 반영해주세요.
+`
+    : "";
+
   return `당신은 중소기업 채용 브랜딩 전문 카피라이터입니다.
 아래 기업 정보를 바탕으로 구직자(취준생)에게 매력적으로 어필할 수 있는
 AI 브랜딩 카드 콘텐츠를 생성해주세요.
 
-## 기업 정보
+## 기업 정보 (DB)
 - 기업명: ${corporation.name}
 - 업종: ${corporation.industry}
 - 규모: ${companySize}
@@ -64,7 +88,7 @@ AI 브랜딩 카드 콘텐츠를 생성해주세요.
 - 홈페이지: ${corporation.homepageUrl || "없음"}
 - 기업 태그: ${tags}
 - 채용 중 직무: ${jobTitles}
-
+${formSection}
 ${userPrompt ? `## 기업 담당자의 추가 요청\n${userPrompt}\n` : ""}
 ## 생성 규칙 (반드시 지키세요)
 1. catchphrase: 반드시 한국어 40자 이내. 기업의 핵심 가치를 임팩트 있게 전달하는 슬로건. 이모지, 따옴표를 절대 포함하지 마세요.

@@ -186,6 +186,28 @@
   color: rgba(11, 18, 32, 0.55);
 }
 
+.loadingSpinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid rgba(11, 99, 255, 0.18);
+  border-top-color: #0b63ff;
+  animation: dashboardSpin 0.7s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes dashboardSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, 0.5);
+}
+
 .listHeaderRow {
   display: flex;
   align-items: center;

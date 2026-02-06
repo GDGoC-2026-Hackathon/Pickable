@@ -12,6 +12,12 @@ import {
 
 interface GenerateRequest {
   prompt?: string;
+  /** 브랜딩 카드 제작 시 입력한 회사명 (있으면 프롬프트에 반영) */
+  companyName?: string;
+  /** 브랜딩 카드 제작 시 입력한 웹사이트 URL */
+  companyUrl?: string;
+  /** 브랜딩 카드 제작 시 입력한 회사 한줄 소개 */
+  companyDesc?: string;
 }
 
 export async function POST(request: Request) {
@@ -49,8 +55,12 @@ export async function POST(request: Request) {
 
     const corporation = user.corporation;
 
-    // 2. Gemini 프롬프트 조립 & 호출 (재시도 로직 포함)
-    const prompt = buildBrandingPrompt(corporation, body?.prompt);
+    // 2. Gemini 프롬프트 조립 (DB 기업 정보 + 제작 시 입력값 반영)
+    const prompt = buildBrandingPrompt(corporation, body?.prompt, {
+      companyName: body?.companyName?.trim() || undefined,
+      companyUrl: body?.companyUrl?.trim() || undefined,
+      companyDesc: body?.companyDesc?.trim() || undefined,
+    });
     const model = await getBrandingModel();
     const responseText = await generateWithRetry(model, prompt);
 
