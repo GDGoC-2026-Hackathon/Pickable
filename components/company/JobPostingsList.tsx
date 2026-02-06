@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 
 import type { CorporationJobPostingsResponse } from '@/types/job-posting'
@@ -17,48 +17,75 @@ export function JobPostingsList() {
   >({ status: 'loading' })
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('OPEN')
   const [page, setPage] = useState(1)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const fetchList = useCallback(async () => {
+    setState({ status: 'loading' })
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: '20',
+      ...(statusFilter !== 'OPEN' && { status: statusFilter }),
+    })
+    const res = await fetch(`/api/corporation/job-postings?${params}`)
+    const json = await res.json()
+
+    if (!res.ok) {
+      const message =
+        json?.error?.message ?? '채용 공고 목록을 불러오지 못했습니다.'
+      setState({ status: 'error', message })
+      return
+    }
+
+    if (json?.data?.data == null || json?.data?.pagination == null) {
+      setState({ status: 'error', message: '응답 형식이 올바르지 않습니다.' })
+      return
+    }
+
+    setState({
+      status: 'success',
+      data: {
+        data: json.data.data,
+        pagination: json.data.pagination,
+      },
+    })
+  }, [page, statusFilter])
 
   useEffect(() => {
     let cancelled = false
 
-    async function fetchList() {
-      setState({ status: 'loading' })
-      const params = new URLSearchParams({
-        page: String(page),
-        limit: '20',
-        ...(statusFilter !== 'OPEN' && { status: statusFilter }),
-      })
-      const res = await fetch(`/api/corporation/job-postings?${params}`)
-      const json = await res.json()
-
+    fetchList().then(() => {
       if (cancelled) return
+    })
 
-      if (!res.ok) {
-        const message =
-          json?.error?.message ?? '채용 공고 목록을 불러오지 못했습니다.'
-        setState({ status: 'error', message })
-        return
-      }
-
-      if (json?.data?.data == null || json?.data?.pagination == null) {
-        setState({ status: 'error', message: '응답 형식이 올바르지 않습니다.' })
-        return
-      }
-
-      setState({
-        status: 'success',
-        data: {
-          data: json.data.data,
-          pagination: json.data.pagination,
-        },
-      })
-    }
-
-    fetchList()
     return () => {
       cancelled = true
     }
-  }, [page, statusFilter])
+  }, [fetchList])
+
+  // ── 삭제 핸들러 ──
+  async function handleDelete(id: string, title: string) {
+    if (!window.confirm(`"${title}" 공고를 정말 삭제하시겠습니까?`)) return
+
+    setDeletingId(id)
+    try {
+      const res = await fetch(`/api/corporation/job-postings/${id}`, {
+        method: 'DELETE',
+      })
+      const json = await res.json()
+
+      if (!res.ok) {
+        alert(json?.error?.message ?? '삭제에 실패했습니다.')
+        return
+      }
+
+      // 삭제 성공 → 목록 새로고침
+      await fetchList()
+    } catch {
+      alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.')
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   const total =
     state.status === 'success' ? state.data.pagination.total : 0
@@ -98,7 +125,7 @@ export function JobPostingsList() {
             <option value="CLOSED">마감 공고</option>
             <option value="ALL">전체</option>
           </select>
-          <Link className={styles.addButton} href="#">
+          <Link className={styles.addButton} href="/add-recruitment-company">
             + 공고 추가하기
           </Link>
         </div>
@@ -119,7 +146,12 @@ export function JobPostingsList() {
       {state.status === 'success' && state.data.data.length > 0 && (
         <div className={styles.jobList}>
           {state.data.data.map((item) => (
-            <JobRow key={item.id} item={item} />
+            <JobRow
+              key={item.id}
+              item={item}
+              onDelete={handleDelete}
+              deleting={deletingId === item.id}
+            />
           ))}
         </div>
       )}
@@ -159,8 +191,12 @@ export function JobPostingsList() {
 
 function JobRow({
   item,
+  onDelete,
+  deleting,
 }: {
   item: CorporationJobPostingsResponse['data'][number]
+  onDelete: (id: string, title: string) => void
+  deleting: boolean
 }) {
   const { id, title, jobTrack, location, status, daysLeft } = item
 
@@ -222,7 +258,14 @@ function JobRow({
         >
           수정
         </Link>
-        <button className={styles.trashButton} type="button" aria-label="삭제">
+        <button
+          className={styles.trashButton}
+          type="button"
+          aria-label="삭제"
+          disabled={deleting}
+          onClick={() => onDelete(id, title)}
+          style={{ opacity: deleting ? 0.4 : 1 }}
+        >
           <TrashIcon />
         </button>
       </div>
